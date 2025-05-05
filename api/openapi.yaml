@@ -1,0 +1,4927 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: support@forestvpn.com
+    name: ForestVPN
+    url: https://forestvpn.com
+  description: ForestVPN API Documentation
+  termsOfService: https://forestvpn.com/terms/
+  title: ForestVPN API
+  version: 3.0.0
+servers:
+- description: Prod
+  url: https://api.fvpn.io
+- description: Dev
+  url: http://localhost:8000
+paths:
+  /v1/account/:
+    delete:
+      operationId: delete_current_account
+      parameters:
+      - description: Last 4 digits of the account number
+        explode: true
+        in: query
+        name: last4
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "204":
+          description: No response body
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Delete the current account
+      tags:
+      - account
+    get:
+      operationId: get_current_account
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve the current account
+      tags:
+      - account
+  /v1/account/token/:
+    post:
+      description: |-
+        Takes a sixteen digits account number and returns an access and refresh JSON web token pair to prove
+        the authentication of those credentials.
+      operationId: get_account_token_pair
+      requestBody:
+        content:
+          application/json:
+            examples:
+              ValidRequest:
+                summary: Valid Request
+                value:
+                  number: 1234 5678 9012 3456
+            schema:
+              $ref: '#/components/schemas/AccountTokenPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccountTokenPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccountTokenPairRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                ValidResponse:
+                  summary: Valid Response
+                  value:
+                    refresh: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+                    access: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+              schema:
+                $ref: '#/components/schemas/AccountTokenPair'
+          description: ""
+      summary: Get account token pair
+      tags:
+      - account
+  /v1/account/token/refresh/:
+    post:
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      operationId: refresh_account_token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountTokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccountTokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccountTokenRefreshRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountTokenRefresh'
+          description: ""
+      summary: Refresh account token
+      tags:
+      - account
+  /v1/accounts/:
+    post:
+      operationId: create_account
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ""
+      summary: Create a new account
+      tags:
+      - account
+  /v1/billing/account/:
+    get:
+      operationId: get_billing_account
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingAccount'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve the current account
+      tags:
+      - billing
+  /v1/billing/account/set-default-payment-method/:
+    post:
+      description: Set the default payment method for the account.
+      operationId: set_default_payment_method
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetDefaultPaymentMethodRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetDefaultPaymentMethodRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetDefaultPaymentMethodRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingAccount'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Set the default payment method for the account
+      tags:
+      - billing
+  /v1/billing/cloudpayments/payment-methods/:
+    post:
+      description: Endpoint to create a new payment method.
+      operationId: create_cloudpayments_payment_method
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudPaymentsPaymentMethodCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CloudPaymentsPaymentMethodCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CloudPaymentsPaymentMethodCreateRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudPaymentsPaymentMethod'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Create a new payment method
+      tags:
+      - cloudpayments
+  /v1/billing/cloudpayments/payment-methods/{payment_method_id}/:
+    get:
+      description: Endpoint to retrieve a specific payment method by ID.
+      operationId: get_cloudpayments_payment_method
+      parameters:
+      - description: A UUID string identifying this Payment Method.
+        explode: false
+        in: path
+        name: payment_method_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudPaymentsPaymentMethod'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve a payment method
+      tags:
+      - cloudpayments
+  /v1/billing/cloudpayments/payment-methods/{payment_method_id}/complete-3ds/:
+    post:
+      description: Endpoint to complete 3D Secure authentication for a payment method.
+      operationId: complete_cloudpayments_payment_method_three_ds
+      parameters:
+      - description: A UUID string identifying this Payment Method.
+        explode: false
+        in: path
+        name: payment_method_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudPaymentsThreeDSecureCompleteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CloudPaymentsThreeDSecureCompleteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CloudPaymentsThreeDSecureCompleteRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudPaymentsPaymentMethod'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Complete 3D Secure authentication
+      tags:
+      - cloudpayments
+  /v1/billing/current-subscription/:
+    get:
+      description: |-
+        ViewSet to retrieve the current subscription for an account.
+
+        This endpoint returns the latest active subscription. If there are no active
+        subscriptions, it returns the most recent subscription, regardless of status.
+      operationId: get_current_subscription
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve the current subscription
+      tags:
+      - billing
+  /v1/billing/entitlements/:
+    get:
+      description: |-
+        API ViewSet for Entitlements.
+
+        Entitlements represent features that an account has access to via subscriptions.
+        This view provides read-only access to the entitlements available to the current account.
+      operationId: get_entitlements
+      parameters:
+      - description: Filter entitlements by lookup key
+        explode: true
+        in: query
+        name: lookup_key
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Entitlement'
+                type: array
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List account entitlements
+      tags:
+      - billing
+  /v1/billing/entitlements/{entitlement_id}/:
+    get:
+      description: |-
+        API ViewSet for Entitlements.
+
+        Entitlements represent features that an account has access to via subscriptions.
+        This view provides read-only access to the entitlements available to the current account.
+      operationId: get_entitlement
+      parameters:
+      - description: A UUID string identifying this Entitlement.
+        explode: false
+        in: path
+        name: entitlement_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entitlement'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve a specific entitlement
+      tags:
+      - billing
+  /v1/billing/payment-methods/:
+    get:
+      operationId: get_payment_methods
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPaymentMethodList'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List all payment methods
+      tags:
+      - billing
+  /v1/billing/payment-methods/{payment_method_id}/:
+    delete:
+      operationId: delete_payment_method
+      parameters:
+      - description: A UUID string identifying this Payment method.
+        explode: false
+        in: path
+        name: payment_method_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No response body
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Delete a payment method
+      tags:
+      - billing
+    get:
+      operationId: get_payment_method
+      parameters:
+      - description: A UUID string identifying this Payment method.
+        explode: false
+        in: path
+        name: payment_method_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentMethod'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve a payment method
+      tags:
+      - billing
+  /v1/billing/plans/:
+    get:
+      operationId: get_plans
+      parameters:
+      - explode: true
+        in: query
+        name: currency
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Plan'
+                type: array
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List all plans
+      tags:
+      - billing
+  /v1/billing/plans/{slug}/:
+    get:
+      operationId: get_plan_by_slug
+      parameters:
+      - explode: false
+        in: path
+        name: slug
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve a plan
+      tags:
+      - billing
+  /v1/billing/plans/timeline/:
+    get:
+      description: |-
+        Get billing timeline for a plan.
+
+        Shows payment schedule including trial periods and prorated amounts
+        for upgrades/downgrades.
+      operationId: get_plan_timeline
+      parameters:
+      - description: The ID of the plan price to get the timeline for
+        explode: true
+        in: query
+        name: plan_price_id
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: Optional subscription ID for upgrade/downgrade scenarios
+        explode: true
+        in: query
+        name: subscription_id
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeline'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Get billing timeline for a plan
+      tags:
+      - billing
+  /v1/billing/stripe/setup-intents/:
+    post:
+      operationId: create_stripe_setup_intent
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StripeSetupIntent'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Create a new stripe setup intent
+      tags:
+      - stripe
+  /v1/billing/subscriptions/:
+    get:
+      operationId: get_subscriptions
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: |-
+          * `apple` - Apple
+          * `google` - Google
+          * `stripe` - Stripe
+          * `unknown` - Unknown
+        explode: true
+        in: query
+        name: managed_by
+        required: false
+        schema:
+          items:
+            enum:
+            - apple
+            - google
+            - stripe
+            - unknown
+            nullable: true
+            type: string
+          type: array
+        style: form
+      - description: |-
+          * `incomplete` - Incomplete
+          * `incomplete_expired` - Incomplete expired
+          * `trialing` - Trialing
+          * `active` - Active
+          * `past_due` - Past due
+          * `canceled` - Canceled
+          * `unpaid` - Unpaid
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          items:
+            enum:
+            - active
+            - canceled
+            - incomplete
+            - incomplete_expired
+            - past_due
+            - trialing
+            - unpaid
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubscriptionList'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List subscriptions
+      tags:
+      - billing
+    post:
+      operationId: subscribe_to_plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionCreationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubscriptionCreationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscriptionCreationRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Subscribe to a plan
+      tags:
+      - billing
+  /v1/billing/subscriptions/{subscription_id}/:
+    delete:
+      operationId: cancel_subscription
+      parameters:
+      - description: A UUID string identifying this Subscription.
+        explode: false
+        in: path
+        name: subscription_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Cancel subscription
+      tags:
+      - billing
+    get:
+      operationId: get_subscription
+      parameters:
+      - description: A UUID string identifying this Subscription.
+        explode: false
+        in: path
+        name: subscription_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve subscription
+      tags:
+      - billing
+  /v1/billing/subscriptions/{subscription_id}/change-plan/:
+    post:
+      operationId: change_subscription_plan
+      parameters:
+      - description: A UUID string identifying this Subscription.
+        explode: false
+        in: path
+        name: subscription_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionChangePlanRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubscriptionChangePlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscriptionChangePlanRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Change subscription plan
+      tags:
+      - billing
+  /v1/billing/subscriptions/{subscription_id}/reactivate/:
+    post:
+      operationId: reactivate_subscription
+      parameters:
+      - description: A UUID string identifying this Subscription.
+        explode: false
+        in: path
+        name: subscription_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Reactivate subscription
+      tags:
+      - billing
+  /v1/countries/:
+    get:
+      operationId: get_countries
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Country'
+                type: array
+          description: ""
+      summary: List countries
+      tags:
+      - geo
+  /v1/countries/{country_id}/:
+    get:
+      operationId: get_country
+      parameters:
+      - description: A unique value identifying this Country.
+        explode: false
+        in: path
+        name: country_id
+        required: true
+        schema:
+          title: ISO 3166-1 alpha-2
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+          description: ""
+      summary: Retrieve country
+      tags:
+      - geo
+  /v1/devices/:
+    get:
+      operationId: get_devices
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDeviceList'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List all devices
+      tags:
+      - device
+    post:
+      operationId: create_device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Create a new account
+      tags:
+      - device
+  /v1/devices/{device_id}/:
+    delete:
+      operationId: delete_device
+      parameters:
+      - description: A UUID string identifying this Device.
+        explode: false
+        in: path
+        name: device_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No response body
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Delete a device
+      tags:
+      - device
+    get:
+      operationId: get_device
+      parameters:
+      - description: A UUID string identifying this Device.
+        explode: false
+        in: path
+        name: device_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve a device
+      tags:
+      - device
+    patch:
+      operationId: partial_update_device
+      parameters:
+      - description: A UUID string identifying this Device.
+        explode: false
+        in: path
+        name: device_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDeviceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDeviceRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Partially update a device
+      tags:
+      - device
+    put:
+      operationId: update_device
+      parameters:
+      - description: A UUID string identifying this Device.
+        explode: false
+        in: path
+        name: device_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Update a device
+      tags:
+      - device
+  /v1/devices/{device_id}/analytics/:
+    get:
+      description: "Returns data usage analytics for a single device with daily breakdown\
+        \ of tx, rx usage and optional comparison to the previous period."
+      operationId: get_device_analytics
+      parameters:
+      - description: Whether to include comparison with previous period (true/false)
+        explode: true
+        in: query
+        name: compare_previous
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: A UUID string identifying this Device.
+        explode: false
+        in: path
+        name: device_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      - description: "End date in ISO format (default: current date and time)"
+        explode: true
+        in: query
+        name: end_date
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Start date in ISO format (default: 7 days ago)"
+        explode: true
+        in: query
+        name: start_date
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAnalytics'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Get data usage analytics for a specific device
+      tags:
+      - device
+  /v1/devices/{device_id}/node/:
+    get:
+      operationId: get_device_node
+      parameters:
+      - description: A UUID string identifying this Device.
+        explode: false
+        in: path
+        name: device_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ""
+      summary: Get the node of a device
+      tags:
+      - device
+  /v1/devices/{device_id}/set-node/:
+    post:
+      description: "Set a node for this device either by specifying a node ID or geographic\
+        \ coordinates. When using node_id, the node must be active and allowed for\
+        \ the user. When using location, the closest active, public node to the specified\
+        \ coordinates will be selected."
+      operationId: set_device_node
+      parameters:
+      - description: A UUID string identifying this Device.
+        explode: false
+        in: path
+        name: device_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetNodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetNodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetNodeRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ""
+        "400":
+          content:
+            application/json:
+              schema:
+                description: "Invalid parameters, node not found, or node not active"
+          description: ""
+        "403":
+          content:
+            application/json:
+              schema:
+                description: Not permitted to use the specified node
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Set a node on a device
+      tags:
+      - device
+  /v1/devices/analytics/dashboard/:
+    get:
+      description: Returns dashboard analytics including 7-day and 30-day summaries
+        with previous period comparisons and a list of top N devices by data usage
+        over the last 30 days.
+      operationId: get_dashboard_analytics
+      parameters:
+      - description: "Number of top devices to include (default: 5)"
+        explode: true
+        in: query
+        name: top
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAnalytics'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Get device data usage analytics for dashboard
+      tags:
+      - device
+  /v1/locations/:
+    get:
+      operationId: get_locations
+      parameters:
+      - explode: true
+        in: query
+        name: country
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Search
+        explode: true
+        in: query
+        name: q
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLocationList'
+          description: ""
+      summary: List locations
+      tags:
+      - geo
+  /v1/locations/{place_id}/:
+    get:
+      operationId: get_location
+      parameters:
+      - description: A UUID string identifying this Place.
+        explode: false
+        in: path
+        name: place_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ""
+      summary: Retrieve location
+      tags:
+      - geo
+  /v1/nodes/:
+    get:
+      operationId: get_nodes
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNodeList'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List nodes
+      tags:
+      - node
+    post:
+      operationId: create_node
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Create a new node
+      tags:
+      - node
+  /v1/nodes/{node_id}/conditions/:
+    get:
+      operationId: get_node_conditions
+      parameters:
+      - explode: false
+        in: path
+        name: node_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/NodeCondition'
+                type: array
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List node conditions
+      tags:
+      - node
+    post:
+      operationId: create_node_condition
+      parameters:
+      - explode: false
+        in: path
+        name: node_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeConditionsRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NodeConditionsRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeConditionsRequest'
+        required: true
+      responses:
+        "201":
+          description: No response body
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Create a new node condition
+      tags:
+      - node
+  /v1/nodes/{node_id}/:
+    delete:
+      operationId: delete_node
+      parameters:
+      - description: A UUID string identifying this Node.
+        explode: false
+        in: path
+        name: node_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No response body
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Delete a node
+      tags:
+      - node
+    get:
+      operationId: get_node
+      parameters:
+      - description: A UUID string identifying this Node.
+        explode: false
+        in: path
+        name: node_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve a node
+      tags:
+      - node
+    patch:
+      operationId: partial_update_node
+      parameters:
+      - description: A UUID string identifying this Node.
+        explode: false
+        in: path
+        name: node_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNodeRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Partially update a device
+      tags:
+      - node
+    put:
+      operationId: update_node
+      parameters:
+      - description: A UUID string identifying this Node.
+        explode: false
+        in: path
+        name: node_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Update a node
+      tags:
+      - node
+  /v1/nodes/{node_id}/data-usage-report/:
+    post:
+      operationId: create_node_data_usage_report
+      parameters:
+      - description: A UUID string identifying this Node.
+        explode: false
+        in: path
+        name: node_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeDataUsageReportRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NodeDataUsageReportRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeDataUsageReportRequest'
+        required: true
+      responses:
+        "201":
+          description: No response body
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Create a new node data usage
+      tags:
+      - node
+  /v1/nodes/{node_id}/devices/:
+    get:
+      operationId: get_node_devices
+      parameters:
+      - description: A UUID string identifying this Node.
+        explode: false
+        in: path
+        name: node_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/NodeDevice'
+                type: array
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List node devices
+      tags:
+      - node
+  /v1/nodes/search/:
+    get:
+      operationId: search_nodes
+      parameters:
+      - description: Filter by country codes
+        explode: true
+        in: query
+        name: countries
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Maximum distance (format: 10km, 5mi)"
+        explode: true
+        in: query
+        name: distance
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by exit node status
+        explode: true
+        in: query
+        name: is_exit_node
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Latitude for location search
+        explode: true
+        in: query
+        name: lat
+        required: false
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Longitude for location search
+        explode: true
+        in: query
+        name: lon
+        required: false
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Order by distance
+        explode: true
+        in: query
+        name: order_by_distance
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: "Search nodes by hostname, tags, OS, OS arch, distro, distro\
+          \ codename, or public key"
+        explode: true
+        in: query
+        name: q
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by tags
+        explode: true
+        in: query
+        name: tags
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNodeList'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Search for nodes with various filters
+      tags:
+      - node
+components:
+  schemas:
+    ASN:
+      example:
+        country:
+          alpha_3: alpha_3
+          official_name: official_name
+          flag: flag
+          name: name
+          numeric: numeric
+          id: id
+        domain: domain
+        name: name
+        asn: 171976544
+      properties:
+        asn:
+          format: int64
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+        name:
+          maxLength: 255
+          nullable: true
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+        domain:
+          maxLength: 255
+          nullable: true
+          type: string
+      required:
+      - asn
+      - country
+      type: object
+    ASNRequest:
+      properties:
+        asn:
+          format: int64
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+        name:
+          maxLength: 255
+          nullable: true
+          type: string
+        country:
+          $ref: '#/components/schemas/CountryRequest'
+        domain:
+          maxLength: 255
+          nullable: true
+          type: string
+      required:
+      - asn
+      - country
+      type: object
+    Account:
+      example:
+        number: number
+        country: ""
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        masked_number: masked_number
+        photo_url: photo_url
+        status: pending
+      properties:
+        id:
+          format: uuid
+          type: string
+        masked_number:
+          readOnly: true
+          type: string
+        number:
+          readOnly: true
+          type: string
+        status:
+          $ref: '#/components/schemas/AccountStatus'
+        country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          readOnly: true
+        photo_url:
+          readOnly: true
+          type: string
+        created_at:
+          format: date-time
+          readOnly: true
+          title: Date created
+          type: string
+      required:
+      - country
+      - created_at
+      - id
+      - masked_number
+      - number
+      - photo_url
+      type: object
+    AccountStatus:
+      description: |-
+        * `pending` - Pending
+        * `active` - Active
+        * `suspended` - Suspended
+        * `canceled` - Canceled
+      enum:
+      - pending
+      - active
+      - suspended
+      - canceled
+      type: string
+    AccountTokenPair:
+      description: |-
+        Serializer for obtaining JWT tokens using a 16-digit account number.
+
+        This serializer validates the provided account number, normalizes it by removing
+        any non-digit characters, and ensures it is exactly 16 digits long. If the account
+        number is valid and corresponds to an existing account, it issues a pair of JWT tokens
+        (refresh and access tokens).
+
+        Attributes:
+            account_number (str): The 16-digit account number.
+            access (str): The access token issued upon successful authentication.
+            refresh (str): The refresh token issued upon successful authentication.
+
+        Example:
+            Request:
+            {
+                "number": "1234 5678 9012 3456"
+            }
+
+            Response:
+            {
+                "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+                "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+            }
+      example:
+        access: access
+        refresh: refresh
+      properties:
+        access:
+          readOnly: true
+          type: string
+        refresh:
+          readOnly: true
+          type: string
+      required:
+      - access
+      - refresh
+      type: object
+    AccountTokenPairRequest:
+      description: |-
+        Serializer for obtaining JWT tokens using a 16-digit account number.
+
+        This serializer validates the provided account number, normalizes it by removing
+        any non-digit characters, and ensures it is exactly 16 digits long. If the account
+        number is valid and corresponds to an existing account, it issues a pair of JWT tokens
+        (refresh and access tokens).
+
+        Attributes:
+            account_number (str): The 16-digit account number.
+            access (str): The access token issued upon successful authentication.
+            refresh (str): The refresh token issued upon successful authentication.
+
+        Example:
+            Request:
+            {
+                "number": "1234 5678 9012 3456"
+            }
+
+            Response:
+            {
+                "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+                "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+            }
+      example:
+        number: number
+      properties:
+        number:
+          description: "The 16-digit account number of the user, with optional separators."
+          maxLength: 19
+          minLength: 16
+          type: string
+          writeOnly: true
+      required:
+      - number
+      type: object
+    AccountTokenRefresh:
+      description: |-
+        Serializer for refreshing JWT tokens using a refresh token.
+
+        This serializer validates the provided refresh token and issues a new access token
+        if the refresh token is valid.
+
+        Attributes:
+            refresh (str): The refresh token to be used for refreshing the access token.
+            access (str): The new access token issued upon successful token refresh.
+
+        Example:
+            Request:
+            {
+                "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+            }
+
+            Response:
+            {
+                "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+            }
+      example:
+        access: access
+        refresh: refresh
+      properties:
+        refresh:
+          type: string
+        access:
+          readOnly: true
+          type: string
+      required:
+      - access
+      type: object
+    AccountTokenRefreshRequest:
+      description: |-
+        Serializer for refreshing JWT tokens using a refresh token.
+
+        This serializer validates the provided refresh token and issues a new access token
+        if the refresh token is valid.
+
+        Attributes:
+            refresh (str): The refresh token to be used for refreshing the access token.
+            access (str): The new access token issued upon successful token refresh.
+
+        Example:
+            Request:
+            {
+                "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+            }
+
+            Response:
+            {
+                "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+            }
+      example:
+        refresh: refresh
+      properties:
+        refresh:
+          minLength: 1
+          type: string
+      type: object
+    BillingAccount:
+      example:
+        default_payment_method: ""
+        current_subscription: ""
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          format: uuid
+          type: string
+        default_payment_method:
+          allOf:
+          - $ref: '#/components/schemas/PaymentMethod'
+          nullable: true
+        current_subscription:
+          allOf:
+          - $ref: '#/components/schemas/Subscription'
+          nullable: true
+          readOnly: true
+      required:
+      - current_subscription
+      - default_payment_method
+      - id
+      type: object
+    CloudPaymentsCardDetails:
+      example:
+        last4: last4
+        country: ""
+        expires_at: 2000-01-23T04:56:07.000+00:00
+        exp_month: 6
+        exp_year: 0
+        first6: first6
+        brand: brand
+      properties:
+        first6:
+          nullable: true
+          type: string
+        last4:
+          type: string
+        exp_year:
+          format: int64
+          type: integer
+        exp_month:
+          format: int64
+          type: integer
+        expires_at:
+          format: date-time
+          type: string
+        brand:
+          type: string
+        country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          nullable: true
+      required:
+      - brand
+      - exp_month
+      - exp_year
+      - expires_at
+      - last4
+      type: object
+    CloudPaymentsPaymentMethod:
+      example:
+        is_expired: true
+        need_authentication: true
+        three_ds:
+          pa_req: pa_req
+          md: md
+          acs_url: https://openapi-generator.tech
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: type
+        card:
+          last4: last4
+          country: ""
+          expires_at: 2000-01-23T04:56:07.000+00:00
+          exp_month: 6
+          exp_year: 0
+          first6: first6
+          brand: brand
+      properties:
+        id:
+          format: uuid
+          type: string
+        type:
+          maxLength: 32
+          nullable: true
+          type: string
+        card:
+          $ref: '#/components/schemas/CloudPaymentsCardDetails'
+        is_expired:
+          readOnly: true
+          type: boolean
+        need_authentication:
+          readOnly: true
+          type: boolean
+        three_ds:
+          $ref: '#/components/schemas/CloudPaymentsThreeDSecure'
+        created_at:
+          format: date-time
+          readOnly: true
+          title: Date created
+          type: string
+      required:
+      - card
+      - created_at
+      - id
+      - is_expired
+      - need_authentication
+      - three_ds
+      type: object
+    CloudPaymentsPaymentMethodCreateRequest:
+      example:
+        cryptogram: cryptogram
+      properties:
+        cryptogram:
+          minLength: 1
+          type: string
+          writeOnly: true
+      required:
+      - cryptogram
+      type: object
+    CloudPaymentsThreeDSecure:
+      example:
+        pa_req: pa_req
+        md: md
+        acs_url: https://openapi-generator.tech
+      properties:
+        pa_req:
+          type: string
+        md:
+          type: string
+        acs_url:
+          format: uri
+          type: string
+      required:
+      - acs_url
+      - md
+      - pa_req
+      type: object
+    CloudPaymentsThreeDSecureCompleteRequest:
+      example:
+        pa_res: pa_res
+      properties:
+        pa_res:
+          minLength: 1
+          type: string
+      required:
+      - pa_res
+      type: object
+    ComparisonData:
+      description: Serializer for period comparison analytics.
+      example:
+        current:
+          period:
+            start: 2000-01-23T04:56:07.000+00:00
+            end: 2000-01-23T04:56:07.000+00:00
+          total: 5
+          data:
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+        previous:
+          period:
+            start: 2000-01-23T04:56:07.000+00:00
+            end: 2000-01-23T04:56:07.000+00:00
+          total: 5
+          data:
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+        percent_change: 0.8008281904610115
+      properties:
+        current:
+          $ref: '#/components/schemas/SummaryPeriod'
+        previous:
+          $ref: '#/components/schemas/SummaryPeriod'
+        percent_change:
+          format: double
+          type: number
+      required:
+      - current
+      - percent_change
+      - previous
+      type: object
+    Condition:
+      description: |-
+        * `ready` - Ready
+        * `disk_pressure` - DiskPressure
+        * `memory_pressure` - MemoryPressure
+        * `pid_pressure` - PIDPressure
+        * `cpu_pressure` - CPUPressure
+        * `network_pressure` - NetworkPressure
+        * `network_unavailable` - NetworkUnavailable
+      enum:
+      - ready
+      - disk_pressure
+      - memory_pressure
+      - pid_pressure
+      - cpu_pressure
+      - network_pressure
+      - network_unavailable
+      type: string
+    ConnectionStatus:
+      enum:
+      - never_connected
+      - inactive
+      - offline
+      - active
+      - online
+      type: string
+    Country:
+      example:
+        alpha_3: alpha_3
+        official_name: official_name
+        flag: flag
+        name: name
+        numeric: numeric
+        id: id
+      properties:
+        id:
+          type: string
+        name:
+          maxLength: 255
+          type: string
+        official_name:
+          maxLength: 255
+          type: string
+        flag:
+          readOnly: true
+          type: string
+        alpha_3:
+          maxLength: 3
+          title: ISO 3166-1 alpha-3
+          type: string
+        numeric:
+          maxLength: 3
+          title: ISO 3166-1 numeric
+          type: string
+      required:
+      - alpha_3
+      - flag
+      - id
+      - name
+      - numeric
+      - official_name
+      type: object
+    CountryRequest:
+      properties:
+        id:
+          minLength: 1
+          type: string
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+        official_name:
+          maxLength: 255
+          minLength: 1
+          type: string
+        alpha_3:
+          maxLength: 3
+          minLength: 1
+          title: ISO 3166-1 alpha-3
+          type: string
+        numeric:
+          maxLength: 3
+          minLength: 1
+          title: ISO 3166-1 numeric
+          type: string
+      required:
+      - alpha_3
+      - id
+      - name
+      - numeric
+      - official_name
+      type: object
+    DashboardAnalytics:
+      description: Complete dashboard analytics data.
+      example:
+        top_devices:
+          period:
+            start: 2000-01-23T04:56:07.000+00:00
+            end: 2000-01-23T04:56:07.000+00:00
+          devices:
+          - data:
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - data:
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          limit: 6
+        summary_30d:
+          current:
+            period:
+              start: 2000-01-23T04:56:07.000+00:00
+              end: 2000-01-23T04:56:07.000+00:00
+            total: 5
+            data:
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+          previous:
+            period:
+              start: 2000-01-23T04:56:07.000+00:00
+              end: 2000-01-23T04:56:07.000+00:00
+            total: 5
+            data:
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+          percent_change: 0.8008281904610115
+        summary_7d:
+          current:
+            period:
+              start: 2000-01-23T04:56:07.000+00:00
+              end: 2000-01-23T04:56:07.000+00:00
+            total: 5
+            data:
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+          previous:
+            period:
+              start: 2000-01-23T04:56:07.000+00:00
+              end: 2000-01-23T04:56:07.000+00:00
+            total: 5
+            data:
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+            - date: 2000-01-23T04:56:07.000+00:00
+              total: 1
+              tx: 6
+              rx: 0
+          percent_change: 0.8008281904610115
+      properties:
+        summary_7d:
+          $ref: '#/components/schemas/ComparisonData'
+        summary_30d:
+          $ref: '#/components/schemas/ComparisonData'
+        top_devices:
+          $ref: '#/components/schemas/TopDevices'
+      required:
+      - summary_30d
+      - summary_7d
+      - top_devices
+      type: object
+    DataPoint:
+      description: Serializer for a single data usage point.
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        total: 1
+        tx: 6
+        rx: 0
+      properties:
+        date:
+          format: date-time
+          type: string
+        rx:
+          format: int64
+          type: integer
+        tx:
+          format: int64
+          type: integer
+        total:
+          format: int64
+          type: integer
+      required:
+      - date
+      - rx
+      - total
+      - tx
+      type: object
+    Device:
+      example:
+        quick_conf_template: quick_conf_template
+        password: password
+        ps_key: ps_key
+        ipv4: ipv4
+        last_active_at: 2000-01-23T04:56:07.000+00:00
+        ipv6: ipv6
+        connection_status: ""
+        last_30days_data_usage: ""
+        name: name
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        pub_key: pub_key
+      properties:
+        id:
+          format: uuid
+          readOnly: true
+          type: string
+        name:
+          readOnly: true
+          type: string
+        ipv4:
+          readOnly: true
+          title: IPv4 Address
+          type: string
+        ipv6:
+          readOnly: true
+          title: IPv6 Address
+          type: string
+        pub_key:
+          maxLength: 88
+          title: Public Key
+          type: string
+        ps_key:
+          readOnly: true
+          title: Preshared Key
+          type: string
+        password:
+          description: "Bcrypt Hashed Password for Authentication, e.g. HTTP Proxy"
+          maxLength: 128
+          nullable: true
+          type: string
+        connection_status:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionStatus'
+          description: Determine connection status based on last activity time from
+            data usage.
+          readOnly: true
+        created_at:
+          format: date-time
+          readOnly: true
+          type: string
+        last_active_at:
+          format: date-time
+          readOnly: true
+          type: string
+        last_30days_data_usage:
+          allOf:
+          - $ref: '#/components/schemas/DeviceDataUsage'
+          readOnly: true
+        quick_conf_template:
+          description: Generate a quick configuration string for the device.
+          readOnly: true
+          type: string
+      required:
+      - connection_status
+      - created_at
+      - id
+      - ipv4
+      - ipv6
+      - last_30days_data_usage
+      - last_active_at
+      - name
+      - ps_key
+      - pub_key
+      - quick_conf_template
+      type: object
+    DeviceAnalytics:
+      description: Response for device analytics.
+      example:
+        current:
+          period:
+            start: 2000-01-23T04:56:07.000+00:00
+            end: 2000-01-23T04:56:07.000+00:00
+          total: 5
+          data:
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+        previous:
+          period:
+            start: 2000-01-23T04:56:07.000+00:00
+            end: 2000-01-23T04:56:07.000+00:00
+          total: 5
+          data:
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+        device:
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        percent_change: 5.637376656633329
+      properties:
+        device:
+          $ref: '#/components/schemas/DeviceAnalyticsDevice'
+        current:
+          $ref: '#/components/schemas/SummaryPeriod'
+        previous:
+          $ref: '#/components/schemas/SummaryPeriod'
+        percent_change:
+          format: double
+          type: number
+      required:
+      - current
+      - device
+      type: object
+    DeviceAnalyticsDevice:
+      example:
+        name: name
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+      required:
+      - id
+      - name
+      type: object
+    DeviceData:
+      description: Serializer for device with data usage information.
+      example:
+        data:
+        - date: 2000-01-23T04:56:07.000+00:00
+          total: 1
+          tx: 6
+          rx: 0
+        - date: 2000-01-23T04:56:07.000+00:00
+          total: 1
+          tx: 6
+          rx: 0
+        name: name
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+        data:
+          items:
+            $ref: '#/components/schemas/DataPoint'
+          type: array
+      required:
+      - data
+      - id
+      - name
+      type: object
+    DeviceDataUsage:
+      properties:
+        rx:
+          format: int64
+          type: integer
+        tx:
+          format: int64
+          type: integer
+        total:
+          format: int64
+          type: integer
+      required:
+      - rx
+      - total
+      - tx
+      type: object
+    DeviceDataUsageRequest:
+      properties:
+        rx:
+          format: int64
+          type: integer
+        tx:
+          format: int64
+          type: integer
+        total:
+          format: int64
+          type: integer
+      required:
+      - rx
+      - total
+      - tx
+      type: object
+    DeviceRequest:
+      example:
+        distro: distro
+        external_key: external_key
+        password: password
+        app_build: app_build
+        os: os
+        app_version: app_version
+        raw_password: raw_password
+        os_version: os_version
+        os_arch: os_arch
+        distro_codename: distro_codename
+        pub_key: pub_key
+        distro_version: distro_version
+      properties:
+        external_key:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        pub_key:
+          maxLength: 88
+          minLength: 1
+          title: Public Key
+          type: string
+        raw_password:
+          type: string
+          writeOnly: true
+        password:
+          description: "Bcrypt Hashed Password for Authentication, e.g. HTTP Proxy"
+          maxLength: 128
+          nullable: true
+          type: string
+        os:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        os_version:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        os_arch:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        distro:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        distro_version:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        distro_codename:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        app_version:
+          maxLength: 255
+          nullable: true
+          title: Version
+          type: string
+          writeOnly: true
+        app_build:
+          maxLength: 255
+          nullable: true
+          title: Build
+          type: string
+          writeOnly: true
+      required:
+      - pub_key
+      type: object
+    Entitlement:
+      description: Serializer for the Entitlement model.
+      example:
+        metadata:
+          key: metadata
+        expires_at: 2000-01-23T04:56:07.000+00:00
+        is_active: true
+        lookup_key: lookup_key
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          format: uuid
+          type: string
+        lookup_key:
+          pattern: "^[-a-zA-Z0-9_]+$"
+          readOnly: true
+          type: string
+        metadata:
+          additionalProperties:
+            nullable: true
+            type: string
+          nullable: true
+          readOnly: true
+          type: object
+        expires_at:
+          format: date-time
+          readOnly: true
+          type: string
+        is_active:
+          readOnly: true
+          type: boolean
+      required:
+      - expires_at
+      - id
+      - is_active
+      - lookup_key
+      - metadata
+      type: object
+    IPInfo:
+      example:
+        country:
+          alpha_3: alpha_3
+          official_name: official_name
+          flag: flag
+          name: name
+          numeric: numeric
+          id: id
+        ip: ip
+        location:
+          country:
+            alpha_3: alpha_3
+            official_name: official_name
+            flag: flag
+            name: name
+            numeric: numeric
+            id: id
+          name_ascii: name_ascii
+          name: name
+          lon: -706.8374038994109
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          region:
+            name: name
+            id: id
+          lat: 205.49123661408066
+        lon: 127.47533132666558
+        asn:
+          country:
+            alpha_3: alpha_3
+            official_name: official_name
+            flag: flag
+            name: name
+            numeric: numeric
+            id: id
+          domain: domain
+          name: name
+          asn: 171976544
+        lat: 192.4267833366364
+      properties:
+        ip:
+          type: string
+        asn:
+          $ref: '#/components/schemas/ASN'
+        country:
+          $ref: '#/components/schemas/Country'
+        location:
+          $ref: '#/components/schemas/Location'
+        lat:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          nullable: true
+          title: Latitude
+          type: number
+        lon:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          nullable: true
+          title: Longitude
+          type: number
+      required:
+      - asn
+      - country
+      - ip
+      - location
+      type: object
+    IPInfoRequest:
+      properties:
+        ip:
+          minLength: 1
+          type: string
+        asn:
+          $ref: '#/components/schemas/ASNRequest'
+        country:
+          $ref: '#/components/schemas/CountryRequest'
+        location:
+          $ref: '#/components/schemas/LocationRequest'
+        lat:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          nullable: true
+          title: Latitude
+          type: number
+        lon:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          nullable: true
+          title: Longitude
+          type: number
+      required:
+      - asn
+      - country
+      - ip
+      - location
+      type: object
+    Interval:
+      description: |-
+        * `week` - Week
+        * `biweek` - Bi Week
+        * `month` - Month
+        * `quarter` - Quarter
+        * `biannual` - Bi Annual
+        * `annual` - Annual
+      enum:
+      - week
+      - biweek
+      - month
+      - quarter
+      - biannual
+      - annual
+      type: string
+    Invoice:
+      properties:
+        id:
+          format: uuid
+          type: string
+        number:
+          maxLength: 20
+          type: string
+        subscription:
+          format: uuid
+          nullable: true
+          title: ID
+          type: string
+        status:
+          $ref: '#/components/schemas/InvoiceStatus'
+        description:
+          nullable: true
+          type: string
+        currency:
+          maxLength: 3
+          type: string
+        issued_at:
+          format: date-time
+          type: string
+        effective_at:
+          format: date-time
+          title: Effective Date
+          type: string
+        due_at:
+          format: date-time
+          title: Due Date
+          type: string
+        pdf:
+          format: uri
+          nullable: true
+          type: string
+        lines:
+          items:
+            $ref: '#/components/schemas/InvoiceLine'
+          readOnly: true
+          type: array
+        total:
+          allOf:
+          - $ref: '#/components/schemas/InvoiceTotalDetails'
+          readOnly: true
+      required:
+      - currency
+      - due_at
+      - effective_at
+      - id
+      - issued_at
+      - lines
+      - number
+      - total
+      type: object
+    InvoiceLine:
+      properties:
+        id:
+          format: uuid
+          type: string
+        description:
+          type: string
+        unit_amount:
+          format: double
+          readOnly: true
+          type: number
+        tax_amount:
+          format: double
+          readOnly: true
+          type: number
+        discount_amount:
+          format: double
+          readOnly: true
+          type: number
+        quantity:
+          format: int64
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+        amount:
+          format: double
+          readOnly: true
+          type: number
+        currency:
+          maxLength: 3
+          type: string
+        created_at:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - amount
+      - created_at
+      - currency
+      - description
+      - discount_amount
+      - id
+      - tax_amount
+      - unit_amount
+      type: object
+    InvoiceStatus:
+      description: |-
+        * `draft` - Draft
+        * `open` - Open
+        * `paid` - Paid
+        * `void` - Void
+        * `uncollectible` - Uncollectible
+      enum:
+      - draft
+      - open
+      - paid
+      - void
+      - uncollectible
+      type: string
+    InvoiceTotalDetails:
+      properties:
+        total_amount:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 100000000
+          minimum: -100000000
+          type: number
+        subtotal_amount:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 100000000
+          minimum: -100000000
+          type: number
+        discount_amount:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 100000000
+          minimum: -100000000
+          type: number
+        shipping_amount:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 100000000
+          minimum: -100000000
+          type: number
+        tax_amount:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 100000000
+          minimum: -100000000
+          type: number
+        paid_amount:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 100000000
+          minimum: -100000000
+          type: number
+        paid_with_wallet_amount:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 100000000
+          minimum: -100000000
+          type: number
+        due_amount:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 100000000
+          minimum: -100000000
+          type: number
+      required:
+      - discount_amount
+      - due_amount
+      - paid_amount
+      - paid_with_wallet_amount
+      - shipping_amount
+      - subtotal_amount
+      - tax_amount
+      - total_amount
+      type: object
+    Location:
+      example:
+        country:
+          alpha_3: alpha_3
+          official_name: official_name
+          flag: flag
+          name: name
+          numeric: numeric
+          id: id
+        name_ascii: name_ascii
+        name: name
+        lon: -706.8374038994109
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        region:
+          name: name
+          id: id
+        lat: 205.49123661408066
+      properties:
+        id:
+          format: uuid
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+        region:
+          $ref: '#/components/schemas/LocationRegion'
+        name:
+          maxLength: 255
+          type: string
+        name_ascii:
+          maxLength: 255
+          nullable: true
+          title: ASCII Name
+          type: string
+        lat:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          nullable: true
+          title: Latitude
+          type: number
+        lon:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          nullable: true
+          title: Longitude
+          type: number
+      required:
+      - country
+      - id
+      - name
+      - region
+      type: object
+    LocationRegion:
+      example:
+        name: name
+        id: id
+      properties:
+        id:
+          type: string
+        name:
+          maxLength: 255
+          type: string
+      required:
+      - id
+      - name
+      type: object
+    LocationRegionRequest:
+      properties:
+        id:
+          minLength: 1
+          type: string
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+      required:
+      - id
+      - name
+      type: object
+    LocationRequest:
+      properties:
+        id:
+          format: uuid
+          type: string
+        country:
+          $ref: '#/components/schemas/CountryRequest'
+        region:
+          $ref: '#/components/schemas/LocationRegionRequest'
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+        name_ascii:
+          maxLength: 255
+          nullable: true
+          title: ASCII Name
+          type: string
+        lat:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          nullable: true
+          title: Latitude
+          type: number
+        lon:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          nullable: true
+          title: Longitude
+          type: number
+      required:
+      - country
+      - id
+      - name
+      - region
+      type: object
+    ManagedBy:
+      description: |-
+        * `apple` - Apple
+        * `google` - Google
+        * `stripe` - Stripe
+        * `unknown` - Unknown
+      enum:
+      - apple
+      - google
+      - stripe
+      - unknown
+      type: string
+    Node:
+      example:
+        distro: distro
+        os: os
+        app_version: app_version
+        ip_addresses:
+        - ip_addresses
+        - ip_addresses
+        os_version: os_version
+        os_arch: os_arch
+        ports:
+        - ports
+        - ports
+        tags:
+        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        pub_key: pub_key
+        distro_version: distro_version
+        hostname: hostname
+        https_proxy_ports:
+        - https_proxy_ports
+        - https_proxy_ports
+        ip_details:
+        - country:
+            alpha_3: alpha_3
+            official_name: official_name
+            flag: flag
+            name: name
+            numeric: numeric
+            id: id
+          ip: ip
+          location:
+            country:
+              alpha_3: alpha_3
+              official_name: official_name
+              flag: flag
+              name: name
+              numeric: numeric
+              id: id
+            name_ascii: name_ascii
+            name: name
+            lon: -706.8374038994109
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            region:
+              name: name
+              id: id
+            lat: 205.49123661408066
+          lon: 127.47533132666558
+          asn:
+            country:
+              alpha_3: alpha_3
+              official_name: official_name
+              flag: flag
+              name: name
+              numeric: numeric
+              id: id
+            domain: domain
+            name: name
+            asn: 171976544
+          lat: 192.4267833366364
+        - country:
+            alpha_3: alpha_3
+            official_name: official_name
+            flag: flag
+            name: name
+            numeric: numeric
+            id: id
+          ip: ip
+          location:
+            country:
+              alpha_3: alpha_3
+              official_name: official_name
+              flag: flag
+              name: name
+              numeric: numeric
+              id: id
+            name_ascii: name_ascii
+            name: name
+            lon: -706.8374038994109
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            region:
+              name: name
+              id: id
+            lat: 205.49123661408066
+          lon: 127.47533132666558
+          asn:
+            country:
+              alpha_3: alpha_3
+              official_name: official_name
+              flag: flag
+              name: name
+              numeric: numeric
+              id: id
+            domain: domain
+            name: name
+            asn: 171976544
+          lat: 192.4267833366364
+        app_build: app_build
+        last_active_at: 2000-01-23T04:56:07.000+00:00
+        is_public: true
+        distro_codename: distro_codename
+        subnets:
+        - subnets
+        - subnets
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        is_exit_node: true
+        conditions:
+        - condition: ready
+          last_transition_at: 2000-01-23T04:56:07.000+00:00
+          message: message
+          last_heartbeat_at: 2000-01-23T04:56:07.000+00:00
+          status: true
+        - condition: ready
+          last_transition_at: 2000-01-23T04:56:07.000+00:00
+          message: message
+          last_heartbeat_at: 2000-01-23T04:56:07.000+00:00
+          status: true
+        status: pending
+      properties:
+        id:
+          format: uuid
+          readOnly: true
+          type: string
+        hostname:
+          maxLength: 255
+          pattern: "^[-a-zA-Z0-9_]+$"
+          type: string
+        ip_addresses:
+          items:
+            type: string
+          type: array
+        subnets:
+          items:
+            maxLength: 120
+            type: string
+          nullable: true
+          title: Promoted Subnets
+          type: array
+        tags:
+          items:
+            format: uuid
+            title: ID
+            type: string
+          type: array
+        is_exit_node:
+          readOnly: true
+          type: boolean
+        is_public:
+          type: boolean
+        pub_key:
+          maxLength: 255
+          title: Quantum Node Key
+          type: string
+        ports:
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            type: string
+          title: Quantum Ports
+          type: array
+        https_proxy_ports:
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            type: string
+          nullable: true
+          title: HTTPs Ports
+          type: array
+        conditions:
+          items:
+            $ref: '#/components/schemas/NodeCondition'
+          readOnly: true
+          type: array
+        status:
+          $ref: '#/components/schemas/NodeStatus'
+        os:
+          maxLength: 255
+          nullable: true
+          type: string
+        os_version:
+          maxLength: 255
+          nullable: true
+          type: string
+        os_arch:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro_version:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro_codename:
+          maxLength: 255
+          nullable: true
+          type: string
+        app_version:
+          maxLength: 255
+          nullable: true
+          title: Version
+          type: string
+        app_build:
+          maxLength: 255
+          nullable: true
+          title: Build
+          type: string
+        last_active_at:
+          format: date-time
+          nullable: true
+          readOnly: true
+          title: Date last active
+          type: string
+        ip_details:
+          items:
+            $ref: '#/components/schemas/IPInfo'
+          readOnly: true
+          type: array
+      required:
+      - conditions
+      - hostname
+      - id
+      - ip_addresses
+      - ip_details
+      - is_exit_node
+      - last_active_at
+      - ports
+      - pub_key
+      type: object
+    NodeCondition:
+      example:
+        condition: ready
+        last_transition_at: 2000-01-23T04:56:07.000+00:00
+        message: message
+        last_heartbeat_at: 2000-01-23T04:56:07.000+00:00
+        status: true
+      properties:
+        condition:
+          $ref: '#/components/schemas/Condition'
+        status:
+          type: boolean
+        message:
+          nullable: true
+          type: string
+        last_heartbeat_at:
+          format: date-time
+          readOnly: true
+          type: string
+        last_transition_at:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - condition
+      - last_heartbeat_at
+      - last_transition_at
+      - status
+      type: object
+    NodeConditionRequest:
+      example:
+        condition: ready
+        message: message
+        status: true
+      properties:
+        condition:
+          $ref: '#/components/schemas/Condition'
+        status:
+          type: boolean
+        message:
+          nullable: true
+          type: string
+      required:
+      - condition
+      - status
+      type: object
+    NodeConditionsRequest:
+      example:
+        items:
+        - condition: ready
+          message: message
+          status: true
+        - condition: ready
+          message: message
+          status: true
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/NodeConditionRequest'
+          type: array
+      required:
+      - items
+      type: object
+    NodeDataUsageItemRequest:
+      example:
+        tx: 0
+        rx: 6
+        proto: proto
+        id: id
+      properties:
+        id:
+          description: "Unique identifier for the record, it may be pub_key, ipv4,\
+            \ ipv6 or device_id"
+          minLength: 1
+          type: string
+        proto:
+          description: Protocol used for the record
+          minLength: 1
+          type: string
+        tx:
+          description: Total bytes sent
+          format: int64
+          type: integer
+        rx:
+          description: Total bytes received
+          format: int64
+          type: integer
+      required:
+      - id
+      - proto
+      type: object
+    NodeDataUsageReportRequest:
+      example:
+        items:
+        - tx: 0
+          rx: 6
+          proto: proto
+          id: id
+        - tx: 0
+          rx: 6
+          proto: proto
+          id: id
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        timestamp:
+          format: date-time
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/NodeDataUsageItemRequest'
+          type: array
+      required:
+      - items
+      - timestamp
+      type: object
+    NodeDevice:
+      example:
+        ps_key: ps_key
+        ipv4: ipv4
+        ipv6: ipv6
+        pub_key: pub_key
+      properties:
+        ipv4:
+          readOnly: true
+          title: IPv4 Address
+          type: string
+        ipv6:
+          readOnly: true
+          title: IPv6 Address
+          type: string
+        pub_key:
+          readOnly: true
+          title: Public Key
+          type: string
+        ps_key:
+          readOnly: true
+          title: Preshared Key
+          type: string
+      required:
+      - ipv4
+      - ipv6
+      - ps_key
+      - pub_key
+      type: object
+    NodeRequest:
+      example:
+        distro: distro
+        os: os
+        app_version: app_version
+        ip_addresses:
+        - ip_addresses
+        - ip_addresses
+        os_version: os_version
+        os_arch: os_arch
+        ports:
+        - ports
+        - ports
+        tags:
+        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        pub_key: pub_key
+        distro_version: distro_version
+        hostname: hostname
+        https_proxy_ports:
+        - https_proxy_ports
+        - https_proxy_ports
+        app_build: app_build
+        is_public: true
+        distro_codename: distro_codename
+        subnets:
+        - subnets
+        - subnets
+        status: pending
+      properties:
+        hostname:
+          maxLength: 255
+          minLength: 1
+          pattern: "^[-a-zA-Z0-9_]+$"
+          type: string
+        ip_addresses:
+          items:
+            minLength: 1
+            type: string
+          type: array
+        subnets:
+          items:
+            maxLength: 120
+            minLength: 1
+            type: string
+          nullable: true
+          title: Promoted Subnets
+          type: array
+        tags:
+          items:
+            format: uuid
+            title: ID
+            type: string
+          type: array
+        is_public:
+          type: boolean
+        pub_key:
+          maxLength: 255
+          minLength: 1
+          title: Quantum Node Key
+          type: string
+        ports:
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            minLength: 1
+            type: string
+          title: Quantum Ports
+          type: array
+        https_proxy_ports:
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            minLength: 1
+            type: string
+          nullable: true
+          title: HTTPs Ports
+          type: array
+        status:
+          $ref: '#/components/schemas/NodeStatus'
+        os:
+          maxLength: 255
+          nullable: true
+          type: string
+        os_version:
+          maxLength: 255
+          nullable: true
+          type: string
+        os_arch:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro_version:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro_codename:
+          maxLength: 255
+          nullable: true
+          type: string
+        app_version:
+          maxLength: 255
+          nullable: true
+          title: Version
+          type: string
+        app_build:
+          maxLength: 255
+          nullable: true
+          title: Build
+          type: string
+      required:
+      - hostname
+      - ip_addresses
+      - ports
+      - pub_key
+      type: object
+    NodeStatus:
+      description: |-
+        * `pending` - Pending
+        * `active` - Active
+        * `drained` - Drained
+        * `inactive` - Inactive
+      enum:
+      - pending
+      - active
+      - drained
+      - inactive
+      type: string
+    "Null":
+      enum:
+      - null
+      type: string
+    PaginatedDeviceList:
+      example:
+        next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        count: 100
+        results:
+        - quick_conf_template: quick_conf_template
+          password: password
+          ps_key: ps_key
+          ipv4: ipv4
+          last_active_at: 2000-01-23T04:56:07.000+00:00
+          ipv6: ipv6
+          connection_status: ""
+          last_30days_data_usage: ""
+          name: name
+          created_at: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          pub_key: pub_key
+        - quick_conf_template: quick_conf_template
+          password: password
+          ps_key: ps_key
+          ipv4: ipv4
+          last_active_at: 2000-01-23T04:56:07.000+00:00
+          ipv6: ipv6
+          connection_status: ""
+          last_30days_data_usage: ""
+          name: name
+          created_at: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          pub_key: pub_key
+      properties:
+        next:
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+          format: uri
+          nullable: true
+          type: string
+        previous:
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+          format: uri
+          nullable: true
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/Device'
+          type: array
+        count:
+          description: Total count of items
+          example: 100
+          type: integer
+      required:
+      - results
+      type: object
+    PaginatedLocationList:
+      example:
+        next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        count: 100
+        results:
+        - country:
+            alpha_3: alpha_3
+            official_name: official_name
+            flag: flag
+            name: name
+            numeric: numeric
+            id: id
+          name_ascii: name_ascii
+          name: name
+          lon: -706.8374038994109
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          region:
+            name: name
+            id: id
+          lat: 205.49123661408066
+        - country:
+            alpha_3: alpha_3
+            official_name: official_name
+            flag: flag
+            name: name
+            numeric: numeric
+            id: id
+          name_ascii: name_ascii
+          name: name
+          lon: -706.8374038994109
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          region:
+            name: name
+            id: id
+          lat: 205.49123661408066
+      properties:
+        next:
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+          format: uri
+          nullable: true
+          type: string
+        previous:
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+          format: uri
+          nullable: true
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/Location'
+          type: array
+        count:
+          description: Total count of items
+          example: 100
+          type: integer
+      required:
+      - results
+      type: object
+    PaginatedNodeList:
+      example:
+        next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        count: 100
+        results:
+        - distro: distro
+          os: os
+          app_version: app_version
+          ip_addresses:
+          - ip_addresses
+          - ip_addresses
+          os_version: os_version
+          os_arch: os_arch
+          ports:
+          - ports
+          - ports
+          tags:
+          - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          pub_key: pub_key
+          distro_version: distro_version
+          hostname: hostname
+          https_proxy_ports:
+          - https_proxy_ports
+          - https_proxy_ports
+          ip_details:
+          - country:
+              alpha_3: alpha_3
+              official_name: official_name
+              flag: flag
+              name: name
+              numeric: numeric
+              id: id
+            ip: ip
+            location:
+              country:
+                alpha_3: alpha_3
+                official_name: official_name
+                flag: flag
+                name: name
+                numeric: numeric
+                id: id
+              name_ascii: name_ascii
+              name: name
+              lon: -706.8374038994109
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              region:
+                name: name
+                id: id
+              lat: 205.49123661408066
+            lon: 127.47533132666558
+            asn:
+              country:
+                alpha_3: alpha_3
+                official_name: official_name
+                flag: flag
+                name: name
+                numeric: numeric
+                id: id
+              domain: domain
+              name: name
+              asn: 171976544
+            lat: 192.4267833366364
+          - country:
+              alpha_3: alpha_3
+              official_name: official_name
+              flag: flag
+              name: name
+              numeric: numeric
+              id: id
+            ip: ip
+            location:
+              country:
+                alpha_3: alpha_3
+                official_name: official_name
+                flag: flag
+                name: name
+                numeric: numeric
+                id: id
+              name_ascii: name_ascii
+              name: name
+              lon: -706.8374038994109
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              region:
+                name: name
+                id: id
+              lat: 205.49123661408066
+            lon: 127.47533132666558
+            asn:
+              country:
+                alpha_3: alpha_3
+                official_name: official_name
+                flag: flag
+                name: name
+                numeric: numeric
+                id: id
+              domain: domain
+              name: name
+              asn: 171976544
+            lat: 192.4267833366364
+          app_build: app_build
+          last_active_at: 2000-01-23T04:56:07.000+00:00
+          is_public: true
+          distro_codename: distro_codename
+          subnets:
+          - subnets
+          - subnets
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          is_exit_node: true
+          conditions:
+          - condition: ready
+            last_transition_at: 2000-01-23T04:56:07.000+00:00
+            message: message
+            last_heartbeat_at: 2000-01-23T04:56:07.000+00:00
+            status: true
+          - condition: ready
+            last_transition_at: 2000-01-23T04:56:07.000+00:00
+            message: message
+            last_heartbeat_at: 2000-01-23T04:56:07.000+00:00
+            status: true
+          status: pending
+        - distro: distro
+          os: os
+          app_version: app_version
+          ip_addresses:
+          - ip_addresses
+          - ip_addresses
+          os_version: os_version
+          os_arch: os_arch
+          ports:
+          - ports
+          - ports
+          tags:
+          - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          pub_key: pub_key
+          distro_version: distro_version
+          hostname: hostname
+          https_proxy_ports:
+          - https_proxy_ports
+          - https_proxy_ports
+          ip_details:
+          - country:
+              alpha_3: alpha_3
+              official_name: official_name
+              flag: flag
+              name: name
+              numeric: numeric
+              id: id
+            ip: ip
+            location:
+              country:
+                alpha_3: alpha_3
+                official_name: official_name
+                flag: flag
+                name: name
+                numeric: numeric
+                id: id
+              name_ascii: name_ascii
+              name: name
+              lon: -706.8374038994109
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              region:
+                name: name
+                id: id
+              lat: 205.49123661408066
+            lon: 127.47533132666558
+            asn:
+              country:
+                alpha_3: alpha_3
+                official_name: official_name
+                flag: flag
+                name: name
+                numeric: numeric
+                id: id
+              domain: domain
+              name: name
+              asn: 171976544
+            lat: 192.4267833366364
+          - country:
+              alpha_3: alpha_3
+              official_name: official_name
+              flag: flag
+              name: name
+              numeric: numeric
+              id: id
+            ip: ip
+            location:
+              country:
+                alpha_3: alpha_3
+                official_name: official_name
+                flag: flag
+                name: name
+                numeric: numeric
+                id: id
+              name_ascii: name_ascii
+              name: name
+              lon: -706.8374038994109
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              region:
+                name: name
+                id: id
+              lat: 205.49123661408066
+            lon: 127.47533132666558
+            asn:
+              country:
+                alpha_3: alpha_3
+                official_name: official_name
+                flag: flag
+                name: name
+                numeric: numeric
+                id: id
+              domain: domain
+              name: name
+              asn: 171976544
+            lat: 192.4267833366364
+          app_build: app_build
+          last_active_at: 2000-01-23T04:56:07.000+00:00
+          is_public: true
+          distro_codename: distro_codename
+          subnets:
+          - subnets
+          - subnets
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          is_exit_node: true
+          conditions:
+          - condition: ready
+            last_transition_at: 2000-01-23T04:56:07.000+00:00
+            message: message
+            last_heartbeat_at: 2000-01-23T04:56:07.000+00:00
+            status: true
+          - condition: ready
+            last_transition_at: 2000-01-23T04:56:07.000+00:00
+            message: message
+            last_heartbeat_at: 2000-01-23T04:56:07.000+00:00
+            status: true
+          status: pending
+      properties:
+        next:
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+          format: uri
+          nullable: true
+          type: string
+        previous:
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+          format: uri
+          nullable: true
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/Node'
+          type: array
+        count:
+          description: Total count of items
+          example: 100
+          type: integer
+      required:
+      - results
+      type: object
+    PaginatedPaymentMethodList:
+      example:
+        next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        count: 100
+        results:
+        - provider: provider
+          created_at: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: card
+          card: ""
+        - provider: provider
+          created_at: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: card
+          card: ""
+      properties:
+        next:
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+          format: uri
+          nullable: true
+          type: string
+        previous:
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+          format: uri
+          nullable: true
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/PaymentMethod'
+          type: array
+        count:
+          description: Total count of items
+          example: 100
+          type: integer
+      required:
+      - results
+      type: object
+    PaginatedSubscriptionList:
+      example:
+        next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        count: 100
+        results:
+        - amount: 0.8008281904610115
+          latest_invoice: ""
+          pending_update: ""
+          managed_by: apple
+          canceled_at: 2000-01-23T04:56:07.000+00:00
+          plan_price: ""
+          trial_end: 2000-01-23T04:56:07.000+00:00
+          description: description
+          created_at: 2000-01-23T04:56:07.000+00:00
+          current_period_end: 2000-01-23T04:56:07.000+00:00
+          trial_start: 2000-01-23T04:56:07.000+00:00
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          plan: ""
+          ended_at: 2000-01-23T04:56:07.000+00:00
+          current_period_start: 2000-01-23T04:56:07.000+00:00
+          start_date: 2000-01-23T04:56:07.000+00:00
+          cancel_at: 2000-01-23T04:56:07.000+00:00
+          status: incomplete
+        - amount: 0.8008281904610115
+          latest_invoice: ""
+          pending_update: ""
+          managed_by: apple
+          canceled_at: 2000-01-23T04:56:07.000+00:00
+          plan_price: ""
+          trial_end: 2000-01-23T04:56:07.000+00:00
+          description: description
+          created_at: 2000-01-23T04:56:07.000+00:00
+          current_period_end: 2000-01-23T04:56:07.000+00:00
+          trial_start: 2000-01-23T04:56:07.000+00:00
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          plan: ""
+          ended_at: 2000-01-23T04:56:07.000+00:00
+          current_period_start: 2000-01-23T04:56:07.000+00:00
+          start_date: 2000-01-23T04:56:07.000+00:00
+          cancel_at: 2000-01-23T04:56:07.000+00:00
+          status: incomplete
+      properties:
+        next:
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+          format: uri
+          nullable: true
+          type: string
+        previous:
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+          format: uri
+          nullable: true
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/Subscription'
+          type: array
+        count:
+          description: Total count of items
+          example: 100
+          type: integer
+      required:
+      - results
+      type: object
+    PatchedDeviceRequest:
+      example:
+        distro: distro
+        external_key: external_key
+        password: password
+        app_build: app_build
+        os: os
+        app_version: app_version
+        raw_password: raw_password
+        os_version: os_version
+        os_arch: os_arch
+        distro_codename: distro_codename
+        pub_key: pub_key
+        distro_version: distro_version
+      properties:
+        external_key:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        pub_key:
+          maxLength: 88
+          minLength: 1
+          title: Public Key
+          type: string
+        raw_password:
+          type: string
+          writeOnly: true
+        password:
+          description: "Bcrypt Hashed Password for Authentication, e.g. HTTP Proxy"
+          maxLength: 128
+          nullable: true
+          type: string
+        os:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        os_version:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        os_arch:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        distro:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        distro_version:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        distro_codename:
+          maxLength: 255
+          nullable: true
+          type: string
+          writeOnly: true
+        app_version:
+          maxLength: 255
+          nullable: true
+          title: Version
+          type: string
+          writeOnly: true
+        app_build:
+          maxLength: 255
+          nullable: true
+          title: Build
+          type: string
+          writeOnly: true
+      type: object
+    PatchedNodeRequest:
+      example:
+        distro: distro
+        os: os
+        app_version: app_version
+        ip_addresses:
+        - ip_addresses
+        - ip_addresses
+        os_version: os_version
+        os_arch: os_arch
+        ports:
+        - ports
+        - ports
+        tags:
+        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        pub_key: pub_key
+        distro_version: distro_version
+        hostname: hostname
+        https_proxy_ports:
+        - https_proxy_ports
+        - https_proxy_ports
+        app_build: app_build
+        is_public: true
+        distro_codename: distro_codename
+        subnets:
+        - subnets
+        - subnets
+        status: pending
+      properties:
+        hostname:
+          maxLength: 255
+          minLength: 1
+          pattern: "^[-a-zA-Z0-9_]+$"
+          type: string
+        ip_addresses:
+          items:
+            minLength: 1
+            type: string
+          type: array
+        subnets:
+          items:
+            maxLength: 120
+            minLength: 1
+            type: string
+          nullable: true
+          title: Promoted Subnets
+          type: array
+        tags:
+          items:
+            format: uuid
+            title: ID
+            type: string
+          type: array
+        is_public:
+          type: boolean
+        pub_key:
+          maxLength: 255
+          minLength: 1
+          title: Quantum Node Key
+          type: string
+        ports:
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            minLength: 1
+            type: string
+          title: Quantum Ports
+          type: array
+        https_proxy_ports:
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            minLength: 1
+            type: string
+          nullable: true
+          title: HTTPs Ports
+          type: array
+        status:
+          $ref: '#/components/schemas/NodeStatus'
+        os:
+          maxLength: 255
+          nullable: true
+          type: string
+        os_version:
+          maxLength: 255
+          nullable: true
+          type: string
+        os_arch:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro_version:
+          maxLength: 255
+          nullable: true
+          type: string
+        distro_codename:
+          maxLength: 255
+          nullable: true
+          type: string
+        app_version:
+          maxLength: 255
+          nullable: true
+          title: Version
+          type: string
+        app_build:
+          maxLength: 255
+          nullable: true
+          title: Build
+          type: string
+      type: object
+    PaymentMethod:
+      example:
+        provider: provider
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: card
+        card: ""
+      properties:
+        id:
+          format: uuid
+          type: string
+        provider:
+          pattern: "^[-a-zA-Z0-9_]+$"
+          type: string
+        type:
+          $ref: '#/components/schemas/Type'
+        card:
+          allOf:
+          - $ref: '#/components/schemas/PaymentMethodCard'
+          nullable: true
+        created_at:
+          format: date-time
+          readOnly: true
+          title: Date created
+          type: string
+      required:
+      - card
+      - created_at
+      - id
+      - provider
+      - type
+      type: object
+    PaymentMethodCard:
+      properties:
+        first6:
+          nullable: true
+          type: string
+        last4:
+          type: string
+        exp_month:
+          format: int64
+          type: integer
+        exp_year:
+          format: int64
+          type: integer
+        expires_at:
+          format: date-time
+          type: string
+        brand:
+          nullable: true
+          type: string
+        country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          nullable: true
+      required:
+      - brand
+      - country
+      - exp_month
+      - exp_year
+      - expires_at
+      - first6
+      - last4
+      type: object
+    Period:
+      description: Serializer for time period information.
+      example:
+        start: 2000-01-23T04:56:07.000+00:00
+        end: 2000-01-23T04:56:07.000+00:00
+      properties:
+        start:
+          format: date-time
+          type: string
+        end:
+          format: date-time
+          type: string
+      required:
+      - end
+      - start
+      type: object
+    Plan:
+      example:
+        is_most_popular: true
+        name: name
+        description: description
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        prices:
+        - is_eligible_for_trial: true
+          amount: 0.8008281904610115
+          is_most_popular: true
+          price_diff_info: ""
+          interval: week
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          trial_days: 19750
+        - is_eligible_for_trial: true
+          amount: 0.8008281904610115
+          is_most_popular: true
+          price_diff_info: ""
+          interval: week
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          trial_days: 19750
+        slug: slug
+        currencies: currencies
+      properties:
+        id:
+          format: uuid
+          type: string
+        slug:
+          maxLength: 50
+          pattern: "^[-a-zA-Z0-9_]+$"
+          type: string
+        name:
+          maxLength: 80
+          type: string
+        description:
+          nullable: true
+          type: string
+        is_most_popular:
+          type: boolean
+        prices:
+          items:
+            $ref: '#/components/schemas/PlanPrice'
+          nullable: true
+          type: array
+        currencies:
+          nullable: true
+          readOnly: true
+          type: string
+      required:
+      - currencies
+      - id
+      - name
+      - prices
+      - slug
+      type: object
+    PlanPrice:
+      example:
+        is_eligible_for_trial: true
+        amount: 0.8008281904610115
+        is_most_popular: true
+        price_diff_info: ""
+        interval: week
+        currency: currency
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        trial_days: 19750
+      properties:
+        id:
+          format: uuid
+          type: string
+        interval:
+          $ref: '#/components/schemas/Interval'
+        amount:
+          format: double
+          readOnly: true
+          type: number
+        currency:
+          maxLength: 3
+          type: string
+        trial_days:
+          description: "Number of trial days, must be a positive integer greater than\
+            \ 0"
+          format: int64
+          maximum: 32767
+          minimum: 0
+          nullable: true
+          type: integer
+        price_diff_info:
+          allOf:
+          - $ref: '#/components/schemas/PriceDiffInfo'
+          nullable: true
+          readOnly: true
+        is_most_popular:
+          type: boolean
+        is_eligible_for_trial:
+          readOnly: true
+          type: boolean
+      required:
+      - amount
+      - currency
+      - id
+      - is_eligible_for_trial
+      - price_diff_info
+      type: object
+    PriceDiffInfo:
+      properties:
+        amount:
+          format: double
+          type: number
+        currency:
+          type: string
+        interval:
+          type: string
+        discount:
+          format: int64
+          type: integer
+        save_amount:
+          format: double
+          type: number
+        save_amount_total:
+          format: int64
+          type: integer
+      required:
+      - amount
+      - currency
+      - discount
+      - interval
+      - save_amount
+      - save_amount_total
+      type: object
+    SetDefaultPaymentMethodRequest:
+      example:
+        payment_method: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        payment_method:
+          format: uuid
+          title: ID
+          type: string
+      required:
+      - payment_method
+      type: object
+    SetNodeRequest:
+      description: Serializer for setting a node by either ID or location.
+      example:
+        lon: 205.49123661408066
+        lat: -839.8343619077978
+        max_distance: 500km
+        node_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        node_id:
+          description: The ID of the node to set
+          format: uuid
+          type: string
+        lat:
+          description: latitude coordinate for location-based node selection
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          type: number
+        lon:
+          description: longitude coordinate for location-based node selection
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: -1000
+          type: number
+        max_distance:
+          default: 500km
+          description: "Maximum distance from coordinates (format: '10km', '5mi')"
+          minLength: 1
+          type: string
+      type: object
+    StripeSetupIntent:
+      example:
+        client_secret: client_secret
+      properties:
+        client_secret:
+          readOnly: true
+          type: string
+      required:
+      - client_secret
+      type: object
+    Subscription:
+      example:
+        amount: 0.8008281904610115
+        latest_invoice: ""
+        pending_update: ""
+        managed_by: apple
+        canceled_at: 2000-01-23T04:56:07.000+00:00
+        plan_price: ""
+        trial_end: 2000-01-23T04:56:07.000+00:00
+        description: description
+        created_at: 2000-01-23T04:56:07.000+00:00
+        current_period_end: 2000-01-23T04:56:07.000+00:00
+        trial_start: 2000-01-23T04:56:07.000+00:00
+        currency: currency
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        plan: ""
+        ended_at: 2000-01-23T04:56:07.000+00:00
+        current_period_start: 2000-01-23T04:56:07.000+00:00
+        start_date: 2000-01-23T04:56:07.000+00:00
+        cancel_at: 2000-01-23T04:56:07.000+00:00
+        status: incomplete
+      properties:
+        id:
+          format: uuid
+          type: string
+        start_date:
+          description: Date when the subscription was first created.The date might
+            differ from the created date due to backdating.
+          format: date-time
+          type: string
+        ended_at:
+          description: "If the subscription has ended, the date the subscription ended."
+          format: date-time
+          nullable: true
+          title: Ended date
+          type: string
+        current_period_start:
+          description: Start of the current period that the subscription has been
+            invoiced for.
+          format: date-time
+          type: string
+        current_period_end:
+          description: "End of the current period that the subscription has been invoiced\
+            \ for. At the end of this period, a new invoice will be created."
+          format: date-time
+          type: string
+        trial_start:
+          description: "If the subscription has a trial, the beginning of that trial."
+          format: date-time
+          nullable: true
+          type: string
+        trial_end:
+          description: "If the subscription has a trial, the end of that trial."
+          format: date-time
+          nullable: true
+          type: string
+        cancel_at:
+          description: A date in the future at which the subscription will automatically
+            get canceled.
+          format: date-time
+          nullable: true
+          type: string
+        canceled_at:
+          description: "If the subscription has been canceled, the date of that cancellation."
+          format: date-time
+          nullable: true
+          type: string
+        status:
+          $ref: '#/components/schemas/SubscriptionStatus'
+        description:
+          description: "The subscription's description, meant to be displayable to\
+            \ the customer.Use this field to optionally store an explanation of the\
+            \ subscription."
+          nullable: true
+          type: string
+        managed_by:
+          $ref: '#/components/schemas/ManagedBy'
+        amount:
+          format: double
+          readOnly: true
+          type: number
+        currency:
+          maxLength: 3
+          type: string
+        latest_invoice:
+          allOf:
+          - $ref: '#/components/schemas/Invoice'
+          nullable: true
+          readOnly: true
+        pending_update:
+          allOf:
+          - $ref: '#/components/schemas/SubscriptionPendingUpdate'
+          nullable: true
+          readOnly: true
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+        plan_price:
+          allOf:
+          - $ref: '#/components/schemas/PlanPrice'
+          readOnly: true
+        created_at:
+          format: date-time
+          readOnly: true
+          title: Date created
+          type: string
+      required:
+      - amount
+      - created_at
+      - currency
+      - current_period_end
+      - current_period_start
+      - id
+      - latest_invoice
+      - managed_by
+      - pending_update
+      - plan
+      - plan_price
+      - start_date
+      type: object
+    SubscriptionChangePlanRequest:
+      example:
+        new_plan_price: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        new_plan_price:
+          format: uuid
+          title: ID
+          type: string
+      required:
+      - new_plan_price
+      type: object
+    SubscriptionCreationRequest:
+      example:
+        plan_price: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        payment_method: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        plan_price:
+          format: uuid
+          title: ID
+          type: string
+        payment_method:
+          format: uuid
+          nullable: true
+          title: ID
+          type: string
+      required:
+      - plan_price
+      type: object
+    SubscriptionPendingUpdate:
+      properties:
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+        plan_price:
+          allOf:
+          - $ref: '#/components/schemas/PlanPrice'
+          readOnly: true
+        amount:
+          format: double
+          readOnly: true
+          type: number
+        currency:
+          maxLength: 3
+          type: string
+        effective_at:
+          description: The date when the transition will take effect.
+          format: date-time
+          title: Effective Date
+          type: string
+      required:
+      - amount
+      - currency
+      - effective_at
+      - plan
+      - plan_price
+      type: object
+    SubscriptionStatus:
+      description: |-
+        * `incomplete` - Incomplete
+        * `incomplete_expired` - Incomplete expired
+        * `trialing` - Trialing
+        * `active` - Active
+        * `past_due` - Past due
+        * `canceled` - Canceled
+        * `unpaid` - Unpaid
+      enum:
+      - incomplete
+      - incomplete_expired
+      - trialing
+      - active
+      - past_due
+      - canceled
+      - unpaid
+      type: string
+    SummaryPeriod:
+      description: Serializer for a period's summary data.
+      example:
+        period:
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+        total: 5
+        data:
+        - date: 2000-01-23T04:56:07.000+00:00
+          total: 1
+          tx: 6
+          rx: 0
+        - date: 2000-01-23T04:56:07.000+00:00
+          total: 1
+          tx: 6
+          rx: 0
+      properties:
+        period:
+          $ref: '#/components/schemas/Period'
+        data:
+          items:
+            $ref: '#/components/schemas/DataPoint'
+          type: array
+        total:
+          format: int64
+          type: integer
+      required:
+      - data
+      - period
+      - total
+      type: object
+    Timeline:
+      description: Serializer for the billing timeline.
+      example:
+        currency: currency
+        prorated_amount: 6.027456183070403
+        events:
+        - date: 2000-01-23T04:56:07.000+00:00
+          amount: 0.8008281904610115
+          event_type: subscription_start
+          description: description
+          currency: currency
+        - date: 2000-01-23T04:56:07.000+00:00
+          amount: 0.8008281904610115
+          event_type: subscription_start
+          description: description
+          currency: currency
+      properties:
+        events:
+          items:
+            $ref: '#/components/schemas/TimelineEvent'
+          type: array
+        prorated_amount:
+          format: double
+          nullable: true
+          type: number
+        currency:
+          nullable: true
+          type: string
+      required:
+      - currency
+      - events
+      - prorated_amount
+      type: object
+    TimelineEvent:
+      description: Serializer for billing timeline events.
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        amount: 0.8008281904610115
+        event_type: subscription_start
+        description: description
+        currency: currency
+      properties:
+        date:
+          format: date-time
+          type: string
+        event_type:
+          $ref: '#/components/schemas/TimelineEventType'
+        description:
+          type: string
+        amount:
+          format: double
+          nullable: true
+          type: number
+        currency:
+          nullable: true
+          type: string
+      required:
+      - amount
+      - currency
+      - date
+      - description
+      - event_type
+      type: object
+    TimelineEventType:
+      description: |-
+        * `subscription_start` - Subscription Start
+        * `trial_start` - Trial Start
+        * `trial_end` - Trial End
+        * `first_charge` - First Charge
+        * `proration` - Proration
+        * `renewal` - Renewal
+      enum:
+      - subscription_start
+      - trial_start
+      - trial_end
+      - first_charge
+      - proration
+      - renewal
+      type: string
+    TopDevices:
+      description: Serializer for top devices data.
+      example:
+        period:
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+        devices:
+        - data:
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - data:
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+          - date: 2000-01-23T04:56:07.000+00:00
+            total: 1
+            tx: 6
+            rx: 0
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        limit: 6
+      properties:
+        limit:
+          format: int64
+          type: integer
+        period:
+          $ref: '#/components/schemas/Period'
+        devices:
+          items:
+            $ref: '#/components/schemas/DeviceData'
+          type: array
+      required:
+      - devices
+      - limit
+      - period
+      type: object
+    Type:
+      description: |-
+        * `card` - Card
+        * `bank_account` - Bank Account
+        * `paypal` - PayPal
+        * `apple_pay` - Apple Pay
+        * `google_pay` - Google Pay
+        * `stripe` - Stripe
+        * `braintree` - Braintree
+        * `square` - Square
+        * `amazon_pay` - Amazon Pay
+        * `venmo` - Venmo
+        * `zelle` - Zelle
+        * `cash_app` - Cash App
+        * `other` - Other
+      enum:
+      - card
+      - bank_account
+      - paypal
+      - apple_pay
+      - google_pay
+      - stripe
+      - braintree
+      - square
+      - amazon_pay
+      - venmo
+      - zelle
+      - cash_app
+      - other
+      type: string
+  securitySchemes:
+    apiKey:
+      in: header
+      name: X-API-Key
+      type: apiKey
+    bearerToken:
+      scheme: bearer
+      type: http
