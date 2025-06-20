@@ -77,7 +77,7 @@ func (a *NodeAPIService) CreateNodeExecute(r ApiCreateNodeRequest) (*Node, *http
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -201,7 +201,7 @@ func (a *NodeAPIService) CreateNodeConditionExecute(r ApiCreateNodeConditionRequ
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -316,7 +316,7 @@ func (a *NodeAPIService) CreateNodeDataUsageReportExecute(r ApiCreateNodeDataUsa
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -599,6 +599,13 @@ type ApiGetNodeConditionsRequest struct {
 	ctx context.Context
 	ApiService *NodeAPIService
 	nodeId string
+	status *bool
+}
+
+// Filter by status: true (active), false (inactive), or all (both). Default is to show active and recently failed.  * &#x60;true&#x60; - True * &#x60;false&#x60; - False * &#x60;all&#x60; - All
+func (r ApiGetNodeConditionsRequest) Status(status bool) ApiGetNodeConditionsRequest {
+	r.status = &status
+	return r
 }
 
 func (r ApiGetNodeConditionsRequest) Execute() ([]NodeCondition, *http.Response, error) {
@@ -642,6 +649,9 @@ func (a *NodeAPIService) GetNodeConditionsExecute(r ApiGetNodeConditionsRequest)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.status != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1010,7 +1020,7 @@ func (a *NodeAPIService) PartialUpdateNodeExecute(r ApiPartialUpdateNodeRequest)
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1347,7 +1357,7 @@ func (a *NodeAPIService) UpdateNodeExecute(r ApiUpdateNodeRequest) (*Node, *http
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)

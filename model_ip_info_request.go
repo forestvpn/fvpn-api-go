@@ -23,9 +23,9 @@ var _ MappedNullable = &IPInfoRequest{}
 // IPInfoRequest struct for IPInfoRequest
 type IPInfoRequest struct {
 	Ip string `json:"ip"`
-	Asn ASNRequest `json:"asn"`
-	Country CountryRequest `json:"country"`
-	Location LocationRequest `json:"location"`
+	Asn NullableASNRequest `json:"asn,omitempty"`
+	Country NullableCountryRequest `json:"country,omitempty"`
+	Location NullableLocationRequest `json:"location,omitempty"`
 	Lat NullableFloat64 `json:"lat,omitempty"`
 	Lon NullableFloat64 `json:"lon,omitempty"`
 }
@@ -36,12 +36,9 @@ type _IPInfoRequest IPInfoRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewIPInfoRequest(ip string, asn ASNRequest, country CountryRequest, location LocationRequest) *IPInfoRequest {
+func NewIPInfoRequest(ip string) *IPInfoRequest {
 	this := IPInfoRequest{}
 	this.Ip = ip
-	this.Asn = asn
-	this.Country = country
-	this.Location = location
 	return &this
 }
 
@@ -77,76 +74,130 @@ func (o *IPInfoRequest) SetIp(v string) {
 	o.Ip = v
 }
 
-// GetAsn returns the Asn field value
+// GetAsn returns the Asn field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IPInfoRequest) GetAsn() ASNRequest {
-	if o == nil {
+	if o == nil || IsNil(o.Asn.Get()) {
 		var ret ASNRequest
 		return ret
 	}
-
-	return o.Asn
+	return *o.Asn.Get()
 }
 
-// GetAsnOk returns a tuple with the Asn field value
+// GetAsnOk returns a tuple with the Asn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IPInfoRequest) GetAsnOk() (*ASNRequest, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Asn, true
+	return o.Asn.Get(), o.Asn.IsSet()
 }
 
-// SetAsn sets field value
+// HasAsn returns a boolean if a field has been set.
+func (o *IPInfoRequest) HasAsn() bool {
+	if o != nil && o.Asn.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAsn gets a reference to the given NullableASNRequest and assigns it to the Asn field.
 func (o *IPInfoRequest) SetAsn(v ASNRequest) {
-	o.Asn = v
+	o.Asn.Set(&v)
+}
+// SetAsnNil sets the value for Asn to be an explicit nil
+func (o *IPInfoRequest) SetAsnNil() {
+	o.Asn.Set(nil)
 }
 
-// GetCountry returns the Country field value
+// UnsetAsn ensures that no value is present for Asn, not even an explicit nil
+func (o *IPInfoRequest) UnsetAsn() {
+	o.Asn.Unset()
+}
+
+// GetCountry returns the Country field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IPInfoRequest) GetCountry() CountryRequest {
-	if o == nil {
+	if o == nil || IsNil(o.Country.Get()) {
 		var ret CountryRequest
 		return ret
 	}
-
-	return o.Country
+	return *o.Country.Get()
 }
 
-// GetCountryOk returns a tuple with the Country field value
+// GetCountryOk returns a tuple with the Country field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IPInfoRequest) GetCountryOk() (*CountryRequest, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Country, true
+	return o.Country.Get(), o.Country.IsSet()
 }
 
-// SetCountry sets field value
+// HasCountry returns a boolean if a field has been set.
+func (o *IPInfoRequest) HasCountry() bool {
+	if o != nil && o.Country.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCountry gets a reference to the given NullableCountryRequest and assigns it to the Country field.
 func (o *IPInfoRequest) SetCountry(v CountryRequest) {
-	o.Country = v
+	o.Country.Set(&v)
+}
+// SetCountryNil sets the value for Country to be an explicit nil
+func (o *IPInfoRequest) SetCountryNil() {
+	o.Country.Set(nil)
 }
 
-// GetLocation returns the Location field value
+// UnsetCountry ensures that no value is present for Country, not even an explicit nil
+func (o *IPInfoRequest) UnsetCountry() {
+	o.Country.Unset()
+}
+
+// GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IPInfoRequest) GetLocation() LocationRequest {
-	if o == nil {
+	if o == nil || IsNil(o.Location.Get()) {
 		var ret LocationRequest
 		return ret
 	}
-
-	return o.Location
+	return *o.Location.Get()
 }
 
-// GetLocationOk returns a tuple with the Location field value
+// GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IPInfoRequest) GetLocationOk() (*LocationRequest, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Location, true
+	return o.Location.Get(), o.Location.IsSet()
 }
 
-// SetLocation sets field value
+// HasLocation returns a boolean if a field has been set.
+func (o *IPInfoRequest) HasLocation() bool {
+	if o != nil && o.Location.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLocation gets a reference to the given NullableLocationRequest and assigns it to the Location field.
 func (o *IPInfoRequest) SetLocation(v LocationRequest) {
-	o.Location = v
+	o.Location.Set(&v)
+}
+// SetLocationNil sets the value for Location to be an explicit nil
+func (o *IPInfoRequest) SetLocationNil() {
+	o.Location.Set(nil)
+}
+
+// UnsetLocation ensures that no value is present for Location, not even an explicit nil
+func (o *IPInfoRequest) UnsetLocation() {
+	o.Location.Unset()
 }
 
 // GetLat returns the Lat field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -244,9 +295,15 @@ func (o IPInfoRequest) MarshalJSON() ([]byte, error) {
 func (o IPInfoRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["ip"] = o.Ip
-	toSerialize["asn"] = o.Asn
-	toSerialize["country"] = o.Country
-	toSerialize["location"] = o.Location
+	if o.Asn.IsSet() {
+		toSerialize["asn"] = o.Asn.Get()
+	}
+	if o.Country.IsSet() {
+		toSerialize["country"] = o.Country.Get()
+	}
+	if o.Location.IsSet() {
+		toSerialize["location"] = o.Location.Get()
+	}
 	if o.Lat.IsSet() {
 		toSerialize["lat"] = o.Lat.Get()
 	}
@@ -262,9 +319,6 @@ func (o *IPInfoRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"ip",
-		"asn",
-		"country",
-		"location",
 	}
 
 	allProperties := make(map[string]interface{})

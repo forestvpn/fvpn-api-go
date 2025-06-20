@@ -287,7 +287,7 @@ func (a *AccountAPIService) GetAccountTokenPairExecute(r ApiGetAccountTokenPairR
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -473,6 +473,137 @@ func (a *AccountAPIService) GetCurrentAccountExecute(r ApiGetCurrentAccountReque
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiGetCurrentAccountBillingUsageRequest struct {
+	ctx context.Context
+	ApiService *AccountAPIService
+	cursor *string
+	limit *int32
+}
+
+// The pagination cursor value.
+func (r ApiGetCurrentAccountBillingUsageRequest) Cursor(cursor string) ApiGetCurrentAccountBillingUsageRequest {
+	r.cursor = &cursor
+	return r
+}
+
+// Number of results to return per page.
+func (r ApiGetCurrentAccountBillingUsageRequest) Limit(limit int32) ApiGetCurrentAccountBillingUsageRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r ApiGetCurrentAccountBillingUsageRequest) Execute() (*BillingUsage, *http.Response, error) {
+	return r.ApiService.GetCurrentAccountBillingUsageExecute(r)
+}
+
+/*
+GetCurrentAccountBillingUsage Retrieve current account billing usage
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiGetCurrentAccountBillingUsageRequest
+*/
+func (a *AccountAPIService) GetCurrentAccountBillingUsage(ctx context.Context) ApiGetCurrentAccountBillingUsageRequest {
+	return ApiGetCurrentAccountBillingUsageRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return BillingUsage
+func (a *AccountAPIService) GetCurrentAccountBillingUsageExecute(r ApiGetCurrentAccountBillingUsageRequest) (*BillingUsage, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *BillingUsage
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountAPIService.GetCurrentAccountBillingUsage")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/account/billing-usage/"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["apiKey"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-API-Key"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiRefreshAccountTokenRequest struct {
 	ctx context.Context
 	ApiService *AccountAPIService
@@ -526,7 +657,7 @@ func (a *AccountAPIService) RefreshAccountTokenExecute(r ApiRefreshAccountTokenR
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)

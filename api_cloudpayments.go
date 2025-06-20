@@ -83,7 +83,7 @@ func (a *CloudpaymentsAPIService) CompleteCloudpaymentsPaymentMethodThreeDsExecu
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -207,7 +207,7 @@ func (a *CloudpaymentsAPIService) CreateCloudpaymentsPaymentMethodExecute(r ApiC
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)

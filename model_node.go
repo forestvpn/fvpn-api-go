@@ -32,7 +32,10 @@ type Node struct {
 	IsPublic *bool `json:"is_public,omitempty"`
 	PubKey string `json:"pub_key"`
 	Ports []string `json:"ports"`
+	// Ports used for HTTPs Proxy
 	HttpsProxyPorts []string `json:"https_proxy_ports,omitempty"`
+	// Ports used for Shadow Socket Bridge
+	SsBridgePorts []string `json:"ss_bridge_ports,omitempty"`
 	Conditions []NodeCondition `json:"conditions"`
 	Status *NodeStatus `json:"status,omitempty"`
 	Os NullableString `json:"os,omitempty"`
@@ -347,6 +350,39 @@ func (o *Node) HasHttpsProxyPorts() bool {
 // SetHttpsProxyPorts gets a reference to the given []string and assigns it to the HttpsProxyPorts field.
 func (o *Node) SetHttpsProxyPorts(v []string) {
 	o.HttpsProxyPorts = v
+}
+
+// GetSsBridgePorts returns the SsBridgePorts field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Node) GetSsBridgePorts() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.SsBridgePorts
+}
+
+// GetSsBridgePortsOk returns a tuple with the SsBridgePorts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Node) GetSsBridgePortsOk() ([]string, bool) {
+	if o == nil || IsNil(o.SsBridgePorts) {
+		return nil, false
+	}
+	return o.SsBridgePorts, true
+}
+
+// HasSsBridgePorts returns a boolean if a field has been set.
+func (o *Node) HasSsBridgePorts() bool {
+	if o != nil && !IsNil(o.SsBridgePorts) {
+		return true
+	}
+
+	return false
+}
+
+// SetSsBridgePorts gets a reference to the given []string and assigns it to the SsBridgePorts field.
+func (o *Node) SetSsBridgePorts(v []string) {
+	o.SsBridgePorts = v
 }
 
 // GetConditions returns the Conditions field value
@@ -818,6 +854,9 @@ func (o Node) ToMap() (map[string]interface{}, error) {
 	toSerialize["ports"] = o.Ports
 	if o.HttpsProxyPorts != nil {
 		toSerialize["https_proxy_ports"] = o.HttpsProxyPorts
+	}
+	if o.SsBridgePorts != nil {
+		toSerialize["ss_bridge_ports"] = o.SsBridgePorts
 	}
 	toSerialize["conditions"] = o.Conditions
 	if !IsNil(o.Status) {

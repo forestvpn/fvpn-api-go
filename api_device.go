@@ -77,7 +77,7 @@ func (a *DeviceAPIService) CreateDeviceExecute(r ApiCreateDeviceRequest) (*Devic
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -921,7 +921,7 @@ func (a *DeviceAPIService) PartialUpdateDeviceExecute(r ApiPartialUpdateDeviceRe
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1046,7 +1046,7 @@ func (a *DeviceAPIService) SetDeviceNodeExecute(r ApiSetDeviceNodeRequest) (*Nod
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1193,7 +1193,7 @@ func (a *DeviceAPIService) UpdateDeviceExecute(r ApiUpdateDeviceRequest) (*Devic
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)

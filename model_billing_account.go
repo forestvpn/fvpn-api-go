@@ -13,6 +13,7 @@ package fvpn
 
 import (
 	"encoding/json"
+	"time"
 	"bytes"
 	"fmt"
 )
@@ -25,6 +26,21 @@ type BillingAccount struct {
 	Id string `json:"id"`
 	DefaultPaymentMethod NullablePaymentMethod `json:"default_payment_method"`
 	CurrentSubscription NullableSubscription `json:"current_subscription"`
+	FullName NullableString `json:"full_name,omitempty"`
+	Company NullableString `json:"company,omitempty"`
+	Email NullableString `json:"email,omitempty"`
+	Phone NullableString `json:"phone,omitempty"`
+	Address NullableString `json:"address,omitempty"`
+	City NullableString `json:"city,omitempty"`
+	State NullableString `json:"state,omitempty"`
+	PostalCode NullableString `json:"postal_code,omitempty"`
+	Country NullableString `json:"country,omitempty"`
+	// Default language for this account in ISO 639-1 format
+	Language *string `json:"language,omitempty"`
+	// Default currency for this account in ISO 4217 format
+	Currency *string `json:"currency,omitempty"`
+	Status *AccountStatus `json:"status,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type _BillingAccount BillingAccount
@@ -33,11 +49,12 @@ type _BillingAccount BillingAccount
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBillingAccount(id string, defaultPaymentMethod NullablePaymentMethod, currentSubscription NullableSubscription) *BillingAccount {
+func NewBillingAccount(id string, defaultPaymentMethod NullablePaymentMethod, currentSubscription NullableSubscription, createdAt time.Time) *BillingAccount {
 	this := BillingAccount{}
 	this.Id = id
 	this.DefaultPaymentMethod = defaultPaymentMethod
 	this.CurrentSubscription = currentSubscription
+	this.CreatedAt = createdAt
 	return &this
 }
 
@@ -125,6 +142,504 @@ func (o *BillingAccount) SetCurrentSubscription(v Subscription) {
 	o.CurrentSubscription.Set(&v)
 }
 
+// GetFullName returns the FullName field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetFullName() string {
+	if o == nil || IsNil(o.FullName.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FullName.Get()
+}
+
+// GetFullNameOk returns a tuple with the FullName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetFullNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FullName.Get(), o.FullName.IsSet()
+}
+
+// HasFullName returns a boolean if a field has been set.
+func (o *BillingAccount) HasFullName() bool {
+	if o != nil && o.FullName.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFullName gets a reference to the given NullableString and assigns it to the FullName field.
+func (o *BillingAccount) SetFullName(v string) {
+	o.FullName.Set(&v)
+}
+// SetFullNameNil sets the value for FullName to be an explicit nil
+func (o *BillingAccount) SetFullNameNil() {
+	o.FullName.Set(nil)
+}
+
+// UnsetFullName ensures that no value is present for FullName, not even an explicit nil
+func (o *BillingAccount) UnsetFullName() {
+	o.FullName.Unset()
+}
+
+// GetCompany returns the Company field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetCompany() string {
+	if o == nil || IsNil(o.Company.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Company.Get()
+}
+
+// GetCompanyOk returns a tuple with the Company field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetCompanyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Company.Get(), o.Company.IsSet()
+}
+
+// HasCompany returns a boolean if a field has been set.
+func (o *BillingAccount) HasCompany() bool {
+	if o != nil && o.Company.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCompany gets a reference to the given NullableString and assigns it to the Company field.
+func (o *BillingAccount) SetCompany(v string) {
+	o.Company.Set(&v)
+}
+// SetCompanyNil sets the value for Company to be an explicit nil
+func (o *BillingAccount) SetCompanyNil() {
+	o.Company.Set(nil)
+}
+
+// UnsetCompany ensures that no value is present for Company, not even an explicit nil
+func (o *BillingAccount) UnsetCompany() {
+	o.Company.Unset()
+}
+
+// GetEmail returns the Email field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetEmail() string {
+	if o == nil || IsNil(o.Email.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Email.Get()
+}
+
+// GetEmailOk returns a tuple with the Email field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetEmailOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Email.Get(), o.Email.IsSet()
+}
+
+// HasEmail returns a boolean if a field has been set.
+func (o *BillingAccount) HasEmail() bool {
+	if o != nil && o.Email.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEmail gets a reference to the given NullableString and assigns it to the Email field.
+func (o *BillingAccount) SetEmail(v string) {
+	o.Email.Set(&v)
+}
+// SetEmailNil sets the value for Email to be an explicit nil
+func (o *BillingAccount) SetEmailNil() {
+	o.Email.Set(nil)
+}
+
+// UnsetEmail ensures that no value is present for Email, not even an explicit nil
+func (o *BillingAccount) UnsetEmail() {
+	o.Email.Unset()
+}
+
+// GetPhone returns the Phone field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetPhone() string {
+	if o == nil || IsNil(o.Phone.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Phone.Get()
+}
+
+// GetPhoneOk returns a tuple with the Phone field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetPhoneOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Phone.Get(), o.Phone.IsSet()
+}
+
+// HasPhone returns a boolean if a field has been set.
+func (o *BillingAccount) HasPhone() bool {
+	if o != nil && o.Phone.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPhone gets a reference to the given NullableString and assigns it to the Phone field.
+func (o *BillingAccount) SetPhone(v string) {
+	o.Phone.Set(&v)
+}
+// SetPhoneNil sets the value for Phone to be an explicit nil
+func (o *BillingAccount) SetPhoneNil() {
+	o.Phone.Set(nil)
+}
+
+// UnsetPhone ensures that no value is present for Phone, not even an explicit nil
+func (o *BillingAccount) UnsetPhone() {
+	o.Phone.Unset()
+}
+
+// GetAddress returns the Address field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetAddress() string {
+	if o == nil || IsNil(o.Address.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Address.Get()
+}
+
+// GetAddressOk returns a tuple with the Address field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetAddressOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Address.Get(), o.Address.IsSet()
+}
+
+// HasAddress returns a boolean if a field has been set.
+func (o *BillingAccount) HasAddress() bool {
+	if o != nil && o.Address.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAddress gets a reference to the given NullableString and assigns it to the Address field.
+func (o *BillingAccount) SetAddress(v string) {
+	o.Address.Set(&v)
+}
+// SetAddressNil sets the value for Address to be an explicit nil
+func (o *BillingAccount) SetAddressNil() {
+	o.Address.Set(nil)
+}
+
+// UnsetAddress ensures that no value is present for Address, not even an explicit nil
+func (o *BillingAccount) UnsetAddress() {
+	o.Address.Unset()
+}
+
+// GetCity returns the City field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetCity() string {
+	if o == nil || IsNil(o.City.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.City.Get()
+}
+
+// GetCityOk returns a tuple with the City field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetCityOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.City.Get(), o.City.IsSet()
+}
+
+// HasCity returns a boolean if a field has been set.
+func (o *BillingAccount) HasCity() bool {
+	if o != nil && o.City.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCity gets a reference to the given NullableString and assigns it to the City field.
+func (o *BillingAccount) SetCity(v string) {
+	o.City.Set(&v)
+}
+// SetCityNil sets the value for City to be an explicit nil
+func (o *BillingAccount) SetCityNil() {
+	o.City.Set(nil)
+}
+
+// UnsetCity ensures that no value is present for City, not even an explicit nil
+func (o *BillingAccount) UnsetCity() {
+	o.City.Unset()
+}
+
+// GetState returns the State field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetState() string {
+	if o == nil || IsNil(o.State.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.State.Get()
+}
+
+// GetStateOk returns a tuple with the State field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetStateOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.State.Get(), o.State.IsSet()
+}
+
+// HasState returns a boolean if a field has been set.
+func (o *BillingAccount) HasState() bool {
+	if o != nil && o.State.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetState gets a reference to the given NullableString and assigns it to the State field.
+func (o *BillingAccount) SetState(v string) {
+	o.State.Set(&v)
+}
+// SetStateNil sets the value for State to be an explicit nil
+func (o *BillingAccount) SetStateNil() {
+	o.State.Set(nil)
+}
+
+// UnsetState ensures that no value is present for State, not even an explicit nil
+func (o *BillingAccount) UnsetState() {
+	o.State.Unset()
+}
+
+// GetPostalCode returns the PostalCode field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetPostalCode() string {
+	if o == nil || IsNil(o.PostalCode.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PostalCode.Get()
+}
+
+// GetPostalCodeOk returns a tuple with the PostalCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetPostalCodeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PostalCode.Get(), o.PostalCode.IsSet()
+}
+
+// HasPostalCode returns a boolean if a field has been set.
+func (o *BillingAccount) HasPostalCode() bool {
+	if o != nil && o.PostalCode.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPostalCode gets a reference to the given NullableString and assigns it to the PostalCode field.
+func (o *BillingAccount) SetPostalCode(v string) {
+	o.PostalCode.Set(&v)
+}
+// SetPostalCodeNil sets the value for PostalCode to be an explicit nil
+func (o *BillingAccount) SetPostalCodeNil() {
+	o.PostalCode.Set(nil)
+}
+
+// UnsetPostalCode ensures that no value is present for PostalCode, not even an explicit nil
+func (o *BillingAccount) UnsetPostalCode() {
+	o.PostalCode.Unset()
+}
+
+// GetCountry returns the Country field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingAccount) GetCountry() string {
+	if o == nil || IsNil(o.Country.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Country.Get()
+}
+
+// GetCountryOk returns a tuple with the Country field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingAccount) GetCountryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Country.Get(), o.Country.IsSet()
+}
+
+// HasCountry returns a boolean if a field has been set.
+func (o *BillingAccount) HasCountry() bool {
+	if o != nil && o.Country.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCountry gets a reference to the given NullableString and assigns it to the Country field.
+func (o *BillingAccount) SetCountry(v string) {
+	o.Country.Set(&v)
+}
+// SetCountryNil sets the value for Country to be an explicit nil
+func (o *BillingAccount) SetCountryNil() {
+	o.Country.Set(nil)
+}
+
+// UnsetCountry ensures that no value is present for Country, not even an explicit nil
+func (o *BillingAccount) UnsetCountry() {
+	o.Country.Unset()
+}
+
+// GetLanguage returns the Language field value if set, zero value otherwise.
+func (o *BillingAccount) GetLanguage() string {
+	if o == nil || IsNil(o.Language) {
+		var ret string
+		return ret
+	}
+	return *o.Language
+}
+
+// GetLanguageOk returns a tuple with the Language field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BillingAccount) GetLanguageOk() (*string, bool) {
+	if o == nil || IsNil(o.Language) {
+		return nil, false
+	}
+	return o.Language, true
+}
+
+// HasLanguage returns a boolean if a field has been set.
+func (o *BillingAccount) HasLanguage() bool {
+	if o != nil && !IsNil(o.Language) {
+		return true
+	}
+
+	return false
+}
+
+// SetLanguage gets a reference to the given string and assigns it to the Language field.
+func (o *BillingAccount) SetLanguage(v string) {
+	o.Language = &v
+}
+
+// GetCurrency returns the Currency field value if set, zero value otherwise.
+func (o *BillingAccount) GetCurrency() string {
+	if o == nil || IsNil(o.Currency) {
+		var ret string
+		return ret
+	}
+	return *o.Currency
+}
+
+// GetCurrencyOk returns a tuple with the Currency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BillingAccount) GetCurrencyOk() (*string, bool) {
+	if o == nil || IsNil(o.Currency) {
+		return nil, false
+	}
+	return o.Currency, true
+}
+
+// HasCurrency returns a boolean if a field has been set.
+func (o *BillingAccount) HasCurrency() bool {
+	if o != nil && !IsNil(o.Currency) {
+		return true
+	}
+
+	return false
+}
+
+// SetCurrency gets a reference to the given string and assigns it to the Currency field.
+func (o *BillingAccount) SetCurrency(v string) {
+	o.Currency = &v
+}
+
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *BillingAccount) GetStatus() AccountStatus {
+	if o == nil || IsNil(o.Status) {
+		var ret AccountStatus
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BillingAccount) GetStatusOk() (*AccountStatus, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *BillingAccount) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given AccountStatus and assigns it to the Status field.
+func (o *BillingAccount) SetStatus(v AccountStatus) {
+	o.Status = &v
+}
+
+// GetCreatedAt returns the CreatedAt field value
+func (o *BillingAccount) GetCreatedAt() time.Time {
+	if o == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return o.CreatedAt
+}
+
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *BillingAccount) GetCreatedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
+
+// SetCreatedAt sets field value
+func (o *BillingAccount) SetCreatedAt(v time.Time) {
+	o.CreatedAt = v
+}
+
 func (o BillingAccount) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -138,6 +653,43 @@ func (o BillingAccount) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	toSerialize["default_payment_method"] = o.DefaultPaymentMethod.Get()
 	toSerialize["current_subscription"] = o.CurrentSubscription.Get()
+	if o.FullName.IsSet() {
+		toSerialize["full_name"] = o.FullName.Get()
+	}
+	if o.Company.IsSet() {
+		toSerialize["company"] = o.Company.Get()
+	}
+	if o.Email.IsSet() {
+		toSerialize["email"] = o.Email.Get()
+	}
+	if o.Phone.IsSet() {
+		toSerialize["phone"] = o.Phone.Get()
+	}
+	if o.Address.IsSet() {
+		toSerialize["address"] = o.Address.Get()
+	}
+	if o.City.IsSet() {
+		toSerialize["city"] = o.City.Get()
+	}
+	if o.State.IsSet() {
+		toSerialize["state"] = o.State.Get()
+	}
+	if o.PostalCode.IsSet() {
+		toSerialize["postal_code"] = o.PostalCode.Get()
+	}
+	if o.Country.IsSet() {
+		toSerialize["country"] = o.Country.Get()
+	}
+	if !IsNil(o.Language) {
+		toSerialize["language"] = o.Language
+	}
+	if !IsNil(o.Currency) {
+		toSerialize["currency"] = o.Currency
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
+	toSerialize["created_at"] = o.CreatedAt
 	return toSerialize, nil
 }
 
@@ -149,6 +701,7 @@ func (o *BillingAccount) UnmarshalJSON(data []byte) (err error) {
 		"id",
 		"default_payment_method",
 		"current_subscription",
+		"created_at",
 	}
 
 	allProperties := make(map[string]interface{})

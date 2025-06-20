@@ -27,7 +27,10 @@ type PatchedNodeRequest struct {
 	IsPublic *bool `json:"is_public,omitempty"`
 	PubKey *string `json:"pub_key,omitempty"`
 	Ports []string `json:"ports,omitempty"`
+	// Ports used for HTTPs Proxy
 	HttpsProxyPorts []string `json:"https_proxy_ports,omitempty"`
+	// Ports used for Shadow Socket Bridge
+	SsBridgePorts []string `json:"ss_bridge_ports,omitempty"`
 	Status *NodeStatus `json:"status,omitempty"`
 	Os NullableString `json:"os,omitempty"`
 	OsVersion NullableString `json:"os_version,omitempty"`
@@ -312,6 +315,39 @@ func (o *PatchedNodeRequest) HasHttpsProxyPorts() bool {
 // SetHttpsProxyPorts gets a reference to the given []string and assigns it to the HttpsProxyPorts field.
 func (o *PatchedNodeRequest) SetHttpsProxyPorts(v []string) {
 	o.HttpsProxyPorts = v
+}
+
+// GetSsBridgePorts returns the SsBridgePorts field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PatchedNodeRequest) GetSsBridgePorts() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.SsBridgePorts
+}
+
+// GetSsBridgePortsOk returns a tuple with the SsBridgePorts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PatchedNodeRequest) GetSsBridgePortsOk() ([]string, bool) {
+	if o == nil || IsNil(o.SsBridgePorts) {
+		return nil, false
+	}
+	return o.SsBridgePorts, true
+}
+
+// HasSsBridgePorts returns a boolean if a field has been set.
+func (o *PatchedNodeRequest) HasSsBridgePorts() bool {
+	if o != nil && !IsNil(o.SsBridgePorts) {
+		return true
+	}
+
+	return false
+}
+
+// SetSsBridgePorts gets a reference to the given []string and assigns it to the SsBridgePorts field.
+func (o *PatchedNodeRequest) SetSsBridgePorts(v []string) {
+	o.SsBridgePorts = v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -715,6 +751,9 @@ func (o PatchedNodeRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if o.HttpsProxyPorts != nil {
 		toSerialize["https_proxy_ports"] = o.HttpsProxyPorts
+	}
+	if o.SsBridgePorts != nil {
+		toSerialize["ss_bridge_ports"] = o.SsBridgePorts
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

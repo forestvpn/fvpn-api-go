@@ -5,9 +5,9 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Ip** | **string** |  | 
-**Asn** | [**ASN**](ASN.md) |  | 
-**Country** | [**Country**](Country.md) |  | 
-**Location** | [**Location**](Location.md) |  | 
+**Asn** | Pointer to [**NullableASN**](ASN.md) |  | [optional] 
+**Country** | Pointer to [**NullableCountry**](Country.md) |  | [optional] 
+**Location** | Pointer to [**NullableLocation**](Location.md) |  | [optional] 
 **Lat** | Pointer to **NullableFloat64** |  | [optional] 
 **Lon** | Pointer to **NullableFloat64** |  | [optional] 
 
@@ -15,7 +15,7 @@ Name | Type | Description | Notes
 
 ### NewIPInfo
 
-`func NewIPInfo(ip string, asn ASN, country Country, location Location, ) *IPInfo`
+`func NewIPInfo(ip string, ) *IPInfo`
 
 NewIPInfo instantiates a new IPInfo object
 This constructor will assign default values to properties that have it defined,
@@ -69,7 +69,22 @@ and a boolean to check if the value has been set.
 
 SetAsn sets Asn field to given value.
 
+### HasAsn
 
+`func (o *IPInfo) HasAsn() bool`
+
+HasAsn returns a boolean if a field has been set.
+
+### SetAsnNil
+
+`func (o *IPInfo) SetAsnNil(b bool)`
+
+ SetAsnNil sets the value for Asn to be an explicit nil
+
+### UnsetAsn
+`func (o *IPInfo) UnsetAsn()`
+
+UnsetAsn ensures that no value is present for Asn, not even an explicit nil
 ### GetCountry
 
 `func (o *IPInfo) GetCountry() Country`
@@ -89,7 +104,22 @@ and a boolean to check if the value has been set.
 
 SetCountry sets Country field to given value.
 
+### HasCountry
 
+`func (o *IPInfo) HasCountry() bool`
+
+HasCountry returns a boolean if a field has been set.
+
+### SetCountryNil
+
+`func (o *IPInfo) SetCountryNil(b bool)`
+
+ SetCountryNil sets the value for Country to be an explicit nil
+
+### UnsetCountry
+`func (o *IPInfo) UnsetCountry()`
+
+UnsetCountry ensures that no value is present for Country, not even an explicit nil
 ### GetLocation
 
 `func (o *IPInfo) GetLocation() Location`
@@ -109,7 +139,22 @@ and a boolean to check if the value has been set.
 
 SetLocation sets Location field to given value.
 
+### HasLocation
 
+`func (o *IPInfo) HasLocation() bool`
+
+HasLocation returns a boolean if a field has been set.
+
+### SetLocationNil
+
+`func (o *IPInfo) SetLocationNil(b bool)`
+
+ SetLocationNil sets the value for Location to be an explicit nil
+
+### UnsetLocation
+`func (o *IPInfo) UnsetLocation()`
+
+UnsetLocation ensures that no value is present for Location, not even an explicit nil
 ### GetLat
 
 `func (o *IPInfo) GetLat() float64`

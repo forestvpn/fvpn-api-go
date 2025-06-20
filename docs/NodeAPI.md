@@ -74,7 +74,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json, application/x-www-form-urlencoded, multipart/form-data
+- **Content-Type**: application/json, multipart/form-data, application/x-www-form-urlencoded
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -142,7 +142,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json, application/x-www-form-urlencoded, multipart/form-data
+- **Content-Type**: application/json, multipart/form-data, application/x-www-form-urlencoded
 - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -211,7 +211,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json, application/x-www-form-urlencoded, multipart/form-data
+- **Content-Type**: application/json, multipart/form-data, application/x-www-form-urlencoded
 - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -355,7 +355,7 @@ Name | Type | Description  | Notes
 
 ## GetNodeConditions
 
-> []NodeCondition GetNodeConditions(ctx, nodeId).Execute()
+> []NodeCondition GetNodeConditions(ctx, nodeId).Status(status).Execute()
 
 List node conditions
 
@@ -373,10 +373,11 @@ import (
 
 func main() {
 	nodeId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | 
+	status := true // bool | Filter by status: true (active), false (inactive), or all (both). Default is to show active and recently failed.  * `true` - True * `false` - False * `all` - All (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.NodeAPI.GetNodeConditions(context.Background(), nodeId).Execute()
+	resp, r, err := apiClient.NodeAPI.GetNodeConditions(context.Background(), nodeId).Status(status).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `NodeAPI.GetNodeConditions``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -402,6 +403,7 @@ Other parameters are passed through a pointer to a apiGetNodeConditionsRequest s
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 
+ **status** | **bool** | Filter by status: true (active), false (inactive), or all (both). Default is to show active and recently failed.  * &#x60;true&#x60; - True * &#x60;false&#x60; - False * &#x60;all&#x60; - All | 
 
 ### Return type
 
@@ -617,7 +619,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json, application/x-www-form-urlencoded, multipart/form-data
+- **Content-Type**: application/json, multipart/form-data, application/x-www-form-urlencoded
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -769,7 +771,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json, application/x-www-form-urlencoded, multipart/form-data
+- **Content-Type**: application/json, multipart/form-data, application/x-www-form-urlencoded
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

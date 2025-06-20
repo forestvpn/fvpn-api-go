@@ -11,7 +11,8 @@ Name | Type | Description | Notes
 **IsPublic** | Pointer to **bool** |  | [optional] 
 **PubKey** | **string** |  | 
 **Ports** | **[]string** |  | 
-**HttpsProxyPorts** | Pointer to **[]string** |  | [optional] 
+**HttpsProxyPorts** | Pointer to **[]string** | Ports used for HTTPs Proxy | [optional] 
+**SsBridgePorts** | Pointer to **[]string** | Ports used for Shadow Socket Bridge | [optional] 
 **Status** | Pointer to [**NodeStatus**](NodeStatus.md) |  | [optional] 
 **Os** | Pointer to **NullableString** |  | [optional] 
 **OsVersion** | Pointer to **NullableString** |  | [optional] 
@@ -241,6 +242,41 @@ HasHttpsProxyPorts returns a boolean if a field has been set.
 `func (o *NodeRequest) UnsetHttpsProxyPorts()`
 
 UnsetHttpsProxyPorts ensures that no value is present for HttpsProxyPorts, not even an explicit nil
+### GetSsBridgePorts
+
+`func (o *NodeRequest) GetSsBridgePorts() []string`
+
+GetSsBridgePorts returns the SsBridgePorts field if non-nil, zero value otherwise.
+
+### GetSsBridgePortsOk
+
+`func (o *NodeRequest) GetSsBridgePortsOk() (*[]string, bool)`
+
+GetSsBridgePortsOk returns a tuple with the SsBridgePorts field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSsBridgePorts
+
+`func (o *NodeRequest) SetSsBridgePorts(v []string)`
+
+SetSsBridgePorts sets SsBridgePorts field to given value.
+
+### HasSsBridgePorts
+
+`func (o *NodeRequest) HasSsBridgePorts() bool`
+
+HasSsBridgePorts returns a boolean if a field has been set.
+
+### SetSsBridgePortsNil
+
+`func (o *NodeRequest) SetSsBridgePortsNil(b bool)`
+
+ SetSsBridgePortsNil sets the value for SsBridgePorts to be an explicit nil
+
+### UnsetSsBridgePorts
+`func (o *NodeRequest) UnsetSsBridgePorts()`
+
+UnsetSsBridgePorts ensures that no value is present for SsBridgePorts, not even an explicit nil
 ### GetStatus
 
 `func (o *NodeRequest) GetStatus() NodeStatus`

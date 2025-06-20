@@ -8,6 +8,7 @@ Method | HTTP request | Description
 [**DeleteCurrentAccount**](AccountAPI.md#DeleteCurrentAccount) | **Delete** /v1/account/ | Delete the current account
 [**GetAccountTokenPair**](AccountAPI.md#GetAccountTokenPair) | **Post** /v1/account/token/ | Get account token pair
 [**GetCurrentAccount**](AccountAPI.md#GetCurrentAccount) | **Get** /v1/account/ | Retrieve the current account
+[**GetCurrentAccountBillingUsage**](AccountAPI.md#GetCurrentAccountBillingUsage) | **Get** /v1/account/billing-usage/ | Retrieve current account billing usage
 [**RefreshAccountToken**](AccountAPI.md#RefreshAccountToken) | **Post** /v1/account/token/refresh/ | Refresh account token
 
 
@@ -191,7 +192,7 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json, application/x-www-form-urlencoded, multipart/form-data
+- **Content-Type**: application/json, multipart/form-data, application/x-www-form-urlencoded
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -265,6 +266,72 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
+## GetCurrentAccountBillingUsage
+
+> BillingUsage GetCurrentAccountBillingUsage(ctx).Cursor(cursor).Limit(limit).Execute()
+
+Retrieve current account billing usage
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/forestvpn/fvpn-api-go"
+)
+
+func main() {
+	cursor := "cursor_example" // string | The pagination cursor value. (optional)
+	limit := int32(56) // int32 | Number of results to return per page. (optional)
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.AccountAPI.GetCurrentAccountBillingUsage(context.Background()).Cursor(cursor).Limit(limit).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `AccountAPI.GetCurrentAccountBillingUsage``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetCurrentAccountBillingUsage`: BillingUsage
+	fmt.Fprintf(os.Stdout, "Response from `AccountAPI.GetCurrentAccountBillingUsage`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiGetCurrentAccountBillingUsageRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **cursor** | **string** | The pagination cursor value. | 
+ **limit** | **int32** | Number of results to return per page. | 
+
+### Return type
+
+[**BillingUsage**](BillingUsage.md)
+
+### Authorization
+
+[bearerToken](../README.md#bearerToken), [apiKey](../README.md#apiKey)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
 ## RefreshAccountToken
 
 > AccountTokenRefresh RefreshAccountToken(ctx).AccountTokenRefreshRequest(accountTokenRefreshRequest).Execute()
@@ -323,7 +390,7 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json, application/x-www-form-urlencoded, multipart/form-data
+- **Content-Type**: application/json, multipart/form-data, application/x-www-form-urlencoded
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

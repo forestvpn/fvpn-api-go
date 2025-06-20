@@ -22,6 +22,11 @@ docs/AccountTokenRefresh.md
 docs/AccountTokenRefreshRequest.md
 docs/BillingAPI.md
 docs/BillingAccount.md
+docs/BillingDataQuota.md
+docs/BillingDeviceQuota.md
+docs/BillingOptions.md
+docs/BillingPeriod.md
+docs/BillingUsage.md
 docs/CloudPaymentsCardDetails.md
 docs/CloudPaymentsPaymentMethod.md
 docs/CloudPaymentsPaymentMethodCreateRequest.md
@@ -33,6 +38,7 @@ docs/Condition.md
 docs/ConnectionStatus.md
 docs/Country.md
 docs/CountryRequest.md
+docs/Currency.md
 docs/DashboardAnalytics.md
 docs/DataPoint.md
 docs/Device.md
@@ -73,6 +79,8 @@ docs/PaginatedLocationList.md
 docs/PaginatedNodeList.md
 docs/PaginatedPaymentMethodList.md
 docs/PaginatedSubscriptionList.md
+docs/PaginatedWalletList.md
+docs/PaginatedWalletTransactionList.md
 docs/PatchedDeviceRequest.md
 docs/PatchedNodeRequest.md
 docs/PaymentMethod.md
@@ -81,6 +89,8 @@ docs/Period.md
 docs/Plan.md
 docs/PlanPrice.md
 docs/PriceDiffInfo.md
+docs/Region.md
+docs/RegionDetail.md
 docs/SetDefaultPaymentMethodRequest.md
 docs/SetNodeRequest.md
 docs/StripeAPI.md
@@ -95,7 +105,11 @@ docs/Timeline.md
 docs/TimelineEvent.md
 docs/TimelineEventType.md
 docs/TopDevices.md
+docs/TransactionType.md
 docs/Type.md
+docs/Wallet.md
+docs/WalletStatus.md
+docs/WalletTransaction.md
 git_push.sh
 go.mod
 go.sum
@@ -108,6 +122,11 @@ model_account_token_refresh_request.go
 model_asn.go
 model_asn_request.go
 model_billing_account.go
+model_billing_data_quota.go
+model_billing_device_quota.go
+model_billing_options.go
+model_billing_period.go
+model_billing_usage.go
 model_cloud_payments_card_details.go
 model_cloud_payments_payment_method.go
 model_cloud_payments_payment_method_create_request.go
@@ -118,6 +137,7 @@ model_condition.go
 model_connection_status.go
 model_country.go
 model_country_request.go
+model_currency.go
 model_dashboard_analytics.go
 model_data_point.go
 model_device.go
@@ -155,6 +175,8 @@ model_paginated_location_list.go
 model_paginated_node_list.go
 model_paginated_payment_method_list.go
 model_paginated_subscription_list.go
+model_paginated_wallet_list.go
+model_paginated_wallet_transaction_list.go
 model_patched_device_request.go
 model_patched_node_request.go
 model_payment_method.go
@@ -163,6 +185,8 @@ model_period.go
 model_plan.go
 model_plan_price.go
 model_price_diff_info.go
+model_region.go
+model_region_detail.go
 model_set_default_payment_method_request.go
 model_set_node_request.go
 model_stripe_setup_intent.go
@@ -176,9 +200,10 @@ model_timeline.go
 model_timeline_event.go
 model_timeline_event_type.go
 model_top_devices.go
+model_transaction_type.go
 model_type.go
+model_wallet.go
+model_wallet_status.go
+model_wallet_transaction.go
 response.go
-test/api_billing_test.go
-test/api_cloudpayments_test.go
-test/api_stripe_test.go
 utils.go

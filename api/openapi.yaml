@@ -67,6 +67,39 @@ paths:
       summary: Retrieve the current account
       tags:
       - account
+  /v1/account/billing-usage/:
+    get:
+      operationId: get_current_account_billing_usage
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingUsage'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve current account billing usage
+      tags:
+      - account
   /v1/account/token/:
     post:
       description: |-
@@ -83,10 +116,13 @@ paths:
                   number: 1234 5678 9012 3456
             schema:
               $ref: '#/components/schemas/AccountTokenPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccountTokenPairRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AccountTokenPairRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/AccountTokenPairRequest'
         required: true
@@ -117,10 +153,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AccountTokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccountTokenRefreshRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AccountTokenRefreshRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/AccountTokenRefreshRequest'
       responses:
@@ -188,10 +227,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SetDefaultPaymentMethodRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetDefaultPaymentMethodRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/SetDefaultPaymentMethodRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/SetDefaultPaymentMethodRequest'
         required: true
@@ -217,10 +259,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CloudPaymentsPaymentMethodCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CloudPaymentsPaymentMethodCreateRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/CloudPaymentsPaymentMethodCreateRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/CloudPaymentsPaymentMethodCreateRequest'
         required: true
@@ -285,10 +330,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CloudPaymentsThreeDSecureCompleteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CloudPaymentsThreeDSecureCompleteRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/CloudPaymentsThreeDSecureCompleteRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/CloudPaymentsThreeDSecureCompleteRequest'
         required: true
@@ -305,6 +353,26 @@ paths:
       summary: Complete 3D Secure authentication
       tags:
       - cloudpayments
+  /v1/billing/currencies/:
+    get:
+      description: API endpoint that returns all available currencies.
+      operationId: get_currencies
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Currency'
+                type: array
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      - {}
+      summary: Retrieve all available currencies
+      tags:
+      - billing
   /v1/billing/current-subscription/:
     get:
       description: |-
@@ -341,6 +409,40 @@ paths:
       - bearerToken: []
       - apiKey: []
       summary: Retrieve the current subscription
+      tags:
+      - billing
+  /v1/billing/current-wallet/:
+    get:
+      description: Get the default wallet for the current billing account.
+      operationId: get_current_wallet
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve the current wallet
       tags:
       - billing
   /v1/billing/entitlements/:
@@ -404,6 +506,26 @@ paths:
       - bearerToken: []
       - apiKey: []
       summary: Retrieve a specific entitlement
+      tags:
+      - billing
+  /v1/billing/options/:
+    get:
+      description: |-
+        API endpoint that allows billing options to be viewed by anyone.
+        Returns available currencies and region settings.
+      operationId: get_billing_options
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingOptions'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      - {}
+      summary: Retrieve billing options
       tags:
       - billing
   /v1/billing/payment-methods/:
@@ -677,10 +799,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SubscriptionCreationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscriptionCreationRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/SubscriptionCreationRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/SubscriptionCreationRequest'
         required: true
@@ -769,10 +894,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SubscriptionChangePlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscriptionChangePlanRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/SubscriptionChangePlanRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/SubscriptionChangePlanRequest'
         required: true
@@ -814,6 +942,131 @@ paths:
       - bearerToken: []
       - apiKey: []
       summary: Reactivate subscription
+      tags:
+      - billing
+  /v1/billing/transactions/:
+    get:
+      description: Retrieve a list of transactions for a specific wallet.
+      operationId: get_wallet_transactions
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWalletTransactionList'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List wallet transactions
+      tags:
+      - billing
+  /v1/billing/transactions/{transaction_id}/:
+    get:
+      description: Get detailed information about a specific wallet transaction.
+      operationId: get_wallet_transaction
+      parameters:
+      - description: A UUID string identifying this Wallet Transaction.
+        explode: false
+        in: path
+        name: transaction_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletTransaction'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve transaction details
+      tags:
+      - billing
+  /v1/billing/wallets/:
+    get:
+      description: Retrieve a list of wallets belonging to the current account.
+      operationId: get_wallets
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWalletList'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: List wallets
+      tags:
+      - billing
+  /v1/billing/wallets/{wallet_id}/:
+    get:
+      description: "Get detailed information about a specific wallet, including its\
+        \ current balance and status."
+      operationId: get_wallet
+      parameters:
+      - description: A UUID string identifying this Wallet.
+        explode: false
+        in: path
+        name: wallet_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Retrieve wallet details
       tags:
       - billing
   /v1/countries/:
@@ -894,10 +1147,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/DeviceRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/DeviceRequest'
         required: true
@@ -981,10 +1237,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PatchedDeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDeviceRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedDeviceRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/PatchedDeviceRequest'
       responses:
@@ -1018,10 +1277,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/DeviceRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/DeviceRequest'
         required: true
@@ -1138,10 +1400,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SetNodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetNodeRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/SetNodeRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/SetNodeRequest'
       responses:
@@ -1223,6 +1488,13 @@ paths:
         required: false
         schema:
           type: integer
+        style: form
+      - explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          type: string
         style: form
       - description: Search
         explode: true
@@ -1306,10 +1578,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/NodeRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/NodeRequest'
         required: true
@@ -1338,6 +1613,19 @@ paths:
           format: uuid
           type: string
         style: simple
+      - description: |-
+          Filter by status: true (active), false (inactive), or all (both). Default is to show active and recently failed.
+
+          * `true` - True
+          * `false` - False
+          * `all` - All
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          type: boolean
+        style: form
       responses:
         "200":
           content:
@@ -1369,10 +1657,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NodeConditionsRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeConditionsRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/NodeConditionsRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/NodeConditionsRequest'
         required: true
@@ -1452,10 +1743,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PatchedNodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNodeRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedNodeRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/PatchedNodeRequest'
       responses:
@@ -1489,10 +1783,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/NodeRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/NodeRequest'
         required: true
@@ -1528,10 +1825,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NodeDataUsageReportRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeDataUsageReportRequest'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/NodeDataUsageReportRequest'
-          multipart/form-data:
+          '*/*':
             schema:
               $ref: '#/components/schemas/NodeDataUsageReportRequest'
         required: true
@@ -1673,20 +1973,70 @@ paths:
       summary: Search for nodes with various filters
       tags:
       - node
+  /v1/regions/:
+    get:
+      operationId: get_regions
+      parameters:
+      - explode: true
+        in: query
+        name: code
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: country
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Region'
+                type: array
+          description: ""
+      summary: List regions
+      tags:
+      - geo
+  /v1/regions/{region_id}/:
+    get:
+      operationId: get_region
+      parameters:
+      - description: A UUID string identifying this Region.
+        explode: false
+        in: path
+        name: region_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionDetail'
+          description: ""
+      summary: Retrieve region
+      tags:
+      - geo
 components:
   schemas:
     ASN:
-      example:
-        country:
-          alpha_3: alpha_3
-          official_name: official_name
-          flag: flag
-          name: name
-          numeric: numeric
-          id: id
-        domain: domain
-        name: name
-        asn: 171976544
       properties:
         asn:
           format: int64
@@ -1920,9 +2270,22 @@ components:
       type: object
     BillingAccount:
       example:
+        country: country
+        address: address
+        city: city
         default_payment_method: ""
+        created_at: 2000-01-23T04:56:07.000+00:00
+        language: language
+        full_name: full_name
+        phone: phone
         current_subscription: ""
+        company: company
+        currency: currency
         id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        state: state
+        postal_code: postal_code
+        email: email
+        status: pending
       properties:
         id:
           format: uuid
@@ -1936,10 +2299,194 @@ components:
           - $ref: '#/components/schemas/Subscription'
           nullable: true
           readOnly: true
+        full_name:
+          maxLength: 255
+          nullable: true
+          type: string
+        company:
+          maxLength: 255
+          nullable: true
+          type: string
+        email:
+          format: email
+          maxLength: 254
+          nullable: true
+          type: string
+        phone:
+          maxLength: 128
+          nullable: true
+          type: string
+        address:
+          nullable: true
+          type: string
+        city:
+          maxLength: 255
+          nullable: true
+          type: string
+        state:
+          maxLength: 255
+          nullable: true
+          type: string
+        postal_code:
+          maxLength: 20
+          nullable: true
+          type: string
+        country:
+          nullable: true
+          title: ISO 3166-1 alpha-2
+          type: string
+        language:
+          description: Default language for this account in ISO 639-1 format
+          maxLength: 10
+          type: string
+        currency:
+          description: Default currency for this account in ISO 4217 format
+          maxLength: 3
+          type: string
+        status:
+          $ref: '#/components/schemas/AccountStatus'
+        created_at:
+          format: date-time
+          readOnly: true
+          title: Date created
+          type: string
       required:
+      - created_at
       - current_subscription
       - default_payment_method
       - id
+      type: object
+    BillingDataQuota:
+      description: Serializer for data quota information.
+      properties:
+        current_usage_gb:
+          format: double
+          readOnly: true
+          type: number
+        quota_gb:
+          format: int64
+          readOnly: true
+          type: integer
+        usage_percentage:
+          format: double
+          readOnly: true
+          type: number
+        is_within_quota:
+          readOnly: true
+          type: boolean
+        is_unlimited:
+          readOnly: true
+          type: boolean
+        warning_level:
+          nullable: true
+          readOnly: true
+          type: string
+        message:
+          readOnly: true
+          type: string
+        period:
+          allOf:
+          - $ref: '#/components/schemas/BillingPeriod'
+          readOnly: true
+      required:
+      - current_usage_gb
+      - is_unlimited
+      - is_within_quota
+      - message
+      - period
+      - quota_gb
+      - usage_percentage
+      - warning_level
+      type: object
+    BillingDeviceQuota:
+      description: Serializer for device quota information.
+      properties:
+        current_usage:
+          format: int64
+          readOnly: true
+          type: integer
+        quota:
+          format: int64
+          readOnly: true
+          type: integer
+        usage_percentage:
+          format: double
+          readOnly: true
+          type: number
+        is_within_quota:
+          readOnly: true
+          type: boolean
+        is_unlimited:
+          readOnly: true
+          type: boolean
+        message:
+          readOnly: true
+          type: string
+      required:
+      - current_usage
+      - is_unlimited
+      - is_within_quota
+      - message
+      - quota
+      - usage_percentage
+      type: object
+    BillingOptions:
+      example:
+        available_currencies:
+        - symbol: symbol
+          code: code
+          name: name
+          subunit: 171976544
+        - symbol: symbol
+          code: code
+          name: name
+          subunit: 171976544
+        default_currency:
+          symbol: symbol
+          code: code
+          name: name
+          subunit: 171976544
+      properties:
+        available_currencies:
+          items:
+            $ref: '#/components/schemas/Currency'
+          type: array
+        default_currency:
+          $ref: '#/components/schemas/Currency'
+      type: object
+    BillingPeriod:
+      description: Serializer for billing period information.
+      properties:
+        start:
+          format: date-time
+          readOnly: true
+          type: string
+        end:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - end
+      - start
+      type: object
+    BillingUsage:
+      description: Serializer for billing usage information including data and device
+        quota.
+      example:
+        data: ""
+        device: ""
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/BillingDataQuota'
+          readOnly: true
+        device:
+          allOf:
+          - $ref: '#/components/schemas/BillingDeviceQuota'
+          readOnly: true
+      required:
+      - data
+      - device
       type: object
     CloudPaymentsCardDetails:
       example:
@@ -2203,6 +2750,32 @@ components:
       - name
       - numeric
       - official_name
+      type: object
+    Currency:
+      example:
+        symbol: symbol
+        code: code
+        name: name
+        subunit: 171976544
+      properties:
+        code:
+          maxLength: 3
+          type: string
+        name:
+          maxLength: 55
+          type: string
+        symbol:
+          maxLength: 4
+          type: string
+        subunit:
+          description: Number of subunits in the currency
+          format: int64
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+      required:
+      - code
+      - name
       type: object
     DashboardAnalytics:
       description: Complete dashboard analytics data.
@@ -2653,52 +3226,27 @@ components:
       type: object
     IPInfo:
       example:
-        country:
-          alpha_3: alpha_3
-          official_name: official_name
-          flag: flag
-          name: name
-          numeric: numeric
-          id: id
+        country: ""
         ip: ip
-        location:
-          country:
-            alpha_3: alpha_3
-            official_name: official_name
-            flag: flag
-            name: name
-            numeric: numeric
-            id: id
-          name_ascii: name_ascii
-          name: name
-          lon: -706.8374038994109
-          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-          region:
-            name: name
-            id: id
-          lat: 205.49123661408066
-        lon: 127.47533132666558
-        asn:
-          country:
-            alpha_3: alpha_3
-            official_name: official_name
-            flag: flag
-            name: name
-            numeric: numeric
-            id: id
-          domain: domain
-          name: name
-          asn: 171976544
-        lat: 192.4267833366364
+        location: ""
+        lon: 205.49123661408066
+        asn: ""
+        lat: -839.8343619077978
       properties:
         ip:
           type: string
         asn:
-          $ref: '#/components/schemas/ASN'
+          allOf:
+          - $ref: '#/components/schemas/ASN'
+          nullable: true
         country:
-          $ref: '#/components/schemas/Country'
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          nullable: true
         location:
-          $ref: '#/components/schemas/Location'
+          allOf:
+          - $ref: '#/components/schemas/Location'
+          nullable: true
         lat:
           exclusiveMaximum: true
           exclusiveMinimum: true
@@ -2718,10 +3266,7 @@ components:
           title: Longitude
           type: number
       required:
-      - asn
-      - country
       - ip
-      - location
       type: object
     IPInfoRequest:
       properties:
@@ -2729,11 +3274,17 @@ components:
           minLength: 1
           type: string
         asn:
-          $ref: '#/components/schemas/ASNRequest'
+          allOf:
+          - $ref: '#/components/schemas/ASNRequest'
+          nullable: true
         country:
-          $ref: '#/components/schemas/CountryRequest'
+          allOf:
+          - $ref: '#/components/schemas/CountryRequest'
+          nullable: true
         location:
-          $ref: '#/components/schemas/LocationRequest'
+          allOf:
+          - $ref: '#/components/schemas/LocationRequest'
+          nullable: true
         lat:
           exclusiveMaximum: true
           exclusiveMinimum: true
@@ -2753,10 +3304,7 @@ components:
           title: Longitude
           type: number
       required:
-      - asn
-      - country
       - ip
-      - location
       type: object
     Interval:
       description: |-
@@ -2967,12 +3515,12 @@ components:
           id: id
         name_ascii: name_ascii
         name: name
-        lon: -706.8374038994109
+        lon: 205.49123661408066
         id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
         region:
           name: name
           id: id
-        lat: 205.49123661408066
+        lat: -839.8343619077978
       properties:
         id:
           format: uuid
@@ -3117,81 +3665,22 @@ components:
         - https_proxy_ports
         - https_proxy_ports
         ip_details:
-        - country:
-            alpha_3: alpha_3
-            official_name: official_name
-            flag: flag
-            name: name
-            numeric: numeric
-            id: id
+        - country: ""
           ip: ip
-          location:
-            country:
-              alpha_3: alpha_3
-              official_name: official_name
-              flag: flag
-              name: name
-              numeric: numeric
-              id: id
-            name_ascii: name_ascii
-            name: name
-            lon: -706.8374038994109
-            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-            region:
-              name: name
-              id: id
-            lat: 205.49123661408066
-          lon: 127.47533132666558
-          asn:
-            country:
-              alpha_3: alpha_3
-              official_name: official_name
-              flag: flag
-              name: name
-              numeric: numeric
-              id: id
-            domain: domain
-            name: name
-            asn: 171976544
-          lat: 192.4267833366364
-        - country:
-            alpha_3: alpha_3
-            official_name: official_name
-            flag: flag
-            name: name
-            numeric: numeric
-            id: id
+          location: ""
+          lon: 205.49123661408066
+          asn: ""
+          lat: -839.8343619077978
+        - country: ""
           ip: ip
-          location:
-            country:
-              alpha_3: alpha_3
-              official_name: official_name
-              flag: flag
-              name: name
-              numeric: numeric
-              id: id
-            name_ascii: name_ascii
-            name: name
-            lon: -706.8374038994109
-            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-            region:
-              name: name
-              id: id
-            lat: 205.49123661408066
-          lon: 127.47533132666558
-          asn:
-            country:
-              alpha_3: alpha_3
-              official_name: official_name
-              flag: flag
-              name: name
-              numeric: numeric
-              id: id
-            domain: domain
-            name: name
-            asn: 171976544
-          lat: 192.4267833366364
+          location: ""
+          lon: 205.49123661408066
+          asn: ""
+          lat: -839.8343619077978
         app_build: app_build
+        ss_bridge_ports:
+        - ss_bridge_ports
+        - ss_bridge_ports
         last_active_at: 2000-01-23T04:56:07.000+00:00
         is_public: true
         distro_codename: distro_codename
@@ -3255,12 +3744,22 @@ components:
           title: Quantum Ports
           type: array
         https_proxy_ports:
+          description: Ports used for HTTPs Proxy
           items:
             description: "Port number or range in format {start}-{end}"
             maxLength: 40
             type: string
           nullable: true
           title: HTTPs Ports
+          type: array
+        ss_bridge_ports:
+          description: Ports used for Shadow Socket Bridge
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            type: string
+          nullable: true
+          title: Bridge Ports
           type: array
         conditions:
           items:
@@ -3492,6 +3991,9 @@ components:
         - https_proxy_ports
         - https_proxy_ports
         app_build: app_build
+        ss_bridge_ports:
+        - ss_bridge_ports
+        - ss_bridge_ports
         is_public: true
         distro_codename: distro_codename
         subnets:
@@ -3539,6 +4041,7 @@ components:
           title: Quantum Ports
           type: array
         https_proxy_ports:
+          description: Ports used for HTTPs Proxy
           items:
             description: "Port number or range in format {start}-{end}"
             maxLength: 40
@@ -3546,6 +4049,16 @@ components:
             type: string
           nullable: true
           title: HTTPs Ports
+          type: array
+        ss_bridge_ports:
+          description: Ports used for Shadow Socket Bridge
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            minLength: 1
+            type: string
+          nullable: true
+          title: Bridge Ports
           type: array
         status:
           $ref: '#/components/schemas/NodeStatus'
@@ -3672,12 +4185,12 @@ components:
             id: id
           name_ascii: name_ascii
           name: name
-          lon: -706.8374038994109
+          lon: 205.49123661408066
           id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           region:
             name: name
             id: id
-          lat: 205.49123661408066
+          lat: -839.8343619077978
         - country:
             alpha_3: alpha_3
             official_name: official_name
@@ -3687,12 +4200,12 @@ components:
             id: id
           name_ascii: name_ascii
           name: name
-          lon: -706.8374038994109
+          lon: 205.49123661408066
           id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           region:
             name: name
             id: id
-          lat: 205.49123661408066
+          lat: -839.8343619077978
       properties:
         next:
           example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
@@ -3742,81 +4255,22 @@ components:
           - https_proxy_ports
           - https_proxy_ports
           ip_details:
-          - country:
-              alpha_3: alpha_3
-              official_name: official_name
-              flag: flag
-              name: name
-              numeric: numeric
-              id: id
+          - country: ""
             ip: ip
-            location:
-              country:
-                alpha_3: alpha_3
-                official_name: official_name
-                flag: flag
-                name: name
-                numeric: numeric
-                id: id
-              name_ascii: name_ascii
-              name: name
-              lon: -706.8374038994109
-              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-              region:
-                name: name
-                id: id
-              lat: 205.49123661408066
-            lon: 127.47533132666558
-            asn:
-              country:
-                alpha_3: alpha_3
-                official_name: official_name
-                flag: flag
-                name: name
-                numeric: numeric
-                id: id
-              domain: domain
-              name: name
-              asn: 171976544
-            lat: 192.4267833366364
-          - country:
-              alpha_3: alpha_3
-              official_name: official_name
-              flag: flag
-              name: name
-              numeric: numeric
-              id: id
+            location: ""
+            lon: 205.49123661408066
+            asn: ""
+            lat: -839.8343619077978
+          - country: ""
             ip: ip
-            location:
-              country:
-                alpha_3: alpha_3
-                official_name: official_name
-                flag: flag
-                name: name
-                numeric: numeric
-                id: id
-              name_ascii: name_ascii
-              name: name
-              lon: -706.8374038994109
-              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-              region:
-                name: name
-                id: id
-              lat: 205.49123661408066
-            lon: 127.47533132666558
-            asn:
-              country:
-                alpha_3: alpha_3
-                official_name: official_name
-                flag: flag
-                name: name
-                numeric: numeric
-                id: id
-              domain: domain
-              name: name
-              asn: 171976544
-            lat: 192.4267833366364
+            location: ""
+            lon: 205.49123661408066
+            asn: ""
+            lat: -839.8343619077978
           app_build: app_build
+          ss_bridge_ports:
+          - ss_bridge_ports
+          - ss_bridge_ports
           last_active_at: 2000-01-23T04:56:07.000+00:00
           is_public: true
           distro_codename: distro_codename
@@ -3858,81 +4312,22 @@ components:
           - https_proxy_ports
           - https_proxy_ports
           ip_details:
-          - country:
-              alpha_3: alpha_3
-              official_name: official_name
-              flag: flag
-              name: name
-              numeric: numeric
-              id: id
+          - country: ""
             ip: ip
-            location:
-              country:
-                alpha_3: alpha_3
-                official_name: official_name
-                flag: flag
-                name: name
-                numeric: numeric
-                id: id
-              name_ascii: name_ascii
-              name: name
-              lon: -706.8374038994109
-              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-              region:
-                name: name
-                id: id
-              lat: 205.49123661408066
-            lon: 127.47533132666558
-            asn:
-              country:
-                alpha_3: alpha_3
-                official_name: official_name
-                flag: flag
-                name: name
-                numeric: numeric
-                id: id
-              domain: domain
-              name: name
-              asn: 171976544
-            lat: 192.4267833366364
-          - country:
-              alpha_3: alpha_3
-              official_name: official_name
-              flag: flag
-              name: name
-              numeric: numeric
-              id: id
+            location: ""
+            lon: 205.49123661408066
+            asn: ""
+            lat: -839.8343619077978
+          - country: ""
             ip: ip
-            location:
-              country:
-                alpha_3: alpha_3
-                official_name: official_name
-                flag: flag
-                name: name
-                numeric: numeric
-                id: id
-              name_ascii: name_ascii
-              name: name
-              lon: -706.8374038994109
-              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-              region:
-                name: name
-                id: id
-              lat: 205.49123661408066
-            lon: 127.47533132666558
-            asn:
-              country:
-                alpha_3: alpha_3
-                official_name: official_name
-                flag: flag
-                name: name
-                numeric: numeric
-                id: id
-              domain: domain
-              name: name
-              asn: 171976544
-            lat: 192.4267833366364
+            location: ""
+            lon: 205.49123661408066
+            asn: ""
+            lat: -839.8343619077978
           app_build: app_build
+          ss_bridge_ports:
+          - ss_bridge_ports
+          - ss_bridge_ports
           last_active_at: 2000-01-23T04:56:07.000+00:00
           is_public: true
           distro_codename: distro_codename
@@ -4079,6 +4474,126 @@ components:
       required:
       - results
       type: object
+    PaginatedWalletList:
+      example:
+        next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        count: 100
+        results:
+        - recent_transactions:
+          - amount: 5.637377
+            credits: 192426783.33663654
+            description: description
+            created_at: 2000-01-23T04:56:07.000+00:00
+            currency: currency
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            transaction_type: ""
+          - amount: 5.637377
+            credits: 192426783.33663654
+            description: description
+            created_at: 2000-01-23T04:56:07.000+00:00
+            currency: currency
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            transaction_type: ""
+          is_active: true
+          balance: 0.8008281904610115
+          updated_at: 2000-01-23T04:56:07.000+00:00
+          consumed_balance: 1.4658129805029452
+          name: name
+          credits_balance: 205491236.61408067
+          created_at: 2000-01-23T04:56:07.000+00:00
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          status: ""
+        - recent_transactions:
+          - amount: 5.637377
+            credits: 192426783.33663654
+            description: description
+            created_at: 2000-01-23T04:56:07.000+00:00
+            currency: currency
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            transaction_type: ""
+          - amount: 5.637377
+            credits: 192426783.33663654
+            description: description
+            created_at: 2000-01-23T04:56:07.000+00:00
+            currency: currency
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            transaction_type: ""
+          is_active: true
+          balance: 0.8008281904610115
+          updated_at: 2000-01-23T04:56:07.000+00:00
+          consumed_balance: 1.4658129805029452
+          name: name
+          credits_balance: 205491236.61408067
+          created_at: 2000-01-23T04:56:07.000+00:00
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          status: ""
+      properties:
+        next:
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+          format: uri
+          nullable: true
+          type: string
+        previous:
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+          format: uri
+          nullable: true
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/Wallet'
+          type: array
+        count:
+          description: Total count of items
+          example: 100
+          type: integer
+      required:
+      - results
+      type: object
+    PaginatedWalletTransactionList:
+      example:
+        next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        count: 100
+        results:
+        - amount: 5.637377
+          credits: 192426783.33663654
+          description: description
+          created_at: 2000-01-23T04:56:07.000+00:00
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          transaction_type: ""
+        - amount: 5.637377
+          credits: 192426783.33663654
+          description: description
+          created_at: 2000-01-23T04:56:07.000+00:00
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          transaction_type: ""
+      properties:
+        next:
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+          format: uri
+          nullable: true
+          type: string
+        previous:
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+          format: uri
+          nullable: true
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/WalletTransaction'
+          type: array
+        count:
+          description: Total count of items
+          example: 100
+          type: integer
+      required:
+      - results
+      type: object
     PatchedDeviceRequest:
       example:
         distro: distro
@@ -4178,6 +4693,9 @@ components:
         - https_proxy_ports
         - https_proxy_ports
         app_build: app_build
+        ss_bridge_ports:
+        - ss_bridge_ports
+        - ss_bridge_ports
         is_public: true
         distro_codename: distro_codename
         subnets:
@@ -4225,6 +4743,7 @@ components:
           title: Quantum Ports
           type: array
         https_proxy_ports:
+          description: Ports used for HTTPs Proxy
           items:
             description: "Port number or range in format {start}-{end}"
             maxLength: 40
@@ -4232,6 +4751,16 @@ components:
             type: string
           nullable: true
           title: HTTPs Ports
+          type: array
+        ss_bridge_ports:
+          description: Ports used for Shadow Socket Bridge
+          items:
+            description: "Port number or range in format {start}-{end}"
+            maxLength: 40
+            minLength: 1
+            type: string
+          nullable: true
+          title: Bridge Ports
           type: array
         status:
           $ref: '#/components/schemas/NodeStatus'
@@ -4480,6 +5009,93 @@ components:
       - interval
       - save_amount
       - save_amount_total
+      type: object
+    Region:
+      example:
+        code: code
+        name: name
+        description: description
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        countries:
+        - alpha_3: alpha_3
+          official_name: official_name
+          flag: flag
+          name: name
+          numeric: numeric
+          id: id
+        - alpha_3: alpha_3
+          official_name: official_name
+          flag: flag
+          name: name
+          numeric: numeric
+          id: id
+      properties:
+        id:
+          format: uuid
+          type: string
+        code:
+          description: Short code identifier for the region
+          maxLength: 10
+          title: Region Code
+          type: string
+        name:
+          maxLength: 255
+          type: string
+        description:
+          nullable: true
+          type: string
+        countries:
+          items:
+            $ref: '#/components/schemas/Country'
+          type: array
+      required:
+      - code
+      - id
+      - name
+      type: object
+    RegionDetail:
+      example:
+        code: code
+        name: name
+        description: description
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        countries:
+        - alpha_3: alpha_3
+          official_name: official_name
+          flag: flag
+          name: name
+          numeric: numeric
+          id: id
+        - alpha_3: alpha_3
+          official_name: official_name
+          flag: flag
+          name: name
+          numeric: numeric
+          id: id
+      properties:
+        id:
+          format: uuid
+          type: string
+        code:
+          description: Short code identifier for the region
+          maxLength: 10
+          title: Region Code
+          type: string
+        name:
+          maxLength: 255
+          type: string
+        description:
+          nullable: true
+          type: string
+        countries:
+          items:
+            $ref: '#/components/schemas/Country'
+          type: array
+      required:
+      - code
+      - countries
+      - id
+      - name
       type: object
     SetDefaultPaymentMethodRequest:
       example:
@@ -4887,6 +5503,14 @@ components:
       - limit
       - period
       type: object
+    TransactionType:
+      description: |-
+        * `credit` - Credit
+        * `debit` - Debit
+      enum:
+      - credit
+      - debit
+      type: string
     Type:
       description: |-
         * `card` - Card
@@ -4917,6 +5541,165 @@ components:
       - cash_app
       - other
       type: string
+    Wallet:
+      description: Serializer for wallet details.
+      example:
+        recent_transactions:
+        - amount: 5.637377
+          credits: 192426783.33663654
+          description: description
+          created_at: 2000-01-23T04:56:07.000+00:00
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          transaction_type: ""
+        - amount: 5.637377
+          credits: 192426783.33663654
+          description: description
+          created_at: 2000-01-23T04:56:07.000+00:00
+          currency: currency
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          transaction_type: ""
+        is_active: true
+        balance: 0.8008281904610115
+        updated_at: 2000-01-23T04:56:07.000+00:00
+        consumed_balance: 1.4658129805029452
+        name: name
+        credits_balance: 205491236.61408067
+        created_at: 2000-01-23T04:56:07.000+00:00
+        currency: currency
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        status: ""
+      properties:
+        id:
+          format: uuid
+          readOnly: true
+          type: string
+        name:
+          readOnly: true
+          type: string
+        status:
+          allOf:
+          - $ref: '#/components/schemas/WalletStatus'
+          readOnly: true
+        currency:
+          description: Currency for this wallet in ISO 4217 format
+          readOnly: true
+          type: string
+        balance:
+          format: double
+          readOnly: true
+          type: number
+        credits_balance:
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000000000
+          minimum: -1000000000
+          readOnly: true
+          type: number
+        consumed_balance:
+          format: double
+          readOnly: true
+          type: number
+        is_active:
+          readOnly: true
+          type: boolean
+        created_at:
+          format: date-time
+          readOnly: true
+          title: Date Created
+          type: string
+        updated_at:
+          format: date-time
+          readOnly: true
+          title: Date Updated
+          type: string
+        recent_transactions:
+          items:
+            $ref: '#/components/schemas/WalletTransaction'
+          readOnly: true
+          type: array
+      required:
+      - balance
+      - consumed_balance
+      - created_at
+      - credits_balance
+      - currency
+      - id
+      - is_active
+      - name
+      - recent_transactions
+      - status
+      - updated_at
+      type: object
+    WalletStatus:
+      description: |-
+        * `_wallet_dummy` - Wallet Dummy
+        * `pending` - Pending
+        * `active` - Active
+        * `suspended` - Suspended
+        * `canceled` - Canceled
+      enum:
+      - _wallet_dummy
+      - pending
+      - active
+      - suspended
+      - canceled
+      type: string
+    WalletTransaction:
+      description: Serializer for wallet transactions.
+      example:
+        amount: 5.637377
+        credits: 192426783.33663654
+        description: description
+        created_at: 2000-01-23T04:56:07.000+00:00
+        currency: currency
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        transaction_type: ""
+      properties:
+        id:
+          format: uuid
+          readOnly: true
+          type: string
+        transaction_type:
+          allOf:
+          - $ref: '#/components/schemas/TransactionType'
+          readOnly: true
+        credits:
+          description: Transaction amount in credits
+          exclusiveMaximum: true
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000000000
+          minimum: -1000000000
+          readOnly: true
+          type: number
+        amount:
+          description: Return the amount in the specified currency.
+          format: float
+          readOnly: true
+          type: number
+        currency:
+          description: Currency of the transaction amount
+          readOnly: true
+          type: string
+        description:
+          readOnly: true
+          type: string
+        created_at:
+          format: date-time
+          readOnly: true
+          title: Date Created
+          type: string
+      required:
+      - amount
+      - created_at
+      - credits
+      - currency
+      - description
+      - id
+      - transaction_type
+      type: object
   securitySchemes:
     apiKey:
       in: header

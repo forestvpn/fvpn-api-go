@@ -5,9 +5,9 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Ip** | **string** |  | 
-**Asn** | [**ASNRequest**](ASNRequest.md) |  | 
-**Country** | [**CountryRequest**](CountryRequest.md) |  | 
-**Location** | [**LocationRequest**](LocationRequest.md) |  | 
+**Asn** | Pointer to [**NullableASNRequest**](ASNRequest.md) |  | [optional] 
+**Country** | Pointer to [**NullableCountryRequest**](CountryRequest.md) |  | [optional] 
+**Location** | Pointer to [**NullableLocationRequest**](LocationRequest.md) |  | [optional] 
 **Lat** | Pointer to **NullableFloat64** |  | [optional] 
 **Lon** | Pointer to **NullableFloat64** |  | [optional] 
 
@@ -15,7 +15,7 @@ Name | Type | Description | Notes
 
 ### NewIPInfoRequest
 
-`func NewIPInfoRequest(ip string, asn ASNRequest, country CountryRequest, location LocationRequest, ) *IPInfoRequest`
+`func NewIPInfoRequest(ip string, ) *IPInfoRequest`
 
 NewIPInfoRequest instantiates a new IPInfoRequest object
 This constructor will assign default values to properties that have it defined,
@@ -69,7 +69,22 @@ and a boolean to check if the value has been set.
 
 SetAsn sets Asn field to given value.
 
+### HasAsn
 
+`func (o *IPInfoRequest) HasAsn() bool`
+
+HasAsn returns a boolean if a field has been set.
+
+### SetAsnNil
+
+`func (o *IPInfoRequest) SetAsnNil(b bool)`
+
+ SetAsnNil sets the value for Asn to be an explicit nil
+
+### UnsetAsn
+`func (o *IPInfoRequest) UnsetAsn()`
+
+UnsetAsn ensures that no value is present for Asn, not even an explicit nil
 ### GetCountry
 
 `func (o *IPInfoRequest) GetCountry() CountryRequest`
@@ -89,7 +104,22 @@ and a boolean to check if the value has been set.
 
 SetCountry sets Country field to given value.
 
+### HasCountry
 
+`func (o *IPInfoRequest) HasCountry() bool`
+
+HasCountry returns a boolean if a field has been set.
+
+### SetCountryNil
+
+`func (o *IPInfoRequest) SetCountryNil(b bool)`
+
+ SetCountryNil sets the value for Country to be an explicit nil
+
+### UnsetCountry
+`func (o *IPInfoRequest) UnsetCountry()`
+
+UnsetCountry ensures that no value is present for Country, not even an explicit nil
 ### GetLocation
 
 `func (o *IPInfoRequest) GetLocation() LocationRequest`
@@ -109,7 +139,22 @@ and a boolean to check if the value has been set.
 
 SetLocation sets Location field to given value.
 
+### HasLocation
 
+`func (o *IPInfoRequest) HasLocation() bool`
+
+HasLocation returns a boolean if a field has been set.
+
+### SetLocationNil
+
+`func (o *IPInfoRequest) SetLocationNil(b bool)`
+
+ SetLocationNil sets the value for Location to be an explicit nil
+
+### UnsetLocation
+`func (o *IPInfoRequest) UnsetLocation()`
+
+UnsetLocation ensures that no value is present for Location, not even an explicit nil
 ### GetLat
 
 `func (o *IPInfoRequest) GetLat() float64`

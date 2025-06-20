@@ -329,6 +329,7 @@ type ApiGetLocationsRequest struct {
 	country *string
 	cursor *string
 	limit *int32
+	name *string
 	q *string
 }
 
@@ -346,6 +347,11 @@ func (r ApiGetLocationsRequest) Cursor(cursor string) ApiGetLocationsRequest {
 // Number of results to return per page.
 func (r ApiGetLocationsRequest) Limit(limit int32) ApiGetLocationsRequest {
 	r.limit = &limit
+	return r
+}
+
+func (r ApiGetLocationsRequest) Name(name string) ApiGetLocationsRequest {
+	r.name = &name
 	return r
 }
 
@@ -402,8 +408,236 @@ func (a *GeoAPIService) GetLocationsExecute(r ApiGetLocationsRequest) (*Paginate
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
 	}
+	if r.name != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "form", "")
+	}
 	if r.q != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "q", r.q, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetRegionRequest struct {
+	ctx context.Context
+	ApiService *GeoAPIService
+	regionId string
+}
+
+func (r ApiGetRegionRequest) Execute() (*RegionDetail, *http.Response, error) {
+	return r.ApiService.GetRegionExecute(r)
+}
+
+/*
+GetRegion Retrieve region
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param regionId A UUID string identifying this Region.
+ @return ApiGetRegionRequest
+*/
+func (a *GeoAPIService) GetRegion(ctx context.Context, regionId string) ApiGetRegionRequest {
+	return ApiGetRegionRequest{
+		ApiService: a,
+		ctx: ctx,
+		regionId: regionId,
+	}
+}
+
+// Execute executes the request
+//  @return RegionDetail
+func (a *GeoAPIService) GetRegionExecute(r ApiGetRegionRequest) (*RegionDetail, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *RegionDetail
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GeoAPIService.GetRegion")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/regions/{region_id}/"
+	localVarPath = strings.Replace(localVarPath, "{"+"region_id"+"}", url.PathEscape(parameterValueToString(r.regionId, "regionId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetRegionsRequest struct {
+	ctx context.Context
+	ApiService *GeoAPIService
+	code *string
+	country *string
+	name *string
+}
+
+func (r ApiGetRegionsRequest) Code(code string) ApiGetRegionsRequest {
+	r.code = &code
+	return r
+}
+
+func (r ApiGetRegionsRequest) Country(country string) ApiGetRegionsRequest {
+	r.country = &country
+	return r
+}
+
+func (r ApiGetRegionsRequest) Name(name string) ApiGetRegionsRequest {
+	r.name = &name
+	return r
+}
+
+func (r ApiGetRegionsRequest) Execute() ([]Region, *http.Response, error) {
+	return r.ApiService.GetRegionsExecute(r)
+}
+
+/*
+GetRegions List regions
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiGetRegionsRequest
+*/
+func (a *GeoAPIService) GetRegions(ctx context.Context) ApiGetRegionsRequest {
+	return ApiGetRegionsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return []Region
+func (a *GeoAPIService) GetRegionsExecute(r ApiGetRegionsRequest) ([]Region, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  []Region
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GeoAPIService.GetRegions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/regions/"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.code != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "code", r.code, "form", "")
+	}
+	if r.country != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "country", r.country, "form", "")
+	}
+	if r.name != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

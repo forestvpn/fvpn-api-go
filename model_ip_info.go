@@ -23,9 +23,9 @@ var _ MappedNullable = &IPInfo{}
 // IPInfo struct for IPInfo
 type IPInfo struct {
 	Ip string `json:"ip"`
-	Asn ASN `json:"asn"`
-	Country Country `json:"country"`
-	Location Location `json:"location"`
+	Asn NullableASN `json:"asn,omitempty"`
+	Country NullableCountry `json:"country,omitempty"`
+	Location NullableLocation `json:"location,omitempty"`
 	Lat NullableFloat64 `json:"lat,omitempty"`
 	Lon NullableFloat64 `json:"lon,omitempty"`
 }
@@ -36,12 +36,9 @@ type _IPInfo IPInfo
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewIPInfo(ip string, asn ASN, country Country, location Location) *IPInfo {
+func NewIPInfo(ip string) *IPInfo {
 	this := IPInfo{}
 	this.Ip = ip
-	this.Asn = asn
-	this.Country = country
-	this.Location = location
 	return &this
 }
 
@@ -77,76 +74,130 @@ func (o *IPInfo) SetIp(v string) {
 	o.Ip = v
 }
 
-// GetAsn returns the Asn field value
+// GetAsn returns the Asn field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IPInfo) GetAsn() ASN {
-	if o == nil {
+	if o == nil || IsNil(o.Asn.Get()) {
 		var ret ASN
 		return ret
 	}
-
-	return o.Asn
+	return *o.Asn.Get()
 }
 
-// GetAsnOk returns a tuple with the Asn field value
+// GetAsnOk returns a tuple with the Asn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IPInfo) GetAsnOk() (*ASN, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Asn, true
+	return o.Asn.Get(), o.Asn.IsSet()
 }
 
-// SetAsn sets field value
+// HasAsn returns a boolean if a field has been set.
+func (o *IPInfo) HasAsn() bool {
+	if o != nil && o.Asn.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAsn gets a reference to the given NullableASN and assigns it to the Asn field.
 func (o *IPInfo) SetAsn(v ASN) {
-	o.Asn = v
+	o.Asn.Set(&v)
+}
+// SetAsnNil sets the value for Asn to be an explicit nil
+func (o *IPInfo) SetAsnNil() {
+	o.Asn.Set(nil)
 }
 
-// GetCountry returns the Country field value
+// UnsetAsn ensures that no value is present for Asn, not even an explicit nil
+func (o *IPInfo) UnsetAsn() {
+	o.Asn.Unset()
+}
+
+// GetCountry returns the Country field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IPInfo) GetCountry() Country {
-	if o == nil {
+	if o == nil || IsNil(o.Country.Get()) {
 		var ret Country
 		return ret
 	}
-
-	return o.Country
+	return *o.Country.Get()
 }
 
-// GetCountryOk returns a tuple with the Country field value
+// GetCountryOk returns a tuple with the Country field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IPInfo) GetCountryOk() (*Country, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Country, true
+	return o.Country.Get(), o.Country.IsSet()
 }
 
-// SetCountry sets field value
+// HasCountry returns a boolean if a field has been set.
+func (o *IPInfo) HasCountry() bool {
+	if o != nil && o.Country.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCountry gets a reference to the given NullableCountry and assigns it to the Country field.
 func (o *IPInfo) SetCountry(v Country) {
-	o.Country = v
+	o.Country.Set(&v)
+}
+// SetCountryNil sets the value for Country to be an explicit nil
+func (o *IPInfo) SetCountryNil() {
+	o.Country.Set(nil)
 }
 
-// GetLocation returns the Location field value
+// UnsetCountry ensures that no value is present for Country, not even an explicit nil
+func (o *IPInfo) UnsetCountry() {
+	o.Country.Unset()
+}
+
+// GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IPInfo) GetLocation() Location {
-	if o == nil {
+	if o == nil || IsNil(o.Location.Get()) {
 		var ret Location
 		return ret
 	}
-
-	return o.Location
+	return *o.Location.Get()
 }
 
-// GetLocationOk returns a tuple with the Location field value
+// GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IPInfo) GetLocationOk() (*Location, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Location, true
+	return o.Location.Get(), o.Location.IsSet()
 }
 
-// SetLocation sets field value
+// HasLocation returns a boolean if a field has been set.
+func (o *IPInfo) HasLocation() bool {
+	if o != nil && o.Location.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLocation gets a reference to the given NullableLocation and assigns it to the Location field.
 func (o *IPInfo) SetLocation(v Location) {
-	o.Location = v
+	o.Location.Set(&v)
+}
+// SetLocationNil sets the value for Location to be an explicit nil
+func (o *IPInfo) SetLocationNil() {
+	o.Location.Set(nil)
+}
+
+// UnsetLocation ensures that no value is present for Location, not even an explicit nil
+func (o *IPInfo) UnsetLocation() {
+	o.Location.Unset()
 }
 
 // GetLat returns the Lat field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -244,9 +295,15 @@ func (o IPInfo) MarshalJSON() ([]byte, error) {
 func (o IPInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["ip"] = o.Ip
-	toSerialize["asn"] = o.Asn
-	toSerialize["country"] = o.Country
-	toSerialize["location"] = o.Location
+	if o.Asn.IsSet() {
+		toSerialize["asn"] = o.Asn.Get()
+	}
+	if o.Country.IsSet() {
+		toSerialize["country"] = o.Country.Get()
+	}
+	if o.Location.IsSet() {
+		toSerialize["location"] = o.Location.Get()
+	}
 	if o.Lat.IsSet() {
 		toSerialize["lat"] = o.Lat.Get()
 	}
@@ -262,9 +319,6 @@ func (o *IPInfo) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"ip",
-		"asn",
-		"country",
-		"location",
 	}
 
 	allProperties := make(map[string]interface{})
