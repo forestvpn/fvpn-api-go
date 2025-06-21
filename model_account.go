@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -30,6 +29,7 @@ type Account struct {
 	Country Country `json:"country"`
 	PhotoUrl string `json:"photo_url"`
 	CreatedAt time.Time `json:"created_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Account Account
@@ -252,6 +252,11 @@ func (o Account) ToMap() (map[string]interface{}, error) {
 	toSerialize["country"] = o.Country
 	toSerialize["photo_url"] = o.PhotoUrl
 	toSerialize["created_at"] = o.CreatedAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -284,15 +289,26 @@ func (o *Account) UnmarshalJSON(data []byte) (err error) {
 
 	varAccount := _Account{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAccount)
+	err = json.Unmarshal(data, &varAccount)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Account(varAccount)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "masked_number")
+		delete(additionalProperties, "number")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "country")
+		delete(additionalProperties, "photo_url")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

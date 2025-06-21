@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -30,6 +29,7 @@ type InvoiceTotalDetails struct {
 	PaidAmount float64 `json:"paid_amount"`
 	PaidWithWalletAmount float64 `json:"paid_with_wallet_amount"`
 	DueAmount float64 `json:"due_amount"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _InvoiceTotalDetails InvoiceTotalDetails
@@ -269,6 +269,11 @@ func (o InvoiceTotalDetails) ToMap() (map[string]interface{}, error) {
 	toSerialize["paid_amount"] = o.PaidAmount
 	toSerialize["paid_with_wallet_amount"] = o.PaidWithWalletAmount
 	toSerialize["due_amount"] = o.DueAmount
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -303,15 +308,27 @@ func (o *InvoiceTotalDetails) UnmarshalJSON(data []byte) (err error) {
 
 	varInvoiceTotalDetails := _InvoiceTotalDetails{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varInvoiceTotalDetails)
+	err = json.Unmarshal(data, &varInvoiceTotalDetails)
 
 	if err != nil {
 		return err
 	}
 
 	*o = InvoiceTotalDetails(varInvoiceTotalDetails)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "total_amount")
+		delete(additionalProperties, "subtotal_amount")
+		delete(additionalProperties, "discount_amount")
+		delete(additionalProperties, "shipping_amount")
+		delete(additionalProperties, "tax_amount")
+		delete(additionalProperties, "paid_amount")
+		delete(additionalProperties, "paid_with_wallet_amount")
+		delete(additionalProperties, "due_amount")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

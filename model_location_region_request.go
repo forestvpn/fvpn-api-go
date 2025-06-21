@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ var _ MappedNullable = &LocationRegionRequest{}
 type LocationRegionRequest struct {
 	Id string `json:"id"`
 	Name string `json:"name"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _LocationRegionRequest LocationRegionRequest
@@ -107,6 +107,11 @@ func (o LocationRegionRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
 	toSerialize["name"] = o.Name
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -135,15 +140,21 @@ func (o *LocationRegionRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varLocationRegionRequest := _LocationRegionRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varLocationRegionRequest)
+	err = json.Unmarshal(data, &varLocationRegionRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = LocationRegionRequest(varLocationRegionRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "name")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

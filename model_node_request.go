@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -42,6 +41,7 @@ type NodeRequest struct {
 	DistroCodename NullableString `json:"distro_codename,omitempty"`
 	AppVersion NullableString `json:"app_version,omitempty"`
 	AppBuild NullableString `json:"app_build,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _NodeRequest NodeRequest
@@ -750,6 +750,11 @@ func (o NodeRequest) ToMap() (map[string]interface{}, error) {
 	if o.AppBuild.IsSet() {
 		toSerialize["app_build"] = o.AppBuild.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -780,15 +785,37 @@ func (o *NodeRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varNodeRequest := _NodeRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNodeRequest)
+	err = json.Unmarshal(data, &varNodeRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = NodeRequest(varNodeRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "hostname")
+		delete(additionalProperties, "ip_addresses")
+		delete(additionalProperties, "subnets")
+		delete(additionalProperties, "tags")
+		delete(additionalProperties, "is_public")
+		delete(additionalProperties, "pub_key")
+		delete(additionalProperties, "ports")
+		delete(additionalProperties, "https_proxy_ports")
+		delete(additionalProperties, "ss_bridge_ports")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "os")
+		delete(additionalProperties, "os_version")
+		delete(additionalProperties, "os_arch")
+		delete(additionalProperties, "distro")
+		delete(additionalProperties, "distro_version")
+		delete(additionalProperties, "distro_codename")
+		delete(additionalProperties, "app_version")
+		delete(additionalProperties, "app_build")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

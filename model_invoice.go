@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -35,6 +34,7 @@ type Invoice struct {
 	Pdf NullableString `json:"pdf,omitempty"`
 	Lines []InvoiceLine `json:"lines"`
 	Total InvoiceTotalDetails `json:"total"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Invoice Invoice
@@ -444,6 +444,11 @@ func (o Invoice) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["lines"] = o.Lines
 	toSerialize["total"] = o.Total
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -478,15 +483,31 @@ func (o *Invoice) UnmarshalJSON(data []byte) (err error) {
 
 	varInvoice := _Invoice{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varInvoice)
+	err = json.Unmarshal(data, &varInvoice)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Invoice(varInvoice)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "number")
+		delete(additionalProperties, "subscription")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "description")
+		delete(additionalProperties, "currency")
+		delete(additionalProperties, "issued_at")
+		delete(additionalProperties, "effective_at")
+		delete(additionalProperties, "due_at")
+		delete(additionalProperties, "pdf")
+		delete(additionalProperties, "lines")
+		delete(additionalProperties, "total")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

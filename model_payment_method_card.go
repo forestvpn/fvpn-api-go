@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -30,6 +29,7 @@ type PaymentMethodCard struct {
 	ExpiresAt time.Time `json:"expires_at"`
 	Brand NullableString `json:"brand"`
 	Country NullableCountry `json:"country"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PaymentMethodCard PaymentMethodCard
@@ -249,6 +249,11 @@ func (o PaymentMethodCard) ToMap() (map[string]interface{}, error) {
 	toSerialize["expires_at"] = o.ExpiresAt
 	toSerialize["brand"] = o.Brand.Get()
 	toSerialize["country"] = o.Country.Get()
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -282,15 +287,26 @@ func (o *PaymentMethodCard) UnmarshalJSON(data []byte) (err error) {
 
 	varPaymentMethodCard := _PaymentMethodCard{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPaymentMethodCard)
+	err = json.Unmarshal(data, &varPaymentMethodCard)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PaymentMethodCard(varPaymentMethodCard)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "first6")
+		delete(additionalProperties, "last4")
+		delete(additionalProperties, "exp_month")
+		delete(additionalProperties, "exp_year")
+		delete(additionalProperties, "expires_at")
+		delete(additionalProperties, "brand")
+		delete(additionalProperties, "country")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

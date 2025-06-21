@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type Entitlement struct {
 	Metadata map[string]string `json:"metadata"`
 	ExpiresAt time.Time `json:"expires_at"`
 	IsActive bool `json:"is_active"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Entitlement Entitlement
@@ -193,6 +193,11 @@ func (o Entitlement) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["expires_at"] = o.ExpiresAt
 	toSerialize["is_active"] = o.IsActive
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -224,15 +229,24 @@ func (o *Entitlement) UnmarshalJSON(data []byte) (err error) {
 
 	varEntitlement := _Entitlement{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varEntitlement)
+	err = json.Unmarshal(data, &varEntitlement)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Entitlement(varEntitlement)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "lookup_key")
+		delete(additionalProperties, "metadata")
+		delete(additionalProperties, "expires_at")
+		delete(additionalProperties, "is_active")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type ASNRequest struct {
 	Name NullableString `json:"name,omitempty"`
 	Country CountryRequest `json:"country"`
 	Domain NullableString `json:"domain,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ASNRequest ASNRequest
@@ -199,6 +199,11 @@ func (o ASNRequest) ToMap() (map[string]interface{}, error) {
 	if o.Domain.IsSet() {
 		toSerialize["domain"] = o.Domain.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -227,15 +232,23 @@ func (o *ASNRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varASNRequest := _ASNRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varASNRequest)
+	err = json.Unmarshal(data, &varASNRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ASNRequest(varASNRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "asn")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "country")
+		delete(additionalProperties, "domain")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

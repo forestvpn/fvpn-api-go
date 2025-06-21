@@ -28,7 +28,10 @@ type SetNodeRequest struct {
 	Lon *float64 `json:"lon,omitempty"`
 	// Maximum distance from coordinates (format: '10km', '5mi')
 	MaxDistance *string `json:"max_distance,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _SetNodeRequest SetNodeRequest
 
 // NewSetNodeRequest instantiates a new SetNodeRequest object
 // This constructor will assign default values to properties that have it defined,
@@ -201,7 +204,36 @@ func (o SetNodeRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.MaxDistance) {
 		toSerialize["max_distance"] = o.MaxDistance
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *SetNodeRequest) UnmarshalJSON(data []byte) (err error) {
+	varSetNodeRequest := _SetNodeRequest{}
+
+	err = json.Unmarshal(data, &varSetNodeRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = SetNodeRequest(varSetNodeRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "node_id")
+		delete(additionalProperties, "lat")
+		delete(additionalProperties, "lon")
+		delete(additionalProperties, "max_distance")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableSetNodeRequest struct {

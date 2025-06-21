@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ var _ MappedNullable = &BillingUsage{}
 type BillingUsage struct {
 	Data BillingDataQuota `json:"data"`
 	Device BillingDeviceQuota `json:"device"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _BillingUsage BillingUsage
@@ -107,6 +107,11 @@ func (o BillingUsage) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["data"] = o.Data
 	toSerialize["device"] = o.Device
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -135,15 +140,21 @@ func (o *BillingUsage) UnmarshalJSON(data []byte) (err error) {
 
 	varBillingUsage := _BillingUsage{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBillingUsage)
+	err = json.Unmarshal(data, &varBillingUsage)
 
 	if err != nil {
 		return err
 	}
 
 	*o = BillingUsage(varBillingUsage)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "data")
+		delete(additionalProperties, "device")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

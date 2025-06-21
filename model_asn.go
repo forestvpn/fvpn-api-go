@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type ASN struct {
 	Name NullableString `json:"name,omitempty"`
 	Country Country `json:"country"`
 	Domain NullableString `json:"domain,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ASN ASN
@@ -199,6 +199,11 @@ func (o ASN) ToMap() (map[string]interface{}, error) {
 	if o.Domain.IsSet() {
 		toSerialize["domain"] = o.Domain.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -227,15 +232,23 @@ func (o *ASN) UnmarshalJSON(data []byte) (err error) {
 
 	varASN := _ASN{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varASN)
+	err = json.Unmarshal(data, &varASN)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ASN(varASN)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "asn")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "country")
+		delete(additionalProperties, "domain")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

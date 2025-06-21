@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -41,6 +40,7 @@ type BillingAccount struct {
 	Currency *string `json:"currency,omitempty"`
 	Status *AccountStatus `json:"status,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _BillingAccount BillingAccount
@@ -690,6 +690,11 @@ func (o BillingAccount) ToMap() (map[string]interface{}, error) {
 		toSerialize["status"] = o.Status
 	}
 	toSerialize["created_at"] = o.CreatedAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -720,15 +725,35 @@ func (o *BillingAccount) UnmarshalJSON(data []byte) (err error) {
 
 	varBillingAccount := _BillingAccount{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBillingAccount)
+	err = json.Unmarshal(data, &varBillingAccount)
 
 	if err != nil {
 		return err
 	}
 
 	*o = BillingAccount(varBillingAccount)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "default_payment_method")
+		delete(additionalProperties, "current_subscription")
+		delete(additionalProperties, "full_name")
+		delete(additionalProperties, "company")
+		delete(additionalProperties, "email")
+		delete(additionalProperties, "phone")
+		delete(additionalProperties, "address")
+		delete(additionalProperties, "city")
+		delete(additionalProperties, "state")
+		delete(additionalProperties, "postal_code")
+		delete(additionalProperties, "country")
+		delete(additionalProperties, "language")
+		delete(additionalProperties, "currency")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

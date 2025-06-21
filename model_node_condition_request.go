@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type NodeConditionRequest struct {
 	Condition Condition `json:"condition"`
 	Status bool `json:"status"`
 	Message NullableString `json:"message,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _NodeConditionRequest NodeConditionRequest
@@ -153,6 +153,11 @@ func (o NodeConditionRequest) ToMap() (map[string]interface{}, error) {
 	if o.Message.IsSet() {
 		toSerialize["message"] = o.Message.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -181,15 +186,22 @@ func (o *NodeConditionRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varNodeConditionRequest := _NodeConditionRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNodeConditionRequest)
+	err = json.Unmarshal(data, &varNodeConditionRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = NodeConditionRequest(varNodeConditionRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "condition")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "message")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

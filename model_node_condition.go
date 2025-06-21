@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type NodeCondition struct {
 	Message NullableString `json:"message,omitempty"`
 	LastHeartbeatAt time.Time `json:"last_heartbeat_at"`
 	LastTransitionAt time.Time `json:"last_transition_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _NodeCondition NodeCondition
@@ -208,6 +208,11 @@ func (o NodeCondition) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["last_heartbeat_at"] = o.LastHeartbeatAt
 	toSerialize["last_transition_at"] = o.LastTransitionAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -238,15 +243,24 @@ func (o *NodeCondition) UnmarshalJSON(data []byte) (err error) {
 
 	varNodeCondition := _NodeCondition{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNodeCondition)
+	err = json.Unmarshal(data, &varNodeCondition)
 
 	if err != nil {
 		return err
 	}
 
 	*o = NodeCondition(varNodeCondition)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "condition")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "message")
+		delete(additionalProperties, "last_heartbeat_at")
+		delete(additionalProperties, "last_transition_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

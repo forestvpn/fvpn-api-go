@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type Region struct {
 	Name string `json:"name"`
 	Description NullableString `json:"description,omitempty"`
 	Countries []Country `json:"countries,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Region Region
@@ -217,6 +217,11 @@ func (o Region) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Countries) {
 		toSerialize["countries"] = o.Countries
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -246,15 +251,24 @@ func (o *Region) UnmarshalJSON(data []byte) (err error) {
 
 	varRegion := _Region{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRegion)
+	err = json.Unmarshal(data, &varRegion)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Region(varRegion)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "code")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "description")
+		delete(additionalProperties, "countries")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type PaginatedNodeList struct {
 	Results []Node `json:"results"`
 	// Total count of items
 	Count *int32 `json:"count,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PaginatedNodeList PaginatedNodeList
@@ -209,6 +209,11 @@ func (o PaginatedNodeList) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Count) {
 		toSerialize["count"] = o.Count
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -236,15 +241,23 @@ func (o *PaginatedNodeList) UnmarshalJSON(data []byte) (err error) {
 
 	varPaginatedNodeList := _PaginatedNodeList{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPaginatedNodeList)
+	err = json.Unmarshal(data, &varPaginatedNodeList)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PaginatedNodeList(varPaginatedNodeList)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "next")
+		delete(additionalProperties, "previous")
+		delete(additionalProperties, "results")
+		delete(additionalProperties, "count")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

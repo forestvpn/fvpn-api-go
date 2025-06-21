@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ var _ MappedNullable = &AccountTokenPair{}
 type AccountTokenPair struct {
 	Access string `json:"access"`
 	Refresh string `json:"refresh"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AccountTokenPair AccountTokenPair
@@ -107,6 +107,11 @@ func (o AccountTokenPair) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["access"] = o.Access
 	toSerialize["refresh"] = o.Refresh
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -135,15 +140,21 @@ func (o *AccountTokenPair) UnmarshalJSON(data []byte) (err error) {
 
 	varAccountTokenPair := _AccountTokenPair{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAccountTokenPair)
+	err = json.Unmarshal(data, &varAccountTokenPair)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AccountTokenPair(varAccountTokenPair)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "access")
+		delete(additionalProperties, "refresh")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

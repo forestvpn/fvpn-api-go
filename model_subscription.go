@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -51,6 +50,7 @@ type Subscription struct {
 	Plan Plan `json:"plan"`
 	PlanPrice PlanPrice `json:"plan_price"`
 	CreatedAt time.Time `json:"created_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Subscription Subscription
@@ -705,6 +705,11 @@ func (o Subscription) ToMap() (map[string]interface{}, error) {
 	toSerialize["plan"] = o.Plan
 	toSerialize["plan_price"] = o.PlanPrice
 	toSerialize["created_at"] = o.CreatedAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -743,15 +748,38 @@ func (o *Subscription) UnmarshalJSON(data []byte) (err error) {
 
 	varSubscription := _Subscription{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSubscription)
+	err = json.Unmarshal(data, &varSubscription)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Subscription(varSubscription)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "start_date")
+		delete(additionalProperties, "ended_at")
+		delete(additionalProperties, "current_period_start")
+		delete(additionalProperties, "current_period_end")
+		delete(additionalProperties, "trial_start")
+		delete(additionalProperties, "trial_end")
+		delete(additionalProperties, "cancel_at")
+		delete(additionalProperties, "canceled_at")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "description")
+		delete(additionalProperties, "managed_by")
+		delete(additionalProperties, "amount")
+		delete(additionalProperties, "currency")
+		delete(additionalProperties, "latest_invoice")
+		delete(additionalProperties, "pending_update")
+		delete(additionalProperties, "plan")
+		delete(additionalProperties, "plan_price")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

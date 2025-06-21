@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type NodeDevice struct {
 	Ipv6 string `json:"ipv6"`
 	PubKey string `json:"pub_key"`
 	PsKey string `json:"ps_key"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _NodeDevice NodeDevice
@@ -161,6 +161,11 @@ func (o NodeDevice) ToMap() (map[string]interface{}, error) {
 	toSerialize["ipv6"] = o.Ipv6
 	toSerialize["pub_key"] = o.PubKey
 	toSerialize["ps_key"] = o.PsKey
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -191,15 +196,23 @@ func (o *NodeDevice) UnmarshalJSON(data []byte) (err error) {
 
 	varNodeDevice := _NodeDevice{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNodeDevice)
+	err = json.Unmarshal(data, &varNodeDevice)
 
 	if err != nil {
 		return err
 	}
 
 	*o = NodeDevice(varNodeDevice)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "ipv4")
+		delete(additionalProperties, "ipv6")
+		delete(additionalProperties, "pub_key")
+		delete(additionalProperties, "ps_key")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

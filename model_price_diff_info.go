@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type PriceDiffInfo struct {
 	Discount int64 `json:"discount"`
 	SaveAmount float64 `json:"save_amount"`
 	SaveAmountTotal int64 `json:"save_amount_total"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PriceDiffInfo PriceDiffInfo
@@ -215,6 +215,11 @@ func (o PriceDiffInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize["discount"] = o.Discount
 	toSerialize["save_amount"] = o.SaveAmount
 	toSerialize["save_amount_total"] = o.SaveAmountTotal
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -247,15 +252,25 @@ func (o *PriceDiffInfo) UnmarshalJSON(data []byte) (err error) {
 
 	varPriceDiffInfo := _PriceDiffInfo{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPriceDiffInfo)
+	err = json.Unmarshal(data, &varPriceDiffInfo)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PriceDiffInfo(varPriceDiffInfo)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "amount")
+		delete(additionalProperties, "currency")
+		delete(additionalProperties, "interval")
+		delete(additionalProperties, "discount")
+		delete(additionalProperties, "save_amount")
+		delete(additionalProperties, "save_amount_total")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

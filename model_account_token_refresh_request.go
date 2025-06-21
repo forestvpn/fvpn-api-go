@@ -21,7 +21,10 @@ var _ MappedNullable = &AccountTokenRefreshRequest{}
 // AccountTokenRefreshRequest Serializer for refreshing JWT tokens using a refresh token.  This serializer validates the provided refresh token and issues a new access token if the refresh token is valid.  Attributes:     refresh (str): The refresh token to be used for refreshing the access token.     access (str): The new access token issued upon successful token refresh.  Example:     Request:     {         \"refresh\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...\"     }      Response:     {         \"access\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...\"     }
 type AccountTokenRefreshRequest struct {
 	Refresh *string `json:"refresh,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _AccountTokenRefreshRequest AccountTokenRefreshRequest
 
 // NewAccountTokenRefreshRequest instantiates a new AccountTokenRefreshRequest object
 // This constructor will assign default values to properties that have it defined,
@@ -85,7 +88,33 @@ func (o AccountTokenRefreshRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Refresh) {
 		toSerialize["refresh"] = o.Refresh
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *AccountTokenRefreshRequest) UnmarshalJSON(data []byte) (err error) {
+	varAccountTokenRefreshRequest := _AccountTokenRefreshRequest{}
+
+	err = json.Unmarshal(data, &varAccountTokenRefreshRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = AccountTokenRefreshRequest(varAccountTokenRefreshRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "refresh")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableAccountTokenRefreshRequest struct {

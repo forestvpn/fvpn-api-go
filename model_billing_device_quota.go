@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type BillingDeviceQuota struct {
 	IsWithinQuota bool `json:"is_within_quota"`
 	IsUnlimited bool `json:"is_unlimited"`
 	Message string `json:"message"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _BillingDeviceQuota BillingDeviceQuota
@@ -215,6 +215,11 @@ func (o BillingDeviceQuota) ToMap() (map[string]interface{}, error) {
 	toSerialize["is_within_quota"] = o.IsWithinQuota
 	toSerialize["is_unlimited"] = o.IsUnlimited
 	toSerialize["message"] = o.Message
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -247,15 +252,25 @@ func (o *BillingDeviceQuota) UnmarshalJSON(data []byte) (err error) {
 
 	varBillingDeviceQuota := _BillingDeviceQuota{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBillingDeviceQuota)
+	err = json.Unmarshal(data, &varBillingDeviceQuota)
 
 	if err != nil {
 		return err
 	}
 
 	*o = BillingDeviceQuota(varBillingDeviceQuota)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "current_usage")
+		delete(additionalProperties, "quota")
+		delete(additionalProperties, "usage_percentage")
+		delete(additionalProperties, "is_within_quota")
+		delete(additionalProperties, "is_unlimited")
+		delete(additionalProperties, "message")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

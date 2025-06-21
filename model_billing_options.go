@@ -22,7 +22,10 @@ var _ MappedNullable = &BillingOptions{}
 type BillingOptions struct {
 	AvailableCurrencies []Currency `json:"available_currencies,omitempty"`
 	DefaultCurrency *Currency `json:"default_currency,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _BillingOptions BillingOptions
 
 // NewBillingOptions instantiates a new BillingOptions object
 // This constructor will assign default values to properties that have it defined,
@@ -121,7 +124,34 @@ func (o BillingOptions) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.DefaultCurrency) {
 		toSerialize["default_currency"] = o.DefaultCurrency
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *BillingOptions) UnmarshalJSON(data []byte) (err error) {
+	varBillingOptions := _BillingOptions{}
+
+	err = json.Unmarshal(data, &varBillingOptions)
+
+	if err != nil {
+		return err
+	}
+
+	*o = BillingOptions(varBillingOptions)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "available_currencies")
+		delete(additionalProperties, "default_currency")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableBillingOptions struct {

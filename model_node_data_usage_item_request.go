@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -30,6 +29,7 @@ type NodeDataUsageItemRequest struct {
 	Tx *int64 `json:"tx,omitempty"`
 	// Total bytes received
 	Rx *int64 `json:"rx,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _NodeDataUsageItemRequest NodeDataUsageItemRequest
@@ -183,6 +183,11 @@ func (o NodeDataUsageItemRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Rx) {
 		toSerialize["rx"] = o.Rx
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -211,15 +216,23 @@ func (o *NodeDataUsageItemRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varNodeDataUsageItemRequest := _NodeDataUsageItemRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNodeDataUsageItemRequest)
+	err = json.Unmarshal(data, &varNodeDataUsageItemRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = NodeDataUsageItemRequest(varNodeDataUsageItemRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "proto")
+		delete(additionalProperties, "tx")
+		delete(additionalProperties, "rx")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

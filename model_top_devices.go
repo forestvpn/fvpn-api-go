@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type TopDevices struct {
 	Limit int64 `json:"limit"`
 	Period Period `json:"period"`
 	Devices []DeviceData `json:"devices"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _TopDevices TopDevices
@@ -134,6 +134,11 @@ func (o TopDevices) ToMap() (map[string]interface{}, error) {
 	toSerialize["limit"] = o.Limit
 	toSerialize["period"] = o.Period
 	toSerialize["devices"] = o.Devices
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -163,15 +168,22 @@ func (o *TopDevices) UnmarshalJSON(data []byte) (err error) {
 
 	varTopDevices := _TopDevices{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varTopDevices)
+	err = json.Unmarshal(data, &varTopDevices)
 
 	if err != nil {
 		return err
 	}
 
 	*o = TopDevices(varTopDevices)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "limit")
+		delete(additionalProperties, "period")
+		delete(additionalProperties, "devices")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

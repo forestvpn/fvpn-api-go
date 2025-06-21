@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ var _ MappedNullable = &AccountTokenPairRequest{}
 type AccountTokenPairRequest struct {
 	// The 16-digit account number of the user, with optional separators.
 	Number string `json:"number"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AccountTokenPairRequest AccountTokenPairRequest
@@ -81,6 +81,11 @@ func (o AccountTokenPairRequest) MarshalJSON() ([]byte, error) {
 func (o AccountTokenPairRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["number"] = o.Number
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -108,15 +113,20 @@ func (o *AccountTokenPairRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varAccountTokenPairRequest := _AccountTokenPairRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAccountTokenPairRequest)
+	err = json.Unmarshal(data, &varAccountTokenPairRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AccountTokenPairRequest(varAccountTokenPairRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "number")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

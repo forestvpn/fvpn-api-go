@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -48,6 +47,7 @@ type Node struct {
 	AppBuild NullableString `json:"app_build,omitempty"`
 	LastActiveAt NullableTime `json:"last_active_at"`
 	IpDetails []IPInfo `json:"ip_details"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Node Node
@@ -888,6 +888,11 @@ func (o Node) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["last_active_at"] = o.LastActiveAt.Get()
 	toSerialize["ip_details"] = o.IpDetails
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -923,15 +928,42 @@ func (o *Node) UnmarshalJSON(data []byte) (err error) {
 
 	varNode := _Node{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNode)
+	err = json.Unmarshal(data, &varNode)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Node(varNode)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "hostname")
+		delete(additionalProperties, "ip_addresses")
+		delete(additionalProperties, "subnets")
+		delete(additionalProperties, "tags")
+		delete(additionalProperties, "is_exit_node")
+		delete(additionalProperties, "is_public")
+		delete(additionalProperties, "pub_key")
+		delete(additionalProperties, "ports")
+		delete(additionalProperties, "https_proxy_ports")
+		delete(additionalProperties, "ss_bridge_ports")
+		delete(additionalProperties, "conditions")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "os")
+		delete(additionalProperties, "os_version")
+		delete(additionalProperties, "os_arch")
+		delete(additionalProperties, "distro")
+		delete(additionalProperties, "distro_version")
+		delete(additionalProperties, "distro_codename")
+		delete(additionalProperties, "app_version")
+		delete(additionalProperties, "app_build")
+		delete(additionalProperties, "last_active_at")
+		delete(additionalProperties, "ip_details")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

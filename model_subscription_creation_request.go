@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ var _ MappedNullable = &SubscriptionCreationRequest{}
 type SubscriptionCreationRequest struct {
 	PlanPrice string `json:"plan_price"`
 	PaymentMethod NullableString `json:"payment_method,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SubscriptionCreationRequest SubscriptionCreationRequest
@@ -126,6 +126,11 @@ func (o SubscriptionCreationRequest) ToMap() (map[string]interface{}, error) {
 	if o.PaymentMethod.IsSet() {
 		toSerialize["payment_method"] = o.PaymentMethod.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -153,15 +158,21 @@ func (o *SubscriptionCreationRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varSubscriptionCreationRequest := _SubscriptionCreationRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSubscriptionCreationRequest)
+	err = json.Unmarshal(data, &varSubscriptionCreationRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = SubscriptionCreationRequest(varSubscriptionCreationRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "plan_price")
+		delete(additionalProperties, "payment_method")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

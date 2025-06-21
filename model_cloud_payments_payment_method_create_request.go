@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &CloudPaymentsPaymentMethodCreateRequest{}
 // CloudPaymentsPaymentMethodCreateRequest struct for CloudPaymentsPaymentMethodCreateRequest
 type CloudPaymentsPaymentMethodCreateRequest struct {
 	Cryptogram string `json:"cryptogram"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _CloudPaymentsPaymentMethodCreateRequest CloudPaymentsPaymentMethodCreateRequest
@@ -80,6 +80,11 @@ func (o CloudPaymentsPaymentMethodCreateRequest) MarshalJSON() ([]byte, error) {
 func (o CloudPaymentsPaymentMethodCreateRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["cryptogram"] = o.Cryptogram
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -107,15 +112,20 @@ func (o *CloudPaymentsPaymentMethodCreateRequest) UnmarshalJSON(data []byte) (er
 
 	varCloudPaymentsPaymentMethodCreateRequest := _CloudPaymentsPaymentMethodCreateRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCloudPaymentsPaymentMethodCreateRequest)
+	err = json.Unmarshal(data, &varCloudPaymentsPaymentMethodCreateRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = CloudPaymentsPaymentMethodCreateRequest(varCloudPaymentsPaymentMethodCreateRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "cryptogram")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type ComparisonData struct {
 	Current SummaryPeriod `json:"current"`
 	Previous SummaryPeriod `json:"previous"`
 	PercentChange float64 `json:"percent_change"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ComparisonData ComparisonData
@@ -134,6 +134,11 @@ func (o ComparisonData) ToMap() (map[string]interface{}, error) {
 	toSerialize["current"] = o.Current
 	toSerialize["previous"] = o.Previous
 	toSerialize["percent_change"] = o.PercentChange
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -163,15 +168,22 @@ func (o *ComparisonData) UnmarshalJSON(data []byte) (err error) {
 
 	varComparisonData := _ComparisonData{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varComparisonData)
+	err = json.Unmarshal(data, &varComparisonData)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ComparisonData(varComparisonData)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "current")
+		delete(additionalProperties, "previous")
+		delete(additionalProperties, "percent_change")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

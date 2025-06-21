@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type PaymentMethod struct {
 	Type Type `json:"type"`
 	Card NullablePaymentMethodCard `json:"card"`
 	CreatedAt time.Time `json:"created_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PaymentMethod PaymentMethod
@@ -191,6 +191,11 @@ func (o PaymentMethod) ToMap() (map[string]interface{}, error) {
 	toSerialize["type"] = o.Type
 	toSerialize["card"] = o.Card.Get()
 	toSerialize["created_at"] = o.CreatedAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -222,15 +227,24 @@ func (o *PaymentMethod) UnmarshalJSON(data []byte) (err error) {
 
 	varPaymentMethod := _PaymentMethod{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPaymentMethod)
+	err = json.Unmarshal(data, &varPaymentMethod)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PaymentMethod(varPaymentMethod)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "provider")
+		delete(additionalProperties, "type")
+		delete(additionalProperties, "card")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

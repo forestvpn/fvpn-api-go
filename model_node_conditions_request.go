@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &NodeConditionsRequest{}
 // NodeConditionsRequest struct for NodeConditionsRequest
 type NodeConditionsRequest struct {
 	Items []NodeConditionRequest `json:"items"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _NodeConditionsRequest NodeConditionsRequest
@@ -80,6 +80,11 @@ func (o NodeConditionsRequest) MarshalJSON() ([]byte, error) {
 func (o NodeConditionsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["items"] = o.Items
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -107,15 +112,20 @@ func (o *NodeConditionsRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varNodeConditionsRequest := _NodeConditionsRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNodeConditionsRequest)
+	err = json.Unmarshal(data, &varNodeConditionsRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = NodeConditionsRequest(varNodeConditionsRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "items")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

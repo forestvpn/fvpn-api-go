@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &CloudPaymentsThreeDSecureCompleteRequest{}
 // CloudPaymentsThreeDSecureCompleteRequest struct for CloudPaymentsThreeDSecureCompleteRequest
 type CloudPaymentsThreeDSecureCompleteRequest struct {
 	PaRes string `json:"pa_res"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _CloudPaymentsThreeDSecureCompleteRequest CloudPaymentsThreeDSecureCompleteRequest
@@ -80,6 +80,11 @@ func (o CloudPaymentsThreeDSecureCompleteRequest) MarshalJSON() ([]byte, error) 
 func (o CloudPaymentsThreeDSecureCompleteRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["pa_res"] = o.PaRes
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -107,15 +112,20 @@ func (o *CloudPaymentsThreeDSecureCompleteRequest) UnmarshalJSON(data []byte) (e
 
 	varCloudPaymentsThreeDSecureCompleteRequest := _CloudPaymentsThreeDSecureCompleteRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCloudPaymentsThreeDSecureCompleteRequest)
+	err = json.Unmarshal(data, &varCloudPaymentsThreeDSecureCompleteRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = CloudPaymentsThreeDSecureCompleteRequest(varCloudPaymentsThreeDSecureCompleteRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "pa_res")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

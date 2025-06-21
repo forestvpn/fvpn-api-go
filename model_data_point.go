@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type DataPoint struct {
 	Rx int64 `json:"rx"`
 	Tx int64 `json:"tx"`
 	Total int64 `json:"total"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _DataPoint DataPoint
@@ -162,6 +162,11 @@ func (o DataPoint) ToMap() (map[string]interface{}, error) {
 	toSerialize["rx"] = o.Rx
 	toSerialize["tx"] = o.Tx
 	toSerialize["total"] = o.Total
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -192,15 +197,23 @@ func (o *DataPoint) UnmarshalJSON(data []byte) (err error) {
 
 	varDataPoint := _DataPoint{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varDataPoint)
+	err = json.Unmarshal(data, &varDataPoint)
 
 	if err != nil {
 		return err
 	}
 
 	*o = DataPoint(varDataPoint)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "date")
+		delete(additionalProperties, "rx")
+		delete(additionalProperties, "tx")
+		delete(additionalProperties, "total")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

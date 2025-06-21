@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -31,6 +30,7 @@ type PlanPrice struct {
 	PriceDiffInfo NullablePriceDiffInfo `json:"price_diff_info"`
 	IsMostPopular *bool `json:"is_most_popular,omitempty"`
 	IsEligibleForTrial bool `json:"is_eligible_for_trial"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PlanPrice PlanPrice
@@ -309,6 +309,11 @@ func (o PlanPrice) ToMap() (map[string]interface{}, error) {
 		toSerialize["is_most_popular"] = o.IsMostPopular
 	}
 	toSerialize["is_eligible_for_trial"] = o.IsEligibleForTrial
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -340,15 +345,27 @@ func (o *PlanPrice) UnmarshalJSON(data []byte) (err error) {
 
 	varPlanPrice := _PlanPrice{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPlanPrice)
+	err = json.Unmarshal(data, &varPlanPrice)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PlanPrice(varPlanPrice)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "interval")
+		delete(additionalProperties, "amount")
+		delete(additionalProperties, "currency")
+		delete(additionalProperties, "trial_days")
+		delete(additionalProperties, "price_diff_info")
+		delete(additionalProperties, "is_most_popular")
+		delete(additionalProperties, "is_eligible_for_trial")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

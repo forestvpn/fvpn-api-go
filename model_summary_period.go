@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type SummaryPeriod struct {
 	Period Period `json:"period"`
 	Data []DataPoint `json:"data"`
 	Total int64 `json:"total"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SummaryPeriod SummaryPeriod
@@ -134,6 +134,11 @@ func (o SummaryPeriod) ToMap() (map[string]interface{}, error) {
 	toSerialize["period"] = o.Period
 	toSerialize["data"] = o.Data
 	toSerialize["total"] = o.Total
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -163,15 +168,22 @@ func (o *SummaryPeriod) UnmarshalJSON(data []byte) (err error) {
 
 	varSummaryPeriod := _SummaryPeriod{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSummaryPeriod)
+	err = json.Unmarshal(data, &varSummaryPeriod)
 
 	if err != nil {
 		return err
 	}
 
 	*o = SummaryPeriod(varSummaryPeriod)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "period")
+		delete(additionalProperties, "data")
+		delete(additionalProperties, "total")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type CloudPaymentsThreeDSecure struct {
 	PaReq string `json:"pa_req"`
 	Md string `json:"md"`
 	AcsUrl string `json:"acs_url"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _CloudPaymentsThreeDSecure CloudPaymentsThreeDSecure
@@ -134,6 +134,11 @@ func (o CloudPaymentsThreeDSecure) ToMap() (map[string]interface{}, error) {
 	toSerialize["pa_req"] = o.PaReq
 	toSerialize["md"] = o.Md
 	toSerialize["acs_url"] = o.AcsUrl
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -163,15 +168,22 @@ func (o *CloudPaymentsThreeDSecure) UnmarshalJSON(data []byte) (err error) {
 
 	varCloudPaymentsThreeDSecure := _CloudPaymentsThreeDSecure{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCloudPaymentsThreeDSecure)
+	err = json.Unmarshal(data, &varCloudPaymentsThreeDSecure)
 
 	if err != nil {
 		return err
 	}
 
 	*o = CloudPaymentsThreeDSecure(varCloudPaymentsThreeDSecure)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "pa_req")
+		delete(additionalProperties, "md")
+		delete(additionalProperties, "acs_url")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

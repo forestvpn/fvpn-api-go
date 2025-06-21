@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ var _ MappedNullable = &DeviceAnalyticsDevice{}
 type DeviceAnalyticsDevice struct {
 	Id string `json:"id"`
 	Name string `json:"name"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _DeviceAnalyticsDevice DeviceAnalyticsDevice
@@ -107,6 +107,11 @@ func (o DeviceAnalyticsDevice) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
 	toSerialize["name"] = o.Name
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -135,15 +140,21 @@ func (o *DeviceAnalyticsDevice) UnmarshalJSON(data []byte) (err error) {
 
 	varDeviceAnalyticsDevice := _DeviceAnalyticsDevice{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varDeviceAnalyticsDevice)
+	err = json.Unmarshal(data, &varDeviceAnalyticsDevice)
 
 	if err != nil {
 		return err
 	}
 
 	*o = DeviceAnalyticsDevice(varDeviceAnalyticsDevice)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "name")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

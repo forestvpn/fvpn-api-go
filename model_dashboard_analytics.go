@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type DashboardAnalytics struct {
 	Summary7d ComparisonData `json:"summary_7d"`
 	Summary30d ComparisonData `json:"summary_30d"`
 	TopDevices TopDevices `json:"top_devices"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _DashboardAnalytics DashboardAnalytics
@@ -134,6 +134,11 @@ func (o DashboardAnalytics) ToMap() (map[string]interface{}, error) {
 	toSerialize["summary_7d"] = o.Summary7d
 	toSerialize["summary_30d"] = o.Summary30d
 	toSerialize["top_devices"] = o.TopDevices
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -163,15 +168,22 @@ func (o *DashboardAnalytics) UnmarshalJSON(data []byte) (err error) {
 
 	varDashboardAnalytics := _DashboardAnalytics{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varDashboardAnalytics)
+	err = json.Unmarshal(data, &varDashboardAnalytics)
 
 	if err != nil {
 		return err
 	}
 
 	*o = DashboardAnalytics(varDashboardAnalytics)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "summary_7d")
+		delete(additionalProperties, "summary_30d")
+		delete(additionalProperties, "top_devices")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

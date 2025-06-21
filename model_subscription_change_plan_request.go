@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &SubscriptionChangePlanRequest{}
 // SubscriptionChangePlanRequest struct for SubscriptionChangePlanRequest
 type SubscriptionChangePlanRequest struct {
 	NewPlanPrice string `json:"new_plan_price"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SubscriptionChangePlanRequest SubscriptionChangePlanRequest
@@ -80,6 +80,11 @@ func (o SubscriptionChangePlanRequest) MarshalJSON() ([]byte, error) {
 func (o SubscriptionChangePlanRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["new_plan_price"] = o.NewPlanPrice
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -107,15 +112,20 @@ func (o *SubscriptionChangePlanRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varSubscriptionChangePlanRequest := _SubscriptionChangePlanRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSubscriptionChangePlanRequest)
+	err = json.Unmarshal(data, &varSubscriptionChangePlanRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = SubscriptionChangePlanRequest(varSubscriptionChangePlanRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "new_plan_price")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

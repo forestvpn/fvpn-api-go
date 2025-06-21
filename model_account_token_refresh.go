@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ var _ MappedNullable = &AccountTokenRefresh{}
 type AccountTokenRefresh struct {
 	Refresh *string `json:"refresh,omitempty"`
 	Access string `json:"access"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AccountTokenRefresh AccountTokenRefresh
@@ -116,6 +116,11 @@ func (o AccountTokenRefresh) ToMap() (map[string]interface{}, error) {
 		toSerialize["refresh"] = o.Refresh
 	}
 	toSerialize["access"] = o.Access
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -143,15 +148,21 @@ func (o *AccountTokenRefresh) UnmarshalJSON(data []byte) (err error) {
 
 	varAccountTokenRefresh := _AccountTokenRefresh{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAccountTokenRefresh)
+	err = json.Unmarshal(data, &varAccountTokenRefresh)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AccountTokenRefresh(varAccountTokenRefresh)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "refresh")
+		delete(additionalProperties, "access")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

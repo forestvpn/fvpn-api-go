@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type Country struct {
 	Flag string `json:"flag"`
 	Alpha3 string `json:"alpha_3"`
 	Numeric string `json:"numeric"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Country Country
@@ -215,6 +215,11 @@ func (o Country) ToMap() (map[string]interface{}, error) {
 	toSerialize["flag"] = o.Flag
 	toSerialize["alpha_3"] = o.Alpha3
 	toSerialize["numeric"] = o.Numeric
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -247,15 +252,25 @@ func (o *Country) UnmarshalJSON(data []byte) (err error) {
 
 	varCountry := _Country{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCountry)
+	err = json.Unmarshal(data, &varCountry)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Country(varCountry)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "official_name")
+		delete(additionalProperties, "flag")
+		delete(additionalProperties, "alpha_3")
+		delete(additionalProperties, "numeric")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

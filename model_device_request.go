@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -35,6 +34,7 @@ type DeviceRequest struct {
 	DistroCodename NullableString `json:"distro_codename,omitempty"`
 	AppVersion NullableString `json:"app_version,omitempty"`
 	AppBuild NullableString `json:"app_build,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _DeviceRequest DeviceRequest
@@ -577,6 +577,11 @@ func (o DeviceRequest) ToMap() (map[string]interface{}, error) {
 	if o.AppBuild.IsSet() {
 		toSerialize["app_build"] = o.AppBuild.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -604,15 +609,31 @@ func (o *DeviceRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varDeviceRequest := _DeviceRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varDeviceRequest)
+	err = json.Unmarshal(data, &varDeviceRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = DeviceRequest(varDeviceRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "external_key")
+		delete(additionalProperties, "pub_key")
+		delete(additionalProperties, "raw_password")
+		delete(additionalProperties, "password")
+		delete(additionalProperties, "os")
+		delete(additionalProperties, "os_version")
+		delete(additionalProperties, "os_arch")
+		delete(additionalProperties, "distro")
+		delete(additionalProperties, "distro_version")
+		delete(additionalProperties, "distro_codename")
+		delete(additionalProperties, "app_version")
+		delete(additionalProperties, "app_build")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

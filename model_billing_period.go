@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ var _ MappedNullable = &BillingPeriod{}
 type BillingPeriod struct {
 	Start time.Time `json:"start"`
 	End time.Time `json:"end"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _BillingPeriod BillingPeriod
@@ -108,6 +108,11 @@ func (o BillingPeriod) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["start"] = o.Start
 	toSerialize["end"] = o.End
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -136,15 +141,21 @@ func (o *BillingPeriod) UnmarshalJSON(data []byte) (err error) {
 
 	varBillingPeriod := _BillingPeriod{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBillingPeriod)
+	err = json.Unmarshal(data, &varBillingPeriod)
 
 	if err != nil {
 		return err
 	}
 
 	*o = BillingPeriod(varBillingPeriod)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "start")
+		delete(additionalProperties, "end")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -33,7 +33,10 @@ type PatchedDeviceRequest struct {
 	DistroCodename NullableString `json:"distro_codename,omitempty"`
 	AppVersion NullableString `json:"app_version,omitempty"`
 	AppBuild NullableString `json:"app_build,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _PatchedDeviceRequest PatchedDeviceRequest
 
 // NewPatchedDeviceRequest instantiates a new PatchedDeviceRequest object
 // This constructor will assign default values to properties that have it defined,
@@ -582,7 +585,44 @@ func (o PatchedDeviceRequest) ToMap() (map[string]interface{}, error) {
 	if o.AppBuild.IsSet() {
 		toSerialize["app_build"] = o.AppBuild.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *PatchedDeviceRequest) UnmarshalJSON(data []byte) (err error) {
+	varPatchedDeviceRequest := _PatchedDeviceRequest{}
+
+	err = json.Unmarshal(data, &varPatchedDeviceRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = PatchedDeviceRequest(varPatchedDeviceRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "external_key")
+		delete(additionalProperties, "pub_key")
+		delete(additionalProperties, "raw_password")
+		delete(additionalProperties, "password")
+		delete(additionalProperties, "os")
+		delete(additionalProperties, "os_version")
+		delete(additionalProperties, "os_arch")
+		delete(additionalProperties, "distro")
+		delete(additionalProperties, "distro_version")
+		delete(additionalProperties, "distro_codename")
+		delete(additionalProperties, "app_version")
+		delete(additionalProperties, "app_build")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullablePatchedDeviceRequest struct {

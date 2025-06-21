@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -29,6 +28,7 @@ type Location struct {
 	NameAscii NullableString `json:"name_ascii,omitempty"`
 	Lat NullableFloat64 `json:"lat,omitempty"`
 	Lon NullableFloat64 `json:"lon,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Location Location
@@ -299,6 +299,11 @@ func (o Location) ToMap() (map[string]interface{}, error) {
 	if o.Lon.IsSet() {
 		toSerialize["lon"] = o.Lon.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -329,15 +334,26 @@ func (o *Location) UnmarshalJSON(data []byte) (err error) {
 
 	varLocation := _Location{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varLocation)
+	err = json.Unmarshal(data, &varLocation)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Location(varLocation)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "country")
+		delete(additionalProperties, "region")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "name_ascii")
+		delete(additionalProperties, "lat")
+		delete(additionalProperties, "lon")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

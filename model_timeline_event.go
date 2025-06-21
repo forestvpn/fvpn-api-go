@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type TimelineEvent struct {
 	Description string `json:"description"`
 	Amount NullableFloat64 `json:"amount"`
 	Currency NullableString `json:"currency"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _TimelineEvent TimelineEvent
@@ -193,6 +193,11 @@ func (o TimelineEvent) ToMap() (map[string]interface{}, error) {
 	toSerialize["description"] = o.Description
 	toSerialize["amount"] = o.Amount.Get()
 	toSerialize["currency"] = o.Currency.Get()
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -224,15 +229,24 @@ func (o *TimelineEvent) UnmarshalJSON(data []byte) (err error) {
 
 	varTimelineEvent := _TimelineEvent{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varTimelineEvent)
+	err = json.Unmarshal(data, &varTimelineEvent)
 
 	if err != nil {
 		return err
 	}
 
 	*o = TimelineEvent(varTimelineEvent)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "date")
+		delete(additionalProperties, "event_type")
+		delete(additionalProperties, "description")
+		delete(additionalProperties, "amount")
+		delete(additionalProperties, "currency")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

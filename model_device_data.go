@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type DeviceData struct {
 	Id string `json:"id"`
 	Name string `json:"name"`
 	Data []DataPoint `json:"data"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _DeviceData DeviceData
@@ -134,6 +134,11 @@ func (o DeviceData) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	toSerialize["name"] = o.Name
 	toSerialize["data"] = o.Data
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -163,15 +168,22 @@ func (o *DeviceData) UnmarshalJSON(data []byte) (err error) {
 
 	varDeviceData := _DeviceData{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varDeviceData)
+	err = json.Unmarshal(data, &varDeviceData)
 
 	if err != nil {
 		return err
 	}
 
 	*o = DeviceData(varDeviceData)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "data")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

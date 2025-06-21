@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type DeviceAnalytics struct {
 	Current SummaryPeriod `json:"current"`
 	Previous *SummaryPeriod `json:"previous,omitempty"`
 	PercentChange *float64 `json:"percent_change,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _DeviceAnalytics DeviceAnalytics
@@ -179,6 +179,11 @@ func (o DeviceAnalytics) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.PercentChange) {
 		toSerialize["percent_change"] = o.PercentChange
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -207,15 +212,23 @@ func (o *DeviceAnalytics) UnmarshalJSON(data []byte) (err error) {
 
 	varDeviceAnalytics := _DeviceAnalytics{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varDeviceAnalytics)
+	err = json.Unmarshal(data, &varDeviceAnalytics)
 
 	if err != nil {
 		return err
 	}
 
 	*o = DeviceAnalytics(varDeviceAnalytics)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "device")
+		delete(additionalProperties, "current")
+		delete(additionalProperties, "previous")
+		delete(additionalProperties, "percent_change")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

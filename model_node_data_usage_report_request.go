@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ var _ MappedNullable = &NodeDataUsageReportRequest{}
 type NodeDataUsageReportRequest struct {
 	Timestamp time.Time `json:"timestamp"`
 	Items []NodeDataUsageItemRequest `json:"items"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _NodeDataUsageReportRequest NodeDataUsageReportRequest
@@ -108,6 +108,11 @@ func (o NodeDataUsageReportRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["timestamp"] = o.Timestamp
 	toSerialize["items"] = o.Items
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -136,15 +141,21 @@ func (o *NodeDataUsageReportRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varNodeDataUsageReportRequest := _NodeDataUsageReportRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNodeDataUsageReportRequest)
+	err = json.Unmarshal(data, &varNodeDataUsageReportRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = NodeDataUsageReportRequest(varNodeDataUsageReportRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "timestamp")
+		delete(additionalProperties, "items")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

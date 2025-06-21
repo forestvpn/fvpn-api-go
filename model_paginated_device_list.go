@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type PaginatedDeviceList struct {
 	Results []Device `json:"results"`
 	// Total count of items
 	Count *int32 `json:"count,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PaginatedDeviceList PaginatedDeviceList
@@ -209,6 +209,11 @@ func (o PaginatedDeviceList) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Count) {
 		toSerialize["count"] = o.Count
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -236,15 +241,23 @@ func (o *PaginatedDeviceList) UnmarshalJSON(data []byte) (err error) {
 
 	varPaginatedDeviceList := _PaginatedDeviceList{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPaginatedDeviceList)
+	err = json.Unmarshal(data, &varPaginatedDeviceList)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PaginatedDeviceList(varPaginatedDeviceList)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "next")
+		delete(additionalProperties, "previous")
+		delete(additionalProperties, "results")
+		delete(additionalProperties, "count")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &StripeSetupIntent{}
 // StripeSetupIntent struct for StripeSetupIntent
 type StripeSetupIntent struct {
 	ClientSecret string `json:"client_secret"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _StripeSetupIntent StripeSetupIntent
@@ -80,6 +80,11 @@ func (o StripeSetupIntent) MarshalJSON() ([]byte, error) {
 func (o StripeSetupIntent) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["client_secret"] = o.ClientSecret
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -107,15 +112,20 @@ func (o *StripeSetupIntent) UnmarshalJSON(data []byte) (err error) {
 
 	varStripeSetupIntent := _StripeSetupIntent{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varStripeSetupIntent)
+	err = json.Unmarshal(data, &varStripeSetupIntent)
 
 	if err != nil {
 		return err
 	}
 
 	*o = StripeSetupIntent(varStripeSetupIntent)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "client_secret")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type PaginatedWalletTransactionList struct {
 	Results []WalletTransaction `json:"results"`
 	// Total count of items
 	Count *int32 `json:"count,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PaginatedWalletTransactionList PaginatedWalletTransactionList
@@ -209,6 +209,11 @@ func (o PaginatedWalletTransactionList) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.Count) {
 		toSerialize["count"] = o.Count
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -236,15 +241,23 @@ func (o *PaginatedWalletTransactionList) UnmarshalJSON(data []byte) (err error) 
 
 	varPaginatedWalletTransactionList := _PaginatedWalletTransactionList{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPaginatedWalletTransactionList)
+	err = json.Unmarshal(data, &varPaginatedWalletTransactionList)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PaginatedWalletTransactionList(varPaginatedWalletTransactionList)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "next")
+		delete(additionalProperties, "previous")
+		delete(additionalProperties, "results")
+		delete(additionalProperties, "count")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

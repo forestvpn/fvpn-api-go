@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type IPInfo struct {
 	Location NullableLocation `json:"location,omitempty"`
 	Lat NullableFloat64 `json:"lat,omitempty"`
 	Lon NullableFloat64 `json:"lon,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _IPInfo IPInfo
@@ -310,6 +310,11 @@ func (o IPInfo) ToMap() (map[string]interface{}, error) {
 	if o.Lon.IsSet() {
 		toSerialize["lon"] = o.Lon.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -337,15 +342,25 @@ func (o *IPInfo) UnmarshalJSON(data []byte) (err error) {
 
 	varIPInfo := _IPInfo{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varIPInfo)
+	err = json.Unmarshal(data, &varIPInfo)
 
 	if err != nil {
 		return err
 	}
 
 	*o = IPInfo(varIPInfo)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "ip")
+		delete(additionalProperties, "asn")
+		delete(additionalProperties, "country")
+		delete(additionalProperties, "location")
+		delete(additionalProperties, "lat")
+		delete(additionalProperties, "lon")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

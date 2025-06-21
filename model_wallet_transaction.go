@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -33,6 +32,7 @@ type WalletTransaction struct {
 	Currency string `json:"currency"`
 	Description string `json:"description"`
 	CreatedAt time.Time `json:"created_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _WalletTransaction WalletTransaction
@@ -246,6 +246,11 @@ func (o WalletTransaction) ToMap() (map[string]interface{}, error) {
 	toSerialize["currency"] = o.Currency
 	toSerialize["description"] = o.Description
 	toSerialize["created_at"] = o.CreatedAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -279,15 +284,26 @@ func (o *WalletTransaction) UnmarshalJSON(data []byte) (err error) {
 
 	varWalletTransaction := _WalletTransaction{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varWalletTransaction)
+	err = json.Unmarshal(data, &varWalletTransaction)
 
 	if err != nil {
 		return err
 	}
 
 	*o = WalletTransaction(varWalletTransaction)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "transaction_type")
+		delete(additionalProperties, "credits")
+		delete(additionalProperties, "amount")
+		delete(additionalProperties, "currency")
+		delete(additionalProperties, "description")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

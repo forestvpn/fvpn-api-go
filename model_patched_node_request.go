@@ -40,7 +40,10 @@ type PatchedNodeRequest struct {
 	DistroCodename NullableString `json:"distro_codename,omitempty"`
 	AppVersion NullableString `json:"app_version,omitempty"`
 	AppBuild NullableString `json:"app_build,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _PatchedNodeRequest PatchedNodeRequest
 
 // NewPatchedNodeRequest instantiates a new PatchedNodeRequest object
 // This constructor will assign default values to properties that have it defined,
@@ -782,7 +785,50 @@ func (o PatchedNodeRequest) ToMap() (map[string]interface{}, error) {
 	if o.AppBuild.IsSet() {
 		toSerialize["app_build"] = o.AppBuild.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *PatchedNodeRequest) UnmarshalJSON(data []byte) (err error) {
+	varPatchedNodeRequest := _PatchedNodeRequest{}
+
+	err = json.Unmarshal(data, &varPatchedNodeRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = PatchedNodeRequest(varPatchedNodeRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "hostname")
+		delete(additionalProperties, "ip_addresses")
+		delete(additionalProperties, "subnets")
+		delete(additionalProperties, "tags")
+		delete(additionalProperties, "is_public")
+		delete(additionalProperties, "pub_key")
+		delete(additionalProperties, "ports")
+		delete(additionalProperties, "https_proxy_ports")
+		delete(additionalProperties, "ss_bridge_ports")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "os")
+		delete(additionalProperties, "os_version")
+		delete(additionalProperties, "os_arch")
+		delete(additionalProperties, "distro")
+		delete(additionalProperties, "distro_version")
+		delete(additionalProperties, "distro_codename")
+		delete(additionalProperties, "app_version")
+		delete(additionalProperties, "app_build")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullablePatchedNodeRequest struct {

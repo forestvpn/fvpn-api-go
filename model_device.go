@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -38,6 +37,7 @@ type Device struct {
 	Last30daysDataUsage DeviceDataUsage `json:"last_30days_data_usage"`
 	// Generate a quick configuration string for the device.
 	QuickConfTemplate string `json:"quick_conf_template"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Device Device
@@ -400,6 +400,11 @@ func (o Device) ToMap() (map[string]interface{}, error) {
 	toSerialize["last_active_at"] = o.LastActiveAt
 	toSerialize["last_30days_data_usage"] = o.Last30daysDataUsage
 	toSerialize["quick_conf_template"] = o.QuickConfTemplate
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -437,15 +442,31 @@ func (o *Device) UnmarshalJSON(data []byte) (err error) {
 
 	varDevice := _Device{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varDevice)
+	err = json.Unmarshal(data, &varDevice)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Device(varDevice)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "ipv4")
+		delete(additionalProperties, "ipv6")
+		delete(additionalProperties, "pub_key")
+		delete(additionalProperties, "ps_key")
+		delete(additionalProperties, "password")
+		delete(additionalProperties, "connection_status")
+		delete(additionalProperties, "created_at")
+		delete(additionalProperties, "last_active_at")
+		delete(additionalProperties, "last_30days_data_usage")
+		delete(additionalProperties, "quick_conf_template")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

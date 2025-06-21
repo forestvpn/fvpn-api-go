@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type Currency struct {
 	Symbol *string `json:"symbol,omitempty"`
 	// Number of subunits in the currency
 	Subunit *int64 `json:"subunit,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Currency Currency
@@ -180,6 +180,11 @@ func (o Currency) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Subunit) {
 		toSerialize["subunit"] = o.Subunit
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -208,15 +213,23 @@ func (o *Currency) UnmarshalJSON(data []byte) (err error) {
 
 	varCurrency := _Currency{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCurrency)
+	err = json.Unmarshal(data, &varCurrency)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Currency(varCurrency)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "code")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "symbol")
+		delete(additionalProperties, "subunit")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

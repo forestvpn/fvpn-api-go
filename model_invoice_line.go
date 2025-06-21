@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -32,6 +31,7 @@ type InvoiceLine struct {
 	Amount float64 `json:"amount"`
 	Currency string `json:"currency"`
 	CreatedAt time.Time `json:"created_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _InvoiceLine InvoiceLine
@@ -306,6 +306,11 @@ func (o InvoiceLine) ToMap() (map[string]interface{}, error) {
 	toSerialize["amount"] = o.Amount
 	toSerialize["currency"] = o.Currency
 	toSerialize["created_at"] = o.CreatedAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -340,15 +345,28 @@ func (o *InvoiceLine) UnmarshalJSON(data []byte) (err error) {
 
 	varInvoiceLine := _InvoiceLine{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varInvoiceLine)
+	err = json.Unmarshal(data, &varInvoiceLine)
 
 	if err != nil {
 		return err
 	}
 
 	*o = InvoiceLine(varInvoiceLine)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "description")
+		delete(additionalProperties, "unit_amount")
+		delete(additionalProperties, "tax_amount")
+		delete(additionalProperties, "discount_amount")
+		delete(additionalProperties, "quantity")
+		delete(additionalProperties, "amount")
+		delete(additionalProperties, "currency")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

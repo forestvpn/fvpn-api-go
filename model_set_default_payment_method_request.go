@@ -13,7 +13,6 @@ package fvpn
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &SetDefaultPaymentMethodRequest{}
 // SetDefaultPaymentMethodRequest struct for SetDefaultPaymentMethodRequest
 type SetDefaultPaymentMethodRequest struct {
 	PaymentMethod string `json:"payment_method"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SetDefaultPaymentMethodRequest SetDefaultPaymentMethodRequest
@@ -80,6 +80,11 @@ func (o SetDefaultPaymentMethodRequest) MarshalJSON() ([]byte, error) {
 func (o SetDefaultPaymentMethodRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["payment_method"] = o.PaymentMethod
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -107,15 +112,20 @@ func (o *SetDefaultPaymentMethodRequest) UnmarshalJSON(data []byte) (err error) 
 
 	varSetDefaultPaymentMethodRequest := _SetDefaultPaymentMethodRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSetDefaultPaymentMethodRequest)
+	err = json.Unmarshal(data, &varSetDefaultPaymentMethodRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = SetDefaultPaymentMethodRequest(varSetDefaultPaymentMethodRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "payment_method")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

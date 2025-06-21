@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -30,6 +29,7 @@ type CloudPaymentsPaymentMethod struct {
 	NeedAuthentication bool `json:"need_authentication"`
 	ThreeDs CloudPaymentsThreeDSecure `json:"three_ds"`
 	CreatedAt time.Time `json:"created_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _CloudPaymentsPaymentMethod CloudPaymentsPaymentMethod
@@ -262,6 +262,11 @@ func (o CloudPaymentsPaymentMethod) ToMap() (map[string]interface{}, error) {
 	toSerialize["need_authentication"] = o.NeedAuthentication
 	toSerialize["three_ds"] = o.ThreeDs
 	toSerialize["created_at"] = o.CreatedAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -294,15 +299,26 @@ func (o *CloudPaymentsPaymentMethod) UnmarshalJSON(data []byte) (err error) {
 
 	varCloudPaymentsPaymentMethod := _CloudPaymentsPaymentMethod{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCloudPaymentsPaymentMethod)
+	err = json.Unmarshal(data, &varCloudPaymentsPaymentMethod)
 
 	if err != nil {
 		return err
 	}
 
 	*o = CloudPaymentsPaymentMethod(varCloudPaymentsPaymentMethod)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "type")
+		delete(additionalProperties, "card")
+		delete(additionalProperties, "is_expired")
+		delete(additionalProperties, "need_authentication")
+		delete(additionalProperties, "three_ds")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

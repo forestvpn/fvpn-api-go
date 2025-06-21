@@ -14,7 +14,6 @@ package fvpn
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -29,6 +28,7 @@ type SubscriptionPendingUpdate struct {
 	Currency string `json:"currency"`
 	// The date when the transition will take effect.
 	EffectiveAt time.Time `json:"effective_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SubscriptionPendingUpdate SubscriptionPendingUpdate
@@ -190,6 +190,11 @@ func (o SubscriptionPendingUpdate) ToMap() (map[string]interface{}, error) {
 	toSerialize["amount"] = o.Amount
 	toSerialize["currency"] = o.Currency
 	toSerialize["effective_at"] = o.EffectiveAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -221,15 +226,24 @@ func (o *SubscriptionPendingUpdate) UnmarshalJSON(data []byte) (err error) {
 
 	varSubscriptionPendingUpdate := _SubscriptionPendingUpdate{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSubscriptionPendingUpdate)
+	err = json.Unmarshal(data, &varSubscriptionPendingUpdate)
 
 	if err != nil {
 		return err
 	}
 
 	*o = SubscriptionPendingUpdate(varSubscriptionPendingUpdate)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "plan")
+		delete(additionalProperties, "plan_price")
+		delete(additionalProperties, "amount")
+		delete(additionalProperties, "currency")
+		delete(additionalProperties, "effective_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }
