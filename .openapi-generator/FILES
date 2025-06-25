@@ -8,6 +8,7 @@ api_cloudpayments.go
 api_device.go
 api_geo.go
 api_node.go
+api_provider.go
 api_stripe.go
 client.go
 configuration.go
@@ -78,6 +79,7 @@ docs/PaginatedDeviceList.md
 docs/PaginatedLocationList.md
 docs/PaginatedNodeList.md
 docs/PaginatedPaymentMethodList.md
+docs/PaginatedProviderList.md
 docs/PaginatedSubscriptionList.md
 docs/PaginatedWalletList.md
 docs/PaginatedWalletTransactionList.md
@@ -89,6 +91,9 @@ docs/Period.md
 docs/Plan.md
 docs/PlanPrice.md
 docs/PriceDiffInfo.md
+docs/Provider.md
+docs/ProviderAPI.md
+docs/ProviderDetail.md
 docs/Region.md
 docs/RegionDetail.md
 docs/SetDefaultPaymentMethodRequest.md
@@ -174,6 +179,7 @@ model_paginated_device_list.go
 model_paginated_location_list.go
 model_paginated_node_list.go
 model_paginated_payment_method_list.go
+model_paginated_provider_list.go
 model_paginated_subscription_list.go
 model_paginated_wallet_list.go
 model_paginated_wallet_transaction_list.go
@@ -185,6 +191,8 @@ model_period.go
 model_plan.go
 model_plan_price.go
 model_price_diff_info.go
+model_provider.go
+model_provider_detail.go
 model_region.go
 model_region_detail.go
 model_set_default_payment_method_request.go

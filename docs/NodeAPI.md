@@ -13,7 +13,7 @@ Method | HTTP request | Description
 [**GetNodeDevices**](NodeAPI.md#GetNodeDevices) | **Get** /v1/nodes/{node_id}/devices/ | List node devices
 [**GetNodes**](NodeAPI.md#GetNodes) | **Get** /v1/nodes/ | List nodes
 [**PartialUpdateNode**](NodeAPI.md#PartialUpdateNode) | **Patch** /v1/nodes/{node_id}/ | Partially update a device
-[**SearchNodes**](NodeAPI.md#SearchNodes) | **Get** /v1/nodes/search/ | Search for nodes with various filters
+[**SearchNodes**](NodeAPI.md#SearchNodes) | **Get** /v1/nodes/search/ | Search for nodes with various filters (DEPRECATED - use list endpoint instead)
 [**UpdateNode**](NodeAPI.md#UpdateNode) | **Put** /v1/nodes/{node_id}/ | Update a node
 
 
@@ -493,7 +493,7 @@ Name | Type | Description  | Notes
 
 ## GetNodes
 
-> PaginatedNodeList GetNodes(ctx).Cursor(cursor).Limit(limit).Execute()
+> PaginatedNodeList GetNodes(ctx).Countries(countries).Cursor(cursor).Distance(distance).IsExitNode(isExitNode).Lat(lat).Limit(limit).Lon(lon).OrderByDistance(orderByDistance).Q(q).Status(status).Tags(tags).Types(types).Execute()
 
 List nodes
 
@@ -510,12 +510,22 @@ import (
 )
 
 func main() {
+	countries := []string{"Inner_example"} // []string | Filter by country codes (optional)
 	cursor := "cursor_example" // string | The pagination cursor value. (optional)
+	distance := "distance_example" // string | Maximum distance (format: 10km, 5mi) (optional)
+	isExitNode := true // bool | Filter by exit node status (optional)
+	lat := float64(1.2) // float64 | Latitude for location search (optional)
 	limit := int32(56) // int32 | Number of results to return per page. (optional)
+	lon := float64(1.2) // float64 | Longitude for location search (optional)
+	orderByDistance := true // bool | Order by distance (optional)
+	q := "q_example" // string | Search nodes by hostname, tags, OS, OS arch, distro, distro codename, or public key (optional)
+	status := "status_example" // string | Filter nodes by status: all (default), online, or offline (optional)
+	tags := "tags_example" // string | Filter nodes by tags (comma-separated list of tag names) (optional)
+	types := []string{"Types_example"} // []string | Filter nodes by type: all, wireguard, quantum, bridge, or proxy. Multiple values can be selected. (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.NodeAPI.GetNodes(context.Background()).Cursor(cursor).Limit(limit).Execute()
+	resp, r, err := apiClient.NodeAPI.GetNodes(context.Background()).Countries(countries).Cursor(cursor).Distance(distance).IsExitNode(isExitNode).Lat(lat).Limit(limit).Lon(lon).OrderByDistance(orderByDistance).Q(q).Status(status).Tags(tags).Types(types).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `NodeAPI.GetNodes``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -536,8 +546,18 @@ Other parameters are passed through a pointer to a apiGetNodesRequest struct via
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **countries** | **[]string** | Filter by country codes | 
  **cursor** | **string** | The pagination cursor value. | 
+ **distance** | **string** | Maximum distance (format: 10km, 5mi) | 
+ **isExitNode** | **bool** | Filter by exit node status | 
+ **lat** | **float64** | Latitude for location search | 
  **limit** | **int32** | Number of results to return per page. | 
+ **lon** | **float64** | Longitude for location search | 
+ **orderByDistance** | **bool** | Order by distance | 
+ **q** | **string** | Search nodes by hostname, tags, OS, OS arch, distro, distro codename, or public key | 
+ **status** | **string** | Filter nodes by status: all (default), online, or offline | 
+ **tags** | **string** | Filter nodes by tags (comma-separated list of tag names) | 
+ **types** | **[]string** | Filter nodes by type: all, wireguard, quantum, bridge, or proxy. Multiple values can be selected. | 
 
 ### Return type
 
@@ -631,7 +651,9 @@ Name | Type | Description  | Notes
 
 > PaginatedNodeList SearchNodes(ctx).Countries(countries).Cursor(cursor).Distance(distance).IsExitNode(isExitNode).Lat(lat).Limit(limit).Lon(lon).OrderByDistance(orderByDistance).Q(q).Tags(tags).Execute()
 
-Search for nodes with various filters
+Search for nodes with various filters (DEPRECATED - use list endpoint instead)
+
+
 
 ### Example
 

@@ -62,6 +62,8 @@ type APIClient struct {
 
 	NodeAPI *NodeAPIService
 
+	ProviderAPI *ProviderAPIService
+
 	StripeAPI *StripeAPIService
 }
 
@@ -87,6 +89,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.DeviceAPI = (*DeviceAPIService)(&c.common)
 	c.GeoAPI = (*GeoAPIService)(&c.common)
 	c.NodeAPI = (*NodeAPIService)(&c.common)
+	c.ProviderAPI = (*ProviderAPIService)(&c.common)
 	c.StripeAPI = (*StripeAPIService)(&c.common)
 
 	return c

@@ -1542,6 +1542,16 @@ paths:
     get:
       operationId: get_nodes
       parameters:
+      - description: Filter by country codes
+        explode: true
+        in: query
+        name: countries
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
       - description: The pagination cursor value.
         explode: true
         in: query
@@ -1550,6 +1560,31 @@ paths:
         schema:
           type: string
         style: form
+      - description: "Maximum distance (format: 10km, 5mi)"
+        explode: true
+        in: query
+        name: distance
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter by exit node status
+        explode: true
+        in: query
+        name: is_exit_node
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Latitude for location search
+        explode: true
+        in: query
+        name: lat
+        required: false
+        schema:
+          format: double
+          type: number
+        style: form
       - description: Number of results to return per page.
         explode: true
         in: query
@@ -1557,6 +1592,69 @@ paths:
         required: false
         schema:
           type: integer
+        style: form
+      - description: Longitude for location search
+        explode: true
+        in: query
+        name: lon
+        required: false
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Order by distance
+        explode: true
+        in: query
+        name: order_by_distance
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: "Search nodes by hostname, tags, OS, OS arch, distro, distro\
+          \ codename, or public key"
+        explode: true
+        in: query
+        name: q
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter nodes by status: all (default), online, or offline"
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          enum:
+          - all
+          - offline
+          - online
+          type: string
+        style: form
+      - description: Filter nodes by tags (comma-separated list of tag names)
+        explode: true
+        in: query
+        name: tags
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Filter nodes by type: all, wireguard, quantum, bridge, or proxy.\
+          \ Multiple values can be selected."
+        explode: true
+        in: query
+        name: types
+        required: false
+        schema:
+          items:
+            enum:
+            - all
+            - bridge
+            - proxy
+            - quantum
+            - wireguard
+            type: string
+          type: array
         style: form
       responses:
         "200":
@@ -1875,6 +1973,9 @@ paths:
       - node
   /v1/nodes/search/:
     get:
+      deprecated: true
+      description: "⚠️ **DEPRECATED**: This endpoint is deprecated. Use the list endpoint\
+        \ (GET /nodes/) instead, which now supports all the same parameters and more."
       operationId: search_nodes
       parameters:
       - description: Filter by country codes
@@ -1970,9 +2071,107 @@ paths:
       security:
       - bearerToken: []
       - apiKey: []
-      summary: Search for nodes with various filters
+      summary: Search for nodes with various filters (DEPRECATED - use list endpoint
+        instead)
       tags:
       - node
+  /v1/providers/:
+    get:
+      description: Get a list of all active providers with optional filtering and
+        search.
+      operationId: get_providers
+      parameters:
+      - description: The pagination cursor value.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of results to return per page.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: A search term.
+        explode: true
+        in: query
+        name: q
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: rating
+        required: false
+        schema:
+          format: float
+          type: number
+        style: form
+      - description: Which field to use when ordering the results.
+        explode: true
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: verified_at
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProviderList'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      - {}
+      summary: List all providers
+      tags:
+      - provider
+  /v1/providers/{provider_id}/:
+    get:
+      description: Get detailed information about a specific provider.
+      operationId: get_provider
+      parameters:
+      - description: A UUID string identifying this Provider.
+        explode: false
+        in: path
+        name: provider_id
+        required: true
+        schema:
+          format: uuid
+          title: ID
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderDetail'
+          description: ""
+      security:
+      - bearerToken: []
+      - apiKey: []
+      - {}
+      summary: Retrieve a provider
+      tags:
+      - provider
   /v1/regions/:
     get:
       operationId: get_regions
@@ -4408,6 +4607,56 @@ components:
       required:
       - results
       type: object
+    PaginatedProviderList:
+      example:
+        next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        count: 100
+        results:
+        - is_deleted: true
+          website_url: https://openapi-generator.tech
+          updated_at: 2000-01-23T04:56:07.000+00:00
+          api_url: https://openapi-generator.tech
+          name: name
+          icon: https://openapi-generator.tech
+          rating: 0.40041409523050575
+          description: description
+          created_at: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          is_verified: true
+        - is_deleted: true
+          website_url: https://openapi-generator.tech
+          updated_at: 2000-01-23T04:56:07.000+00:00
+          api_url: https://openapi-generator.tech
+          name: name
+          icon: https://openapi-generator.tech
+          rating: 0.40041409523050575
+          description: description
+          created_at: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          is_verified: true
+      properties:
+        next:
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+          format: uri
+          nullable: true
+          type: string
+        previous:
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+          format: uri
+          nullable: true
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/Provider'
+          type: array
+        count:
+          description: Total count of items
+          example: 100
+          type: integer
+      required:
+      - results
+      type: object
     PaginatedSubscriptionList:
       example:
         next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
@@ -5009,6 +5258,148 @@ components:
       - interval
       - save_amount
       - save_amount_total
+      type: object
+    Provider:
+      description: Serializer for Provider list and basic operations.
+      example:
+        is_deleted: true
+        website_url: https://openapi-generator.tech
+        updated_at: 2000-01-23T04:56:07.000+00:00
+        api_url: https://openapi-generator.tech
+        name: name
+        icon: https://openapi-generator.tech
+        rating: 0.40041409523050575
+        description: description
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        is_verified: true
+      properties:
+        id:
+          format: uuid
+          readOnly: true
+          type: string
+        name:
+          maxLength: 255
+          type: string
+        description:
+          type: string
+        icon:
+          format: uri
+          maxLength: 200
+          nullable: true
+          title: Icon URL
+          type: string
+        website_url:
+          format: uri
+          maxLength: 200
+          nullable: true
+          type: string
+        api_url:
+          format: uri
+          maxLength: 200
+          nullable: true
+          type: string
+        rating:
+          description: Rating from 0.0 to 5.0
+          format: double
+          maximum: 5.0
+          minimum: 0.0
+          type: number
+        is_verified:
+          readOnly: true
+          type: boolean
+        is_deleted:
+          readOnly: true
+          type: boolean
+        created_at:
+          format: date-time
+          readOnly: true
+          type: string
+        updated_at:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - created_at
+      - id
+      - is_deleted
+      - is_verified
+      - name
+      - updated_at
+      type: object
+    ProviderDetail:
+      description: Detailed serializer for Provider with additional fields.
+      example:
+        is_deleted: true
+        website_url: https://openapi-generator.tech
+        updated_at: 2000-01-23T04:56:07.000+00:00
+        api_url: https://openapi-generator.tech
+        verified_at: 2000-01-23T04:56:07.000+00:00
+        name: name
+        icon: https://openapi-generator.tech
+        rating: 0.40041409523050575
+        description: description
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        is_verified: true
+      properties:
+        id:
+          format: uuid
+          readOnly: true
+          type: string
+        name:
+          maxLength: 255
+          type: string
+        description:
+          type: string
+        icon:
+          format: uri
+          maxLength: 200
+          nullable: true
+          title: Icon URL
+          type: string
+        website_url:
+          format: uri
+          maxLength: 200
+          nullable: true
+          type: string
+        api_url:
+          format: uri
+          maxLength: 200
+          nullable: true
+          type: string
+        rating:
+          description: Rating from 0.0 to 5.0
+          format: double
+          maximum: 5.0
+          minimum: 0.0
+          type: number
+        is_verified:
+          readOnly: true
+          type: boolean
+        is_deleted:
+          readOnly: true
+          type: boolean
+        created_at:
+          format: date-time
+          readOnly: true
+          type: string
+        updated_at:
+          format: date-time
+          readOnly: true
+          type: string
+        verified_at:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - created_at
+      - id
+      - is_deleted
+      - is_verified
+      - name
+      - updated_at
+      - verified_at
       type: object
     Region:
       example:

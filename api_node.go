@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"reflect"
 )
 
 
@@ -838,8 +839,24 @@ func (a *NodeAPIService) GetNodeDevicesExecute(r ApiGetNodeDevicesRequest) ([]No
 type ApiGetNodesRequest struct {
 	ctx context.Context
 	ApiService *NodeAPIService
+	countries *[]string
 	cursor *string
+	distance *string
+	isExitNode *bool
+	lat *float64
 	limit *int32
+	lon *float64
+	orderByDistance *bool
+	q *string
+	status *string
+	tags *string
+	types *[]string
+}
+
+// Filter by country codes
+func (r ApiGetNodesRequest) Countries(countries []string) ApiGetNodesRequest {
+	r.countries = &countries
+	return r
 }
 
 // The pagination cursor value.
@@ -848,9 +865,63 @@ func (r ApiGetNodesRequest) Cursor(cursor string) ApiGetNodesRequest {
 	return r
 }
 
+// Maximum distance (format: 10km, 5mi)
+func (r ApiGetNodesRequest) Distance(distance string) ApiGetNodesRequest {
+	r.distance = &distance
+	return r
+}
+
+// Filter by exit node status
+func (r ApiGetNodesRequest) IsExitNode(isExitNode bool) ApiGetNodesRequest {
+	r.isExitNode = &isExitNode
+	return r
+}
+
+// Latitude for location search
+func (r ApiGetNodesRequest) Lat(lat float64) ApiGetNodesRequest {
+	r.lat = &lat
+	return r
+}
+
 // Number of results to return per page.
 func (r ApiGetNodesRequest) Limit(limit int32) ApiGetNodesRequest {
 	r.limit = &limit
+	return r
+}
+
+// Longitude for location search
+func (r ApiGetNodesRequest) Lon(lon float64) ApiGetNodesRequest {
+	r.lon = &lon
+	return r
+}
+
+// Order by distance
+func (r ApiGetNodesRequest) OrderByDistance(orderByDistance bool) ApiGetNodesRequest {
+	r.orderByDistance = &orderByDistance
+	return r
+}
+
+// Search nodes by hostname, tags, OS, OS arch, distro, distro codename, or public key
+func (r ApiGetNodesRequest) Q(q string) ApiGetNodesRequest {
+	r.q = &q
+	return r
+}
+
+// Filter nodes by status: all (default), online, or offline
+func (r ApiGetNodesRequest) Status(status string) ApiGetNodesRequest {
+	r.status = &status
+	return r
+}
+
+// Filter nodes by tags (comma-separated list of tag names)
+func (r ApiGetNodesRequest) Tags(tags string) ApiGetNodesRequest {
+	r.tags = &tags
+	return r
+}
+
+// Filter nodes by type: all, wireguard, quantum, bridge, or proxy. Multiple values can be selected.
+func (r ApiGetNodesRequest) Types(types []string) ApiGetNodesRequest {
+	r.types = &types
 	return r
 }
 
@@ -892,11 +963,57 @@ func (a *NodeAPIService) GetNodesExecute(r ApiGetNodesRequest) (*PaginatedNodeLi
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.countries != nil {
+		t := *r.countries
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "countries", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "countries", t, "form", "multi")
+		}
+	}
 	if r.cursor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
 	}
+	if r.distance != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "distance", r.distance, "form", "")
+	}
+	if r.isExitNode != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "is_exit_node", r.isExitNode, "form", "")
+	}
+	if r.lat != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "lat", r.lat, "form", "")
+	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	}
+	if r.lon != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "lon", r.lon, "form", "")
+	}
+	if r.orderByDistance != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "order_by_distance", r.orderByDistance, "form", "")
+	}
+	if r.q != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "q", r.q, "form", "")
+	}
+	if r.status != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	if r.types != nil {
+		t := *r.types
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "types", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "types", t, "form", "multi")
+		}
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1169,10 +1286,14 @@ func (r ApiSearchNodesRequest) Execute() (*PaginatedNodeList, *http.Response, er
 }
 
 /*
-SearchNodes Search for nodes with various filters
+SearchNodes Search for nodes with various filters (DEPRECATED - use list endpoint instead)
+
+⚠️ **DEPRECATED**: This endpoint is deprecated. Use the list endpoint (GET /nodes/) instead, which now supports all the same parameters and more.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSearchNodesRequest
+
+Deprecated
 */
 func (a *NodeAPIService) SearchNodes(ctx context.Context) ApiSearchNodesRequest {
 	return ApiSearchNodesRequest{
@@ -1183,6 +1304,7 @@ func (a *NodeAPIService) SearchNodes(ctx context.Context) ApiSearchNodesRequest 
 
 // Execute executes the request
 //  @return PaginatedNodeList
+// Deprecated
 func (a *NodeAPIService) SearchNodesExecute(r ApiSearchNodesRequest) (*PaginatedNodeList, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet

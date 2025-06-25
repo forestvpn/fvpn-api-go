@@ -137,8 +137,10 @@ Class | Method | HTTP request | Description
 *NodeAPI* | [**GetNodeDevices**](docs/NodeAPI.md#getnodedevices) | **Get** /v1/nodes/{node_id}/devices/ | List node devices
 *NodeAPI* | [**GetNodes**](docs/NodeAPI.md#getnodes) | **Get** /v1/nodes/ | List nodes
 *NodeAPI* | [**PartialUpdateNode**](docs/NodeAPI.md#partialupdatenode) | **Patch** /v1/nodes/{node_id}/ | Partially update a device
-*NodeAPI* | [**SearchNodes**](docs/NodeAPI.md#searchnodes) | **Get** /v1/nodes/search/ | Search for nodes with various filters
+*NodeAPI* | [**SearchNodes**](docs/NodeAPI.md#searchnodes) | **Get** /v1/nodes/search/ | Search for nodes with various filters (DEPRECATED - use list endpoint instead)
 *NodeAPI* | [**UpdateNode**](docs/NodeAPI.md#updatenode) | **Put** /v1/nodes/{node_id}/ | Update a node
+*ProviderAPI* | [**GetProvider**](docs/ProviderAPI.md#getprovider) | **Get** /v1/providers/{provider_id}/ | Retrieve a provider
+*ProviderAPI* | [**GetProviders**](docs/ProviderAPI.md#getproviders) | **Get** /v1/providers/ | List all providers
 *StripeAPI* | [**CreateStripeSetupIntent**](docs/StripeAPI.md#createstripesetupintent) | **Post** /v1/billing/stripe/setup-intents/ | Create a new stripe setup intent
 
 
@@ -205,6 +207,7 @@ Class | Method | HTTP request | Description
  - [PaginatedLocationList](docs/PaginatedLocationList.md)
  - [PaginatedNodeList](docs/PaginatedNodeList.md)
  - [PaginatedPaymentMethodList](docs/PaginatedPaymentMethodList.md)
+ - [PaginatedProviderList](docs/PaginatedProviderList.md)
  - [PaginatedSubscriptionList](docs/PaginatedSubscriptionList.md)
  - [PaginatedWalletList](docs/PaginatedWalletList.md)
  - [PaginatedWalletTransactionList](docs/PaginatedWalletTransactionList.md)
@@ -216,6 +219,8 @@ Class | Method | HTTP request | Description
  - [Plan](docs/Plan.md)
  - [PlanPrice](docs/PlanPrice.md)
  - [PriceDiffInfo](docs/PriceDiffInfo.md)
+ - [Provider](docs/Provider.md)
+ - [ProviderDetail](docs/ProviderDetail.md)
  - [Region](docs/Region.md)
  - [RegionDetail](docs/RegionDetail.md)
  - [SetDefaultPaymentMethodRequest](docs/SetDefaultPaymentMethodRequest.md)
