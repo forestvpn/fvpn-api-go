@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ExternalKey** | Pointer to **NullableString** |  | [optional] 
+**Name** | Pointer to **string** |  | [optional] 
 **PubKey** | Pointer to **string** |  | [optional] 
 **RawPassword** | Pointer to **string** |  | [optional] 
 **Password** | Pointer to **NullableString** | Bcrypt Hashed Password for Authentication, e.g. HTTP Proxy | [optional] 
@@ -71,6 +72,31 @@ HasExternalKey returns a boolean if a field has been set.
 `func (o *PatchedDeviceRequest) UnsetExternalKey()`
 
 UnsetExternalKey ensures that no value is present for ExternalKey, not even an explicit nil
+### GetName
+
+`func (o *PatchedDeviceRequest) GetName() string`
+
+GetName returns the Name field if non-nil, zero value otherwise.
+
+### GetNameOk
+
+`func (o *PatchedDeviceRequest) GetNameOk() (*string, bool)`
+
+GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetName
+
+`func (o *PatchedDeviceRequest) SetName(v string)`
+
+SetName sets Name field to given value.
+
+### HasName
+
+`func (o *PatchedDeviceRequest) HasName() bool`
+
+HasName returns a boolean if a field has been set.
+
 ### GetPubKey
 
 `func (o *PatchedDeviceRequest) GetPubKey() string`

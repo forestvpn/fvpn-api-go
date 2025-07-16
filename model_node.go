@@ -26,7 +26,7 @@ type Node struct {
 	Hostname string `json:"hostname" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	IpAddresses []string `json:"ip_addresses"`
 	Subnets []string `json:"subnets,omitempty"`
-	Tags []string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 	IsExitNode bool `json:"is_exit_node"`
 	IsPublic *bool `json:"is_public,omitempty"`
 	PubKey string `json:"pub_key"`
@@ -56,11 +56,12 @@ type _Node Node
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNode(id string, hostname string, ipAddresses []string, isExitNode bool, pubKey string, ports []string, conditions []NodeCondition, lastActiveAt NullableTime, ipDetails []IPInfo) *Node {
+func NewNode(id string, hostname string, ipAddresses []string, tags []string, isExitNode bool, pubKey string, ports []string, conditions []NodeCondition, lastActiveAt NullableTime, ipDetails []IPInfo) *Node {
 	this := Node{}
 	this.Id = id
 	this.Hostname = hostname
 	this.IpAddresses = ipAddresses
+	this.Tags = tags
 	this.IsExitNode = isExitNode
 	this.PubKey = pubKey
 	this.Ports = ports
@@ -183,34 +184,26 @@ func (o *Node) SetSubnets(v []string) {
 	o.Subnets = v
 }
 
-// GetTags returns the Tags field value if set, zero value otherwise.
+// GetTags returns the Tags field value
 func (o *Node) GetTags() []string {
-	if o == nil || IsNil(o.Tags) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Tags
 }
 
-// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// GetTagsOk returns a tuple with the Tags field value
 // and a boolean to check if the value has been set.
 func (o *Node) GetTagsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Tags) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Tags, true
 }
 
-// HasTags returns a boolean if a field has been set.
-func (o *Node) HasTags() bool {
-	if o != nil && !IsNil(o.Tags) {
-		return true
-	}
-
-	return false
-}
-
-// SetTags gets a reference to the given []string and assigns it to the Tags field.
+// SetTags sets field value
 func (o *Node) SetTags(v []string) {
 	o.Tags = v
 }
@@ -843,9 +836,7 @@ func (o Node) ToMap() (map[string]interface{}, error) {
 	if o.Subnets != nil {
 		toSerialize["subnets"] = o.Subnets
 	}
-	if !IsNil(o.Tags) {
-		toSerialize["tags"] = o.Tags
-	}
+	toSerialize["tags"] = o.Tags
 	toSerialize["is_exit_node"] = o.IsExitNode
 	if !IsNil(o.IsPublic) {
 		toSerialize["is_public"] = o.IsPublic
@@ -904,6 +895,7 @@ func (o *Node) UnmarshalJSON(data []byte) (err error) {
 		"id",
 		"hostname",
 		"ip_addresses",
+		"tags",
 		"is_exit_node",
 		"pub_key",
 		"ports",

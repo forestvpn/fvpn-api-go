@@ -79,11 +79,14 @@ All URIs are relative to *https://api.fvpn.io*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*AccountAPI* | [**ApproveDeviceCode**](docs/AccountAPI.md#approvedevicecode) | **Post** /v1/account/codes/{code}/approve/ | Approve a device authentication code
 *AccountAPI* | [**CreateAccount**](docs/AccountAPI.md#createaccount) | **Post** /v1/accounts/ | Create a new account
+*AccountAPI* | [**CreateDeviceCode**](docs/AccountAPI.md#createdevicecode) | **Post** /v1/account/codes/ | Create a device authentication code
 *AccountAPI* | [**DeleteCurrentAccount**](docs/AccountAPI.md#deletecurrentaccount) | **Delete** /v1/account/ | Delete the current account
 *AccountAPI* | [**GetAccountTokenPair**](docs/AccountAPI.md#getaccounttokenpair) | **Post** /v1/account/token/ | Get account token pair
 *AccountAPI* | [**GetCurrentAccount**](docs/AccountAPI.md#getcurrentaccount) | **Get** /v1/account/ | Retrieve the current account
 *AccountAPI* | [**GetCurrentAccountBillingUsage**](docs/AccountAPI.md#getcurrentaccountbillingusage) | **Get** /v1/account/billing-usage/ | Retrieve current account billing usage
+*AccountAPI* | [**GetDeviceCode**](docs/AccountAPI.md#getdevicecode) | **Get** /v1/account/codes/{code}/ | Check device code
 *AccountAPI* | [**RefreshAccountToken**](docs/AccountAPI.md#refreshaccounttoken) | **Post** /v1/account/token/refresh/ | Refresh account token
 *BillingAPI* | [**CancelSubscription**](docs/BillingAPI.md#cancelsubscription) | **Delete** /v1/billing/subscriptions/{subscription_id}/ | Cancel subscription
 *BillingAPI* | [**ChangeSubscriptionPlan**](docs/BillingAPI.md#changesubscriptionplan) | **Post** /v1/billing/subscriptions/{subscription_id}/change-plan/ | Change subscription plan
@@ -137,7 +140,6 @@ Class | Method | HTTP request | Description
 *NodeAPI* | [**GetNodeDevices**](docs/NodeAPI.md#getnodedevices) | **Get** /v1/nodes/{node_id}/devices/ | List node devices
 *NodeAPI* | [**GetNodes**](docs/NodeAPI.md#getnodes) | **Get** /v1/nodes/ | List nodes
 *NodeAPI* | [**PartialUpdateNode**](docs/NodeAPI.md#partialupdatenode) | **Patch** /v1/nodes/{node_id}/ | Partially update a device
-*NodeAPI* | [**SearchNodes**](docs/NodeAPI.md#searchnodes) | **Get** /v1/nodes/search/ | Search for nodes with various filters (DEPRECATED - use list endpoint instead)
 *NodeAPI* | [**UpdateNode**](docs/NodeAPI.md#updatenode) | **Put** /v1/nodes/{node_id}/ | Update a node
 *ProviderAPI* | [**GetProvider**](docs/ProviderAPI.md#getprovider) | **Get** /v1/providers/{provider_id}/ | Retrieve a provider
 *ProviderAPI* | [**GetProviders**](docs/ProviderAPI.md#getproviders) | **Get** /v1/providers/ | List all providers
@@ -176,6 +178,9 @@ Class | Method | HTTP request | Description
  - [Device](docs/Device.md)
  - [DeviceAnalytics](docs/DeviceAnalytics.md)
  - [DeviceAnalyticsDevice](docs/DeviceAnalyticsDevice.md)
+ - [DeviceCode](docs/DeviceCode.md)
+ - [DeviceCodeRequest](docs/DeviceCodeRequest.md)
+ - [DeviceCodeStatus](docs/DeviceCodeStatus.md)
  - [DeviceData](docs/DeviceData.md)
  - [DeviceDataUsage](docs/DeviceDataUsage.md)
  - [DeviceDataUsageRequest](docs/DeviceDataUsageRequest.md)

@@ -100,6 +100,88 @@ paths:
       summary: Retrieve current account billing usage
       tags:
       - account
+  /v1/account/codes/:
+    post:
+      description: Generate a new device code for device authentication. No authentication
+        required.
+      operationId: create_device_code
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeviceCodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeviceCodeRequest'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/DeviceCodeRequest'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceCode'
+          description: ""
+      summary: Create a device authentication code
+      tags:
+      - account
+  /v1/account/codes/{code}/:
+    get:
+      description: Check the status of a device authentication code. Returns waiting
+        status or approved with JWT tokens.
+      operationId: get_device_code
+      parameters:
+      - explode: false
+        in: path
+        name: code
+        required: true
+        schema:
+          description: 6-character device authentication code
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceCode'
+          description: ""
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceCode'
+          description: ""
+      summary: Check device code
+      tags:
+      - account
+  /v1/account/codes/{code}/approve/:
+    post:
+      description: Approve a device code using authenticated user session. Requires
+        authentication.
+      operationId: approve_device_code
+      parameters:
+      - explode: false
+        in: path
+        name: code
+        required: true
+        schema:
+          description: 6-character device authentication code
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No response body
+      security:
+      - bearerToken: []
+      - apiKey: []
+      summary: Approve a device authentication code
+      tags:
+      - account
   /v1/account/token/:
     post:
       description: |-
@@ -1971,110 +2053,6 @@ paths:
       summary: List node devices
       tags:
       - node
-  /v1/nodes/search/:
-    get:
-      deprecated: true
-      description: "⚠️ **DEPRECATED**: This endpoint is deprecated. Use the list endpoint\
-        \ (GET /nodes/) instead, which now supports all the same parameters and more."
-      operationId: search_nodes
-      parameters:
-      - description: Filter by country codes
-        explode: true
-        in: query
-        name: countries
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: The pagination cursor value.
-        explode: true
-        in: query
-        name: cursor
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: "Maximum distance (format: 10km, 5mi)"
-        explode: true
-        in: query
-        name: distance
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Filter by exit node status
-        explode: true
-        in: query
-        name: is_exit_node
-        required: false
-        schema:
-          type: boolean
-        style: form
-      - description: Latitude for location search
-        explode: true
-        in: query
-        name: lat
-        required: false
-        schema:
-          format: double
-          type: number
-        style: form
-      - description: Number of results to return per page.
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          type: integer
-        style: form
-      - description: Longitude for location search
-        explode: true
-        in: query
-        name: lon
-        required: false
-        schema:
-          format: double
-          type: number
-        style: form
-      - description: Order by distance
-        explode: true
-        in: query
-        name: order_by_distance
-        required: false
-        schema:
-          type: boolean
-        style: form
-      - description: "Search nodes by hostname, tags, OS, OS arch, distro, distro\
-          \ codename, or public key"
-        explode: true
-        in: query
-        name: q
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Filter by tags
-        explode: true
-        in: query
-        name: tags
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedNodeList'
-          description: ""
-      security:
-      - bearerToken: []
-      - apiKey: []
-      summary: Search for nodes with various filters (DEPRECATED - use list endpoint
-        instead)
-      tags:
-      - node
   /v1/providers/:
     get:
       description: Get a list of all active providers with optional filtering and
@@ -3107,25 +3085,26 @@ components:
       type: object
     Device:
       example:
+        ps_key: ps_key
+        connection_status: ""
+        created_at: 2000-01-23T04:56:07.000+00:00
+        pub_key: pub_key
         quick_conf_template: quick_conf_template
         password: password
-        ps_key: ps_key
         ipv4: ipv4
         last_active_at: 2000-01-23T04:56:07.000+00:00
         ipv6: ipv6
-        connection_status: ""
         last_30days_data_usage: ""
         name: name
-        created_at: 2000-01-23T04:56:07.000+00:00
+        exit_node_endpoint: exit_node_endpoint
         id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        pub_key: pub_key
       properties:
         id:
           format: uuid
           readOnly: true
           type: string
         name:
-          readOnly: true
+          maxLength: 255
           type: string
         ipv4:
           readOnly: true
@@ -3170,15 +3149,19 @@ components:
           description: Generate a quick configuration string for the device.
           readOnly: true
           type: string
+        exit_node_endpoint:
+          description: Return the endpoint for the device.
+          readOnly: true
+          type: string
       required:
       - connection_status
       - created_at
+      - exit_node_endpoint
       - id
       - ipv4
       - ipv6
       - last_30days_data_usage
       - last_active_at
-      - name
       - ps_key
       - pub_key
       - quick_conf_template
@@ -3246,6 +3229,74 @@ components:
       - id
       - name
       type: object
+    DeviceCode:
+      description: |-
+        Serializer for checking device code status.
+
+        Used for GET /v1/account/codes/{code}/ endpoint.
+        Returns different fields based on the code status.
+      example:
+        access_token: access_token
+        refresh_token: refresh_token
+        code: code
+        expires_at: 2000-01-23T04:56:07.000+00:00
+        approval_url: approval_url
+        status: waiting
+      properties:
+        code:
+          description: 6-character device authentication code
+          readOnly: true
+          type: string
+        expires_at:
+          description: When this code expires
+          format: date-time
+          readOnly: true
+          type: string
+        status:
+          $ref: '#/components/schemas/DeviceCodeStatus'
+        access_token:
+          description: JWT access token generated after approval
+          nullable: true
+          readOnly: true
+          type: string
+        refresh_token:
+          description: JWT refresh token generated after approval
+          nullable: true
+          readOnly: true
+          type: string
+        approval_url:
+          description: Generate the approval URL for the device code.
+          readOnly: true
+          type: string
+      required:
+      - access_token
+      - approval_url
+      - code
+      - expires_at
+      - refresh_token
+      type: object
+    DeviceCodeRequest:
+      description: |-
+        Serializer for checking device code status.
+
+        Used for GET /v1/account/codes/{code}/ endpoint.
+        Returns different fields based on the code status.
+      example:
+        status: waiting
+      properties:
+        status:
+          $ref: '#/components/schemas/DeviceCodeStatus'
+      type: object
+    DeviceCodeStatus:
+      description: |-
+        * `waiting` - Waiting
+        * `approved` - Approved
+        * `expired` - Expired
+      enum:
+      - waiting
+      - approved
+      - expired
+      type: string
     DeviceData:
       description: Serializer for device with data usage information.
       example:
@@ -3311,22 +3362,27 @@ components:
       example:
         distro: distro
         external_key: external_key
-        password: password
-        app_build: app_build
         os: os
         app_version: app_version
         raw_password: raw_password
         os_version: os_version
         os_arch: os_arch
-        distro_codename: distro_codename
         pub_key: pub_key
         distro_version: distro_version
+        password: password
+        app_build: app_build
+        name: name
+        distro_codename: distro_codename
       properties:
         external_key:
           maxLength: 255
           nullable: true
           type: string
           writeOnly: true
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
         pub_key:
           maxLength: 88
           minLength: 1
@@ -3855,8 +3911,8 @@ components:
         - ports
         - ports
         tags:
-        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - tags
+        - tags
         pub_key: pub_key
         distro_version: distro_version
         hostname: hostname
@@ -3922,8 +3978,6 @@ components:
           type: array
         tags:
           items:
-            format: uuid
-            title: ID
             type: string
           type: array
         is_exit_node:
@@ -4022,6 +4076,7 @@ components:
       - last_active_at
       - ports
       - pub_key
+      - tags
       type: object
     NodeCondition:
       example:
@@ -4181,8 +4236,8 @@ components:
         - ports
         - ports
         tags:
-        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - tags
+        - tags
         pub_key: pub_key
         distro_version: distro_version
         hostname: hostname
@@ -4220,8 +4275,7 @@ components:
           type: array
         tags:
           items:
-            format: uuid
-            title: ID
+            minLength: 1
             type: string
           type: array
         is_public:
@@ -4300,6 +4354,7 @@ components:
       - ip_addresses
       - ports
       - pub_key
+      - tags
       type: object
     NodeStatus:
       description: |-
@@ -4323,30 +4378,32 @@ components:
         previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
         count: 100
         results:
-        - quick_conf_template: quick_conf_template
+        - ps_key: ps_key
+          connection_status: ""
+          created_at: 2000-01-23T04:56:07.000+00:00
+          pub_key: pub_key
+          quick_conf_template: quick_conf_template
           password: password
-          ps_key: ps_key
           ipv4: ipv4
           last_active_at: 2000-01-23T04:56:07.000+00:00
           ipv6: ipv6
-          connection_status: ""
           last_30days_data_usage: ""
           name: name
-          created_at: 2000-01-23T04:56:07.000+00:00
+          exit_node_endpoint: exit_node_endpoint
           id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - ps_key: ps_key
+          connection_status: ""
+          created_at: 2000-01-23T04:56:07.000+00:00
           pub_key: pub_key
-        - quick_conf_template: quick_conf_template
+          quick_conf_template: quick_conf_template
           password: password
-          ps_key: ps_key
           ipv4: ipv4
           last_active_at: 2000-01-23T04:56:07.000+00:00
           ipv6: ipv6
-          connection_status: ""
           last_30days_data_usage: ""
           name: name
-          created_at: 2000-01-23T04:56:07.000+00:00
+          exit_node_endpoint: exit_node_endpoint
           id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-          pub_key: pub_key
       properties:
         next:
           example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
@@ -4445,8 +4502,8 @@ components:
           - ports
           - ports
           tags:
-          - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-          - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - tags
+          - tags
           pub_key: pub_key
           distro_version: distro_version
           hostname: hostname
@@ -4502,8 +4559,8 @@ components:
           - ports
           - ports
           tags:
-          - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-          - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - tags
+          - tags
           pub_key: pub_key
           distro_version: distro_version
           hostname: hostname
@@ -4847,22 +4904,27 @@ components:
       example:
         distro: distro
         external_key: external_key
-        password: password
-        app_build: app_build
         os: os
         app_version: app_version
         raw_password: raw_password
         os_version: os_version
         os_arch: os_arch
-        distro_codename: distro_codename
         pub_key: pub_key
         distro_version: distro_version
+        password: password
+        app_build: app_build
+        name: name
+        distro_codename: distro_codename
       properties:
         external_key:
           maxLength: 255
           nullable: true
           type: string
           writeOnly: true
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
         pub_key:
           maxLength: 88
           minLength: 1
@@ -4933,8 +4995,8 @@ components:
         - ports
         - ports
         tags:
-        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - tags
+        - tags
         pub_key: pub_key
         distro_version: distro_version
         hostname: hostname
@@ -4972,8 +5034,7 @@ components:
           type: array
         tags:
           items:
-            format: uuid
-            title: ID
+            minLength: 1
             type: string
           type: array
         is_public:

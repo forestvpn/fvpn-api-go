@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Hostname** | **string** |  | 
 **IpAddresses** | **[]string** |  | 
 **Subnets** | Pointer to **[]string** |  | [optional] 
-**Tags** | Pointer to **[]string** |  | [optional] 
+**Tags** | **[]string** |  | 
 **IsExitNode** | **bool** |  | [readonly] 
 **IsPublic** | Pointer to **bool** |  | [optional] 
 **PubKey** | **string** |  | 
@@ -32,7 +32,7 @@ Name | Type | Description | Notes
 
 ### NewNode
 
-`func NewNode(id string, hostname string, ipAddresses []string, isExitNode bool, pubKey string, ports []string, conditions []NodeCondition, lastActiveAt NullableTime, ipDetails []IPInfo, ) *Node`
+`func NewNode(id string, hostname string, ipAddresses []string, tags []string, isExitNode bool, pubKey string, ports []string, conditions []NodeCondition, lastActiveAt NullableTime, ipDetails []IPInfo, ) *Node`
 
 NewNode instantiates a new Node object
 This constructor will assign default values to properties that have it defined,
@@ -161,11 +161,6 @@ and a boolean to check if the value has been set.
 
 SetTags sets Tags field to given value.
 
-### HasTags
-
-`func (o *Node) HasTags() bool`
-
-HasTags returns a boolean if a field has been set.
 
 ### GetIsExitNode
 

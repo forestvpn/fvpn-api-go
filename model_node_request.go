@@ -24,7 +24,7 @@ type NodeRequest struct {
 	Hostname string `json:"hostname" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	IpAddresses []string `json:"ip_addresses"`
 	Subnets []string `json:"subnets,omitempty"`
-	Tags []string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 	IsPublic *bool `json:"is_public,omitempty"`
 	PubKey string `json:"pub_key"`
 	Ports []string `json:"ports"`
@@ -50,10 +50,11 @@ type _NodeRequest NodeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNodeRequest(hostname string, ipAddresses []string, pubKey string, ports []string) *NodeRequest {
+func NewNodeRequest(hostname string, ipAddresses []string, tags []string, pubKey string, ports []string) *NodeRequest {
 	this := NodeRequest{}
 	this.Hostname = hostname
 	this.IpAddresses = ipAddresses
+	this.Tags = tags
 	this.PubKey = pubKey
 	this.Ports = ports
 	return &this
@@ -148,34 +149,26 @@ func (o *NodeRequest) SetSubnets(v []string) {
 	o.Subnets = v
 }
 
-// GetTags returns the Tags field value if set, zero value otherwise.
+// GetTags returns the Tags field value
 func (o *NodeRequest) GetTags() []string {
-	if o == nil || IsNil(o.Tags) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Tags
 }
 
-// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// GetTagsOk returns a tuple with the Tags field value
 // and a boolean to check if the value has been set.
 func (o *NodeRequest) GetTagsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Tags) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Tags, true
 }
 
-// HasTags returns a boolean if a field has been set.
-func (o *NodeRequest) HasTags() bool {
-	if o != nil && !IsNil(o.Tags) {
-		return true
-	}
-
-	return false
-}
-
-// SetTags gets a reference to the given []string and assigns it to the Tags field.
+// SetTags sets field value
 func (o *NodeRequest) SetTags(v []string) {
 	o.Tags = v
 }
@@ -709,9 +702,7 @@ func (o NodeRequest) ToMap() (map[string]interface{}, error) {
 	if o.Subnets != nil {
 		toSerialize["subnets"] = o.Subnets
 	}
-	if !IsNil(o.Tags) {
-		toSerialize["tags"] = o.Tags
-	}
+	toSerialize["tags"] = o.Tags
 	if !IsNil(o.IsPublic) {
 		toSerialize["is_public"] = o.IsPublic
 	}
@@ -765,6 +756,7 @@ func (o *NodeRequest) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"hostname",
 		"ip_addresses",
+		"tags",
 		"pub_key",
 		"ports",
 	}

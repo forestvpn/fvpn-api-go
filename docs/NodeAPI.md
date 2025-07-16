@@ -13,7 +13,6 @@ Method | HTTP request | Description
 [**GetNodeDevices**](NodeAPI.md#GetNodeDevices) | **Get** /v1/nodes/{node_id}/devices/ | List node devices
 [**GetNodes**](NodeAPI.md#GetNodes) | **Get** /v1/nodes/ | List nodes
 [**PartialUpdateNode**](NodeAPI.md#PartialUpdateNode) | **Patch** /v1/nodes/{node_id}/ | Partially update a device
-[**SearchNodes**](NodeAPI.md#SearchNodes) | **Get** /v1/nodes/search/ | Search for nodes with various filters (DEPRECATED - use list endpoint instead)
 [**UpdateNode**](NodeAPI.md#UpdateNode) | **Put** /v1/nodes/{node_id}/ | Update a node
 
 
@@ -37,7 +36,7 @@ import (
 )
 
 func main() {
-	nodeRequest := *openapiclient.NewNodeRequest("Hostname_example", []string{"IpAddresses_example"}, "PubKey_example", []string{"Ports_example"}) // NodeRequest | 
+	nodeRequest := *openapiclient.NewNodeRequest("Hostname_example", []string{"IpAddresses_example"}, []string{"Tags_example"}, "PubKey_example", []string{"Ports_example"}) // NodeRequest | 
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
@@ -647,90 +646,6 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## SearchNodes
-
-> PaginatedNodeList SearchNodes(ctx).Countries(countries).Cursor(cursor).Distance(distance).IsExitNode(isExitNode).Lat(lat).Limit(limit).Lon(lon).OrderByDistance(orderByDistance).Q(q).Tags(tags).Execute()
-
-Search for nodes with various filters (DEPRECATED - use list endpoint instead)
-
-
-
-### Example
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-	openapiclient "github.com/forestvpn/fvpn-api-go"
-)
-
-func main() {
-	countries := "countries_example" // string | Filter by country codes (optional)
-	cursor := "cursor_example" // string | The pagination cursor value. (optional)
-	distance := "distance_example" // string | Maximum distance (format: 10km, 5mi) (optional)
-	isExitNode := true // bool | Filter by exit node status (optional)
-	lat := float64(1.2) // float64 | Latitude for location search (optional)
-	limit := int32(56) // int32 | Number of results to return per page. (optional)
-	lon := float64(1.2) // float64 | Longitude for location search (optional)
-	orderByDistance := true // bool | Order by distance (optional)
-	q := "q_example" // string | Search nodes by hostname, tags, OS, OS arch, distro, distro codename, or public key (optional)
-	tags := "tags_example" // string | Filter by tags (optional)
-
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.NodeAPI.SearchNodes(context.Background()).Countries(countries).Cursor(cursor).Distance(distance).IsExitNode(isExitNode).Lat(lat).Limit(limit).Lon(lon).OrderByDistance(orderByDistance).Q(q).Tags(tags).Execute()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `NodeAPI.SearchNodes``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-	}
-	// response from `SearchNodes`: PaginatedNodeList
-	fmt.Fprintf(os.Stdout, "Response from `NodeAPI.SearchNodes`: %v\n", resp)
-}
-```
-
-### Path Parameters
-
-
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiSearchNodesRequest struct via the builder pattern
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **countries** | **string** | Filter by country codes | 
- **cursor** | **string** | The pagination cursor value. | 
- **distance** | **string** | Maximum distance (format: 10km, 5mi) | 
- **isExitNode** | **bool** | Filter by exit node status | 
- **lat** | **float64** | Latitude for location search | 
- **limit** | **int32** | Number of results to return per page. | 
- **lon** | **float64** | Longitude for location search | 
- **orderByDistance** | **bool** | Order by distance | 
- **q** | **string** | Search nodes by hostname, tags, OS, OS arch, distro, distro codename, or public key | 
- **tags** | **string** | Filter by tags | 
-
-### Return type
-
-[**PaginatedNodeList**](PaginatedNodeList.md)
-
-### Authorization
-
-[bearerToken](../README.md#bearerToken), [apiKey](../README.md#apiKey)
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
 ## UpdateNode
 
 > Node UpdateNode(ctx, nodeId).NodeRequest(nodeRequest).Execute()
@@ -751,7 +666,7 @@ import (
 
 func main() {
 	nodeId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | A UUID string identifying this Node.
-	nodeRequest := *openapiclient.NewNodeRequest("Hostname_example", []string{"IpAddresses_example"}, "PubKey_example", []string{"Ports_example"}) // NodeRequest | 
+	nodeRequest := *openapiclient.NewNodeRequest("Hostname_example", []string{"IpAddresses_example"}, []string{"Tags_example"}, "PubKey_example", []string{"Ports_example"}) // NodeRequest | 
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)

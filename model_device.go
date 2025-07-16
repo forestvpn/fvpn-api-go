@@ -23,7 +23,7 @@ var _ MappedNullable = &Device{}
 // Device struct for Device
 type Device struct {
 	Id string `json:"id"`
-	Name string `json:"name"`
+	Name *string `json:"name,omitempty"`
 	Ipv4 string `json:"ipv4"`
 	Ipv6 string `json:"ipv6"`
 	PubKey string `json:"pub_key"`
@@ -37,6 +37,8 @@ type Device struct {
 	Last30daysDataUsage DeviceDataUsage `json:"last_30days_data_usage"`
 	// Generate a quick configuration string for the device.
 	QuickConfTemplate string `json:"quick_conf_template"`
+	// Return the endpoint for the device.
+	ExitNodeEndpoint string `json:"exit_node_endpoint"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -46,10 +48,9 @@ type _Device Device
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDevice(id string, name string, ipv4 string, ipv6 string, pubKey string, psKey string, connectionStatus ConnectionStatus, createdAt time.Time, lastActiveAt time.Time, last30daysDataUsage DeviceDataUsage, quickConfTemplate string) *Device {
+func NewDevice(id string, ipv4 string, ipv6 string, pubKey string, psKey string, connectionStatus ConnectionStatus, createdAt time.Time, lastActiveAt time.Time, last30daysDataUsage DeviceDataUsage, quickConfTemplate string, exitNodeEndpoint string) *Device {
 	this := Device{}
 	this.Id = id
-	this.Name = name
 	this.Ipv4 = ipv4
 	this.Ipv6 = ipv6
 	this.PubKey = pubKey
@@ -59,6 +60,7 @@ func NewDevice(id string, name string, ipv4 string, ipv6 string, pubKey string, 
 	this.LastActiveAt = lastActiveAt
 	this.Last30daysDataUsage = last30daysDataUsage
 	this.QuickConfTemplate = quickConfTemplate
+	this.ExitNodeEndpoint = exitNodeEndpoint
 	return &this
 }
 
@@ -94,28 +96,36 @@ func (o *Device) SetId(v string) {
 	o.Id = v
 }
 
-// GetName returns the Name field value
+// GetName returns the Name field value if set, zero value otherwise.
 func (o *Device) GetName() string {
-	if o == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-
-	return o.Name
+	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Device) GetNameOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return &o.Name, true
+	return o.Name, true
 }
 
-// SetName sets field value
+// HasName returns a boolean if a field has been set.
+func (o *Device) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
 func (o *Device) SetName(v string) {
-	o.Name = v
+	o.Name = &v
 }
 
 // GetIpv4 returns the Ipv4 field value
@@ -376,6 +386,30 @@ func (o *Device) SetQuickConfTemplate(v string) {
 	o.QuickConfTemplate = v
 }
 
+// GetExitNodeEndpoint returns the ExitNodeEndpoint field value
+func (o *Device) GetExitNodeEndpoint() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.ExitNodeEndpoint
+}
+
+// GetExitNodeEndpointOk returns a tuple with the ExitNodeEndpoint field value
+// and a boolean to check if the value has been set.
+func (o *Device) GetExitNodeEndpointOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ExitNodeEndpoint, true
+}
+
+// SetExitNodeEndpoint sets field value
+func (o *Device) SetExitNodeEndpoint(v string) {
+	o.ExitNodeEndpoint = v
+}
+
 func (o Device) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -387,7 +421,9 @@ func (o Device) MarshalJSON() ([]byte, error) {
 func (o Device) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
-	toSerialize["name"] = o.Name
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	toSerialize["ipv4"] = o.Ipv4
 	toSerialize["ipv6"] = o.Ipv6
 	toSerialize["pub_key"] = o.PubKey
@@ -400,6 +436,7 @@ func (o Device) ToMap() (map[string]interface{}, error) {
 	toSerialize["last_active_at"] = o.LastActiveAt
 	toSerialize["last_30days_data_usage"] = o.Last30daysDataUsage
 	toSerialize["quick_conf_template"] = o.QuickConfTemplate
+	toSerialize["exit_node_endpoint"] = o.ExitNodeEndpoint
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -414,7 +451,6 @@ func (o *Device) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"id",
-		"name",
 		"ipv4",
 		"ipv6",
 		"pub_key",
@@ -424,6 +460,7 @@ func (o *Device) UnmarshalJSON(data []byte) (err error) {
 		"last_active_at",
 		"last_30days_data_usage",
 		"quick_conf_template",
+		"exit_node_endpoint",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -465,6 +502,7 @@ func (o *Device) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "last_active_at")
 		delete(additionalProperties, "last_30days_data_usage")
 		delete(additionalProperties, "quick_conf_template")
+		delete(additionalProperties, "exit_node_endpoint")
 		o.AdditionalProperties = additionalProperties
 	}
 

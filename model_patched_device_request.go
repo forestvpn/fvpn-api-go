@@ -21,6 +21,7 @@ var _ MappedNullable = &PatchedDeviceRequest{}
 // PatchedDeviceRequest struct for PatchedDeviceRequest
 type PatchedDeviceRequest struct {
 	ExternalKey NullableString `json:"external_key,omitempty"`
+	Name *string `json:"name,omitempty"`
 	PubKey *string `json:"pub_key,omitempty"`
 	RawPassword *string `json:"raw_password,omitempty"`
 	// Bcrypt Hashed Password for Authentication, e.g. HTTP Proxy
@@ -95,6 +96,38 @@ func (o *PatchedDeviceRequest) SetExternalKeyNil() {
 // UnsetExternalKey ensures that no value is present for ExternalKey, not even an explicit nil
 func (o *PatchedDeviceRequest) UnsetExternalKey() {
 	o.ExternalKey.Unset()
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *PatchedDeviceRequest) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PatchedDeviceRequest) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *PatchedDeviceRequest) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *PatchedDeviceRequest) SetName(v string) {
+	o.Name = &v
 }
 
 // GetPubKey returns the PubKey field value if set, zero value otherwise.
@@ -552,6 +585,9 @@ func (o PatchedDeviceRequest) ToMap() (map[string]interface{}, error) {
 	if o.ExternalKey.IsSet() {
 		toSerialize["external_key"] = o.ExternalKey.Get()
 	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	if !IsNil(o.PubKey) {
 		toSerialize["pub_key"] = o.PubKey
 	}
@@ -608,6 +644,7 @@ func (o *PatchedDeviceRequest) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "external_key")
+		delete(additionalProperties, "name")
 		delete(additionalProperties, "pub_key")
 		delete(additionalProperties, "raw_password")
 		delete(additionalProperties, "password")

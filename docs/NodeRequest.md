@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Hostname** | **string** |  | 
 **IpAddresses** | **[]string** |  | 
 **Subnets** | Pointer to **[]string** |  | [optional] 
-**Tags** | Pointer to **[]string** |  | [optional] 
+**Tags** | **[]string** |  | 
 **IsPublic** | Pointer to **bool** |  | [optional] 
 **PubKey** | **string** |  | 
 **Ports** | **[]string** |  | 
@@ -27,7 +27,7 @@ Name | Type | Description | Notes
 
 ### NewNodeRequest
 
-`func NewNodeRequest(hostname string, ipAddresses []string, pubKey string, ports []string, ) *NodeRequest`
+`func NewNodeRequest(hostname string, ipAddresses []string, tags []string, pubKey string, ports []string, ) *NodeRequest`
 
 NewNodeRequest instantiates a new NodeRequest object
 This constructor will assign default values to properties that have it defined,
@@ -136,11 +136,6 @@ and a boolean to check if the value has been set.
 
 SetTags sets Tags field to given value.
 
-### HasTags
-
-`func (o *NodeRequest) HasTags() bool`
-
-HasTags returns a boolean if a field has been set.
 
 ### GetIsPublic
 

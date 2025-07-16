@@ -46,6 +46,9 @@ docs/Device.md
 docs/DeviceAPI.md
 docs/DeviceAnalytics.md
 docs/DeviceAnalyticsDevice.md
+docs/DeviceCode.md
+docs/DeviceCodeRequest.md
+docs/DeviceCodeStatus.md
 docs/DeviceData.md
 docs/DeviceDataUsage.md
 docs/DeviceDataUsageRequest.md
@@ -148,6 +151,9 @@ model_data_point.go
 model_device.go
 model_device_analytics.go
 model_device_analytics_device.go
+model_device_code.go
+model_device_code_request.go
+model_device_code_status.go
 model_device_data.go
 model_device_data_usage.go
 model_device_data_usage_request.go

@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | **string** |  | [readonly] 
-**Name** | **string** |  | [readonly] 
+**Name** | Pointer to **string** |  | [optional] 
 **Ipv4** | **string** |  | [readonly] 
 **Ipv6** | **string** |  | [readonly] 
 **PubKey** | **string** |  | 
@@ -16,12 +16,13 @@ Name | Type | Description | Notes
 **LastActiveAt** | **time.Time** |  | [readonly] 
 **Last30daysDataUsage** | [**DeviceDataUsage**](DeviceDataUsage.md) |  | [readonly] 
 **QuickConfTemplate** | **string** | Generate a quick configuration string for the device. | [readonly] 
+**ExitNodeEndpoint** | **string** | Return the endpoint for the device. | [readonly] 
 
 ## Methods
 
 ### NewDevice
 
-`func NewDevice(id string, name string, ipv4 string, ipv6 string, pubKey string, psKey string, connectionStatus ConnectionStatus, createdAt time.Time, lastActiveAt time.Time, last30daysDataUsage DeviceDataUsage, quickConfTemplate string, ) *Device`
+`func NewDevice(id string, ipv4 string, ipv6 string, pubKey string, psKey string, connectionStatus ConnectionStatus, createdAt time.Time, lastActiveAt time.Time, last30daysDataUsage DeviceDataUsage, quickConfTemplate string, exitNodeEndpoint string, ) *Device`
 
 NewDevice instantiates a new Device object
 This constructor will assign default values to properties that have it defined,
@@ -75,6 +76,11 @@ and a boolean to check if the value has been set.
 
 SetName sets Name field to given value.
 
+### HasName
+
+`func (o *Device) HasName() bool`
+
+HasName returns a boolean if a field has been set.
 
 ### GetIpv4
 
@@ -289,6 +295,26 @@ and a boolean to check if the value has been set.
 `func (o *Device) SetQuickConfTemplate(v string)`
 
 SetQuickConfTemplate sets QuickConfTemplate field to given value.
+
+
+### GetExitNodeEndpoint
+
+`func (o *Device) GetExitNodeEndpoint() string`
+
+GetExitNodeEndpoint returns the ExitNodeEndpoint field if non-nil, zero value otherwise.
+
+### GetExitNodeEndpointOk
+
+`func (o *Device) GetExitNodeEndpointOk() (*string, bool)`
+
+GetExitNodeEndpointOk returns a tuple with the ExitNodeEndpoint field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExitNodeEndpoint
+
+`func (o *Device) SetExitNodeEndpoint(v string)`
+
+SetExitNodeEndpoint sets ExitNodeEndpoint field to given value.
 
 
 
